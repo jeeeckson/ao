@@ -1,0 +1,35 @@
+{
+  "name": "argentumonlineweb_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "bytebuffer": "^4.0.0",
+    "mysql": "^2.9.0",
+    "bcrypt-nodejs": "^0.0.3",
+    "ws": "^0.8.0",
+    "pathfinding": "^0.4.17",
+    "forever": "^0.15.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.13.1",
+    "babel-eslint": "^8.0.3",
+    "babel-preset-env": "latest",
+    "babel-preset-stage-2": "^6.24.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint --fix --ext js src ",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:dcatanzaro/argentumonlineweb-cliente.git"
+  },
+  "author": "Damián Catanzaro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dcatanzaro/argentumonlineweb-servidor/issues"
+  },
+  "homepage": "https://github.com/dcatanzaro/argentumonlineweb-servidor/blob/master/README.md"
+}
