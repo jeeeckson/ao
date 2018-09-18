@@ -14,6 +14,9 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit * 3,
   },
+  input: {
+    color: 'white'
+  },
   group: {
     margin: `${theme.spacing.unit}px 0`,
   },
@@ -36,19 +39,18 @@ class SelectOption extends React.Component {
     return (
       <div className={classes.root}>
         <FormControl>
-          <InputLabel htmlFor="age-simple">{title}</InputLabel>
+          <InputLabel>{title}</InputLabel>
           <Select
             value={this.state.selected}
+            className={classes.input}
             onChange={this.handleChange}
             input={<Input name="class" id="class"/>}
             displayEmpty
-            name="class"
+            name={title}
           >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
+            <MenuItem value=""/>
             {newOptions.map((name, i) => {
-              return (<MenuItem value={options[i]}>{name}</MenuItem>);
+              return (<MenuItem key={i} value={i + 1}>{name}</MenuItem>);
             })}
           </Select>
         </FormControl>

@@ -2,7 +2,8 @@
  * Created by horacio on 3/14/16.
  */
 
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 
 function ContainerOrdenado(mapWidth) {
   PIXI.Container.call(this);

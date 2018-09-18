@@ -1,6 +1,5 @@
 import React from 'react';
 import './../../css/main.css';
-import CharcodeMap from '../utils/charcodemap';
 import TextField from '@material-ui/core/TextField';
 
 export default class Connect extends React.Component {
@@ -32,7 +31,6 @@ export default class Connect extends React.Component {
               label="Username"
               value={userName}
               maxLength="15"
-              className="form-control horizontal_center"
               margin="normal"
               onChange={this.handleChange('userName')}
             />
@@ -42,7 +40,6 @@ export default class Connect extends React.Component {
               label="Password"
               value={password}
               maxLength="15"
-              className="form-control horizontal_center"
               margin="normal"
               onChange={this.handleChange('password')}
             />

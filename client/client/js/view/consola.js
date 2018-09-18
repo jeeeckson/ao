@@ -3,7 +3,8 @@
  */
 
 import Font from '../font';
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 import rendererUtils from './rendererutils';
 import TextStyle from './textstyle';
 

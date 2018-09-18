@@ -22,7 +22,7 @@ const styles = theme => ({
 
 class GenderSelector extends React.Component {
   state = {
-    value: 'female'
+    value: "1"
   };
 
   handleChange = event => {
@@ -44,8 +44,8 @@ class GenderSelector extends React.Component {
             value={this.state.value}
             onChange={this.handleChange}
           >
-            <FormControlLabel value={Enums.Genero.mujer} control={<Radio/>} label="Female"/>
-            <FormControlLabel value={Enums.Genero.hombre} control={<Radio/>} label="Male"/>
+            <FormControlLabel value={"" + Enums.Genero.mujer} control={<Radio/>} label="Female"/>
+            <FormControlLabel value={"" + Enums.Genero.hombre} control={<Radio/>} label="Male"/>
           </RadioGroup>
         </FormControl>
       </div>

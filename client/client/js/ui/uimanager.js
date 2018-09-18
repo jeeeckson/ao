@@ -14,6 +14,7 @@ import CreateCharacter from '../pages/createCharacter';
 import GameManager from "../model/gamemanager";
 import GameClient from "../network/gameclient";
 import Renderer from "../view/renderer";
+import Button from '@material-ui/core/Button';
 
 // Container widths
 //
@@ -111,11 +112,11 @@ export default class UIManager extends React.Component {
     }
   };
 
-  setCrearPJScreen() {
+  setCrearPJScreen = () => {
     this.setState({showLogin: false, showCreate: true, showPlay: false});
   }
 
-  setGameScreen() {
+  setGameScreen = () => {
     this.setState({showLogin: false, showCreate: false, showPlay: true});
   }
 
@@ -253,8 +254,8 @@ export default class UIManager extends React.Component {
   };
 
   render() {
-    const {classes, load} = this.props;
-    const  {widthContainer, heightContainer, showLogin, showCreate, showPlay, openMessage} = this.state;
+    const {load,assetManager} = this.props;
+    const {widthContainer, heightContainer, showLogin, showCreate, showPlay, openMessage} = this.state;
     return (<div>
       {load < 99 && <LinearProgress
         value={load}
@@ -263,8 +264,13 @@ export default class UIManager extends React.Component {
       />}
       {widthContainer && heightContainer && <Container id="container" width={widthContainer} height={heightContainer}>
         {openMessage && <Mensaje open={openMessage}/>}
-        {load > 99 && showLogin && <Connect onClick={this.newStarGame}/>}
-        {load > 99 && showCreate && <CreateCharacter/>}
+        {load > 99 && showLogin && <div>
+          <Button size="large" variant="raised" onClick={this.setCrearPJScreen}>
+            Create PJ
+          </Button>
+          <Connect onClick={this.newStarGame}/>
+        </div>}
+        {load > 99 && showCreate && <CreateCharacter assetManager={assetManager}/>}
         {load > 99 && showPlay && <Game/>}
       </Container>}
     </div>);

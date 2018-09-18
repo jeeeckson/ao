@@ -1,7 +1,8 @@
 /**
  * Created by horacio on 07/06/2016.
  */
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 import Font from '../font';
 import TextStyle from './textstyle';
 

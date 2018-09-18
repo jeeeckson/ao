@@ -2,7 +2,8 @@
  * Created by horacio on 8/30/16.
  */
 
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 
 export default class TextStyle extends PIXI.TextStyle {
   constructor(baseFont, escala, font) {

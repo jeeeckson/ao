@@ -4,7 +4,8 @@
 
 import Enums from '../enums';
 import Utils from '../utils/util';
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 import SpriteGrh from './spritegrh';
 import RendererUtils from './rendererutils';
 

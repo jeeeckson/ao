@@ -3,7 +3,8 @@
  */
 import Enums from './../enums';
 import Font from './../font';
-import PIXI from './../lib/pixi';
+//import PIXI from './../lib/pixi';
+import * as PIXI from 'pixi.js';
 
 export default class Macros {
   constructor(game, intervalos, acciones) {

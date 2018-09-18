@@ -1,4 +1,5 @@
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 import Camera from './camera';
 import Consola from './consola';
 import ContainerOrdenado from './containerordenado';
@@ -35,10 +36,10 @@ export default class Renderer {
   }
 
   _inicializarPixi() {
-    PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     // noinspection JSAnnotator
-    PIXI.MIPMAP_TEXTURES = false;
-    PIXI.GC_MODES.DEFAULT = PIXI.GC_MODES.MANUAL;
+    PIXI.settings.MIPMAP_TEXTURES = false;
+    PIXI.settings.GC_MODES = PIXI.GC_MODES.MANUAL;
 
     this.pixiRenderer = new PIXI.autoDetectRenderer(this.camera.gridW * this.tilesize, this.camera.gridH * this.tilesize);
     $(this.pixiRenderer.view).css('position', 'relative');

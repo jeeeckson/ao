@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import createPalette from '@material-ui/core/styles/createPalette';
+import {red, deepPurple, indigo} from '@material-ui/core/colors';
 import withRoot from '../withRoot';
 import './../../css/main.css';
 import AssetManager from '../assets/assetmanager';
@@ -19,6 +23,23 @@ function setupAudio(audio, settings) {
   audio.setSoundVolume(settings.getSoundVolume());
   audio.setMusic('intro');
 }
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: 'Roboto, sans-serif;',
+    fontSize: 14,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500
+  },
+  themeName: 'Dark Theme',
+  palette: createPalette({
+    type: 'dark',
+    primary: deepPurple,
+    secondary: indigo,
+    error: red
+  })
+});
 
 const styles = theme => ({
   root: {
@@ -71,11 +92,14 @@ class Index extends React.Component {
   render() {
     const {percentajeLoading, assetManager, settings} = this.state;
     if (!assetManager) return <div/>;
-    return (<UIManager
-      start={(cb) => this.setState({cb})}
-      assetManager={assetManager}
-      load={percentajeLoading}
-      settings={settings}/>);
+    return (
+      <MuiThemeProvider theme={theme}>
+        <UIManager
+          start={(cb) => this.setState({cb})}
+          assetManager={assetManager}
+          load={percentajeLoading}
+          settings={settings}/>
+      </MuiThemeProvider>);
 
   }
 }

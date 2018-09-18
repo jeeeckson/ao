@@ -4,7 +4,8 @@ import jsonCascos from '../../indices/cascos.json';
 import jsonCuerpos from '../../indices/cuerpos.json';
 import jsonEscudos from '../../indices/escudos.json';
 import jsonFxs from '../../indices/fxs.json';
-import PIXI from './../lib/pixi';
+//import PIXI from './../lib/pixi';
+import * as PIXI from 'pixi.js';
 import Preloader from './preloader';
 import Audio from './audio';
 import axios from 'axios';
@@ -25,12 +26,12 @@ export default class AssetManager {
     this.dataMapas = [];
     this.preloader = new Preloader(this);
 
-    PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
-    PIXI.MIPMAP_TEXTURES = false;
-    PIXI.GC_MODES.DEFAULT = PIXI.GC_MODES.MANUAL;
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    PIXI.settings.MIPMAP_TEXTURES = false;
+    PIXI.settings.GC_MODES = PIXI.GC_MODES.MANUAL;
   }
 
-  getNumGraficoFromGrh(grh) {
+  getNumGraficoFromGrh = (grh) => {
     if (!this.indices[grh]) {
       return null;
     }
@@ -41,7 +42,7 @@ export default class AssetManager {
     return this.getNumGraficoFromGrh(this.indices[grh].frames[0]);
   }
 
-  getFaceGrafFromNum(numHead) {
+  getFaceGrafFromNum = (numHead) => {
     if (this.cabezas[numHead]) {
       let grh = this.cabezas[numHead].down;
       return this.getNumGraficoFromGrh(grh);
@@ -49,7 +50,7 @@ export default class AssetManager {
     return null;
   }
 
-  getBodyGrafFromNum(numCuerpo) {
+  getBodyGrafFromNum = (numCuerpo) => {
     if (this.cuerpos[numCuerpo]) {
       let grh = this.cuerpos[numCuerpo].down;
       return this.getNumGraficoFromGrh(grh);
@@ -57,21 +58,21 @@ export default class AssetManager {
     return null;
   }
 
-  getGrh(grh) {
+  getGrh = (grh) => {
     if (!this.grhs[grh]) {
       this.loadGrh(grh);
     }
     return this.grhs[grh];
   }
 
-  getTerrenoGrh(grh) {
+  getTerrenoGrh = (grh) => {
     if (!this.grhs[grh]) {
       this.loadGrh(grh);
     }
     return this.grhs[grh];
   }
 
-  loadGrh(grh) {
+  loadGrh = (grh) => {
     if (!this.indices[grh] || this.grhs[grh]) {
       return;
     }
@@ -91,7 +92,7 @@ export default class AssetManager {
     }
   }
 
-  _loadGrhGrafico(grh) {
+  _loadGrhGrafico = (grh) => {
     let nombreGrafico = this.indices[grh].grafico;
     if (!this._baseTextures[nombreGrafico]) { // cargar basetexture
       this._setBaseTexture(nombreGrafico, new PIXI.BaseTexture.fromImage('../../graficos/' + nombreGrafico + '.png'));
@@ -99,11 +100,11 @@ export default class AssetManager {
     this.grhs[grh] = new PIXI.Texture(this._baseTextures[nombreGrafico], new PIXI.Rectangle(this.indices[grh].offX, this.indices[grh].offY, this.indices[grh].width, this.indices[grh].height));
   }
 
-  _setBaseTexture(nombreGrafico, baseTexture) {
+  _setBaseTexture = (nombreGrafico, baseTexture) => {
     this._baseTextures[nombreGrafico] = baseTexture;
   }
 
-  getMapaASync(numMapa, completeCallback) {
+  getMapaASync = (numMapa, completeCallback) => {
     if (!this.dataMapas[numMapa]) {
       axios.get('mapas/mapa' + numMapa + '.json').then((data) => {
         this.dataMapas[numMapa] = data.data;
@@ -117,35 +118,35 @@ export default class AssetManager {
     }
   }
 
-  preload(terminar_callback, progress_callback) {
+  preload = (terminar_callback, progress_callback) => {
     this.preloader.preload(terminar_callback, progress_callback);
   }
 
-  getIndices() {
+  getIndices = () => {
     return this.indices;
   }
 
-  getArmas() {
+  getArmas = () => {
     return this.armas;
   }
 
-  getCabezas() {
+  getCabezas = () => {
     return this.cabezas;
   }
 
-  getCascos() {
+  getCascos = () => {
     return this.cascos;
   }
 
-  getCuerpos() {
+  getCuerpos = () => {
     return this.cuerpos;
   }
 
-  getEscudos() {
+  getEscudos = () => {
     return this.escudos;
   }
 
-  getFxs() {
+  getFxs = () => {
     return this.fxs;
   }
 }

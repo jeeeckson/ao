@@ -2,9 +2,10 @@
  * Created by horacio on 3/10/16.
  */
 
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 
-export default class SpriteGrh extends PIXI.extras.MovieClip {
+export default class SpriteGrh extends PIXI.extras.AnimatedSprite {
   constructor(grh, cantLoops) {
     let nullFrames = [];
     nullFrames[0] = {texture: null};

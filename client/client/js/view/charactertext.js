@@ -3,7 +3,8 @@
  */
 
 import Font from '../font';
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 import TextStyle from './textstyle';
 
 export default class CharacterText extends PIXI.Container {

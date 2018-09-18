@@ -21,6 +21,7 @@
     "react": "latest",
     "react-dom": "latest",
     "react-jss": "latest",
+    "react-pixi-fiber": "^0.4.9",
     "storage": "^0.2.0",
     "styled-components": "^3.4.5",
     "ui": "^0.2.4",
@@ -36,9 +37,11 @@
     "node-sass": "^4.9.3"
   },
   "scripts": {
-    "start": "npm run scss-compile && npm run copyGraphics && npm run copyAudio && parcel client/index.html --out-dir dist ",
+    "start": "npm run copy && parcel client/index.html --out-dir dist ",
     "build": "parcel build client/index.html --public-url ./",
     "lint": "npx eslint --fix --ext jsx,js client",
+    "copy": "npm run scss-compile && npm run copyGraphics && npm run copyAudio&& npm run copyIndex",
+    "copyIndex": "copyfiles --flat --verbose --soft ./client/indices/*.json dist/indices",
     "copyGraphics": "copyfiles --flat --verbose --soft ./client/graficos/*.png dist/graficos",
     "copyAudio": "copyfiles --flat --verbose --soft ./client/audio/sonidos/*.webm dist/audio/sonidos",
     "scss-compile": "node-sass --include-path scss client/css/main.scss  client/css/main.css",

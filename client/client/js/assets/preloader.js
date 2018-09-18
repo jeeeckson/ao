@@ -3,9 +3,9 @@
  */
 
 import PreloadGraficos from '../../preload_config/preload_graficos.json';
-import graphics from '../../indices/graficos.json';
 import PreloadSounds from '../../preload_config/preload_sounds.json';
-import PIXI from './../lib/pixi';
+//import PIXI from './../lib/pixi';
+import * as PIXI from 'pixi.js';
 
 export default class Preloader {
   constructor(assetManager) {
@@ -33,18 +33,19 @@ export default class Preloader {
     this._preloadSoundsAsync();
 
     // graficos:
-    this.loader.add('indices', graphics);
+    this.loader.add('indices', 'indices/graficos.json');
     PreloadGraficos.forEach(grafico => {
-      this.loader.add('' + grafico, '../../graficos/' + grafico + '.png');
+      this.loader.add('' + grafico, 'graficos/' + grafico + '.png');
     });
 
     this.loader.on('progress', (loader, loadedResource) => {
-      progress_callback(loader.progress);
+      progress_callback(loader.progress-1);
     });
+    this.loader.on('complete', () => {progress_callback(100)});
 
     this.loader.load((loader, resources) => {
       PreloadGraficos.forEach(grafico => {
-        this.assetManager._setBaseTexture(grafico, PIXI.loader.resources[grafico].texture.baseTexture);
+        this.assetManager._setBaseTexture(grafico, this.loader.resources[grafico].texture.baseTexture);
       });
       this.assetManager.indices = resources.indices.data;
       terminar_callback();

@@ -26,16 +26,15 @@ export default class GameClient {
 
   _connect(conectarse_callback) {
     this.ws.open('ws://' + config.ip + ':' + config.port);
-    let self = this;
     this.ws.on('open', () => {
-      self.conectado = true;
+      this.conectado = true;
       conectarse_callback();
     });
 
     this.ws.on('message', () => {
       try {
-        while (self.byteQueue.length() > 0) {
-          self.protocolo.ServerPacketDecodeAndDispatch(self.byteQueue, self);
+        while (this.byteQueue.length() > 0) {
+          this.protocolo.ServerPacketDecodeAndDispatch(this.byteQueue, this);
         }
       } catch (e) {
         alert(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack); // TODO: DESCOMENTAR
@@ -43,11 +42,11 @@ export default class GameClient {
       }
     });
     this.ws.on('close', () => {
-      self.conectado = false;
-      self.disconnect_callback(!self.onDisconnect);
-      if (self.onDisconnect) {
-        self.onDisconnect();
-        self.onDisconnect = null;
+      this.conectado = false;
+      this.disconnect_callback(!this.onDisconnect);
+      if (this.onDisconnect) {
+        this.onDisconnect();
+        this.onDisconnect = null;
       }
     });
 
@@ -59,9 +58,8 @@ export default class GameClient {
 
   intentarLogear(nombre, pw) {
     if (!this.conectado) {
-      let self = this;
       this._connect(() => {
-        self.sendLoginExistingChar(nombre, pw);
+        this.sendLoginExistingChar(nombre, pw);
       });
     }
     else {
@@ -71,10 +69,9 @@ export default class GameClient {
 
   intentarCrearPersonaje(callback) {
     if (!this.conectado) {
-      let self = this;
       this._connect(() => {
         callback();
-        self.sendThrowDices();
+        this.sendThrowDices();
       });
     }
     else {
@@ -94,8 +91,6 @@ export default class GameClient {
   setDadosCallback(dadosCallback) {
     this.dados_callback = dadosCallback;
   }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   handleLogged(Clase) {
     this.game.actualizarBajoTecho();

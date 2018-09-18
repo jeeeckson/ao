@@ -1,6 +1,7 @@
 import Enums from './../enums';
 import Updater from './../updater';
-import PIXI from './../lib/pixi';
+//import PIXI from './../lib/pixi';
+import * as PIXI from 'pixi.js';
 import Mapa from './mapa';
 import Item from './item';
 import Character from './character';

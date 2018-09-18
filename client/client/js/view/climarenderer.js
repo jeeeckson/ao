@@ -1,7 +1,8 @@
 /**
  * Created by horacio on 8/20/16.
  */
-import PIXI from '../lib/pixi';
+//import PIXI from '../lib/pixi';
+import * as PIXI from 'pixi.js';
 import SpriteGrh from './spritegrh';
 
 export default class ClimaRenderer {
