@@ -125,7 +125,12 @@ export default class ByteQueue {
   }
 
   flush() {
-    this.ws.send(this._data);
-    this._data = [];
+    //Is open
+    if (this.ws.readyState === 1) {
+      this.ws.send(this._data);
+      this._data = [];
+    } else {
+      console.log("There aren't connections")
+    }
   }
 }

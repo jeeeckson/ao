@@ -18,17 +18,20 @@ export default class GameClient {
     this.conectado = false;
 
     this.protocolo = new Protocolo();
-    this.ws = new Websock();
+    this.ws = new WebSocket('ws://' + config.ip + ':' + config.port);
     this.byteQueue = new ByteQueue(this.ws);
 
     this.onDisconnect = null;
   }
 
   _connect(conectarse_callback) {
-    this.ws.open('ws://' + config.ip + ':' + config.port);
     this.ws.on('open', () => {
       this.conectado = true;
       conectarse_callback();
+    });
+    this.ws.on('connectFailed', (err) => {
+      this.conectado = false;
+      console.log("Error to connect" + err.message)
     });
 
     this.ws.on('message', () => {
@@ -38,7 +41,7 @@ export default class GameClient {
         }
       } catch (e) {
         alert(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack); // TODO: DESCOMENTAR
-        log.error(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack);
+        console.log(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack);
       }
     });
     this.ws.on('close', () => {

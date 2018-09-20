@@ -25,7 +25,8 @@
     "storage": "^0.2.0",
     "styled-components": "^3.4.5",
     "ui": "^0.2.4",
-    "utils": "^0.3.1"
+    "utils": "^0.3.1",
+    "websocket": "^1.0.28"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",

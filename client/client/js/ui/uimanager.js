@@ -4,16 +4,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import style from 'styled-components';
-import GameUI from './game/gameui';
 import Mensaje from './popups/mensaje';
-import Game from '../components/Game';
 import './../../css/main.css';
 import Connect from '../pages/connect';
+import Renderer from '../view/renderer';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CreateCharacter from '../pages/createCharacter';
-import GameManager from "../model/gamemanager";
-import GameClient from "../network/gameclient";
-import Renderer from "../view/renderer";
 import Button from '@material-ui/core/Button';
 
 // Container widths
@@ -59,18 +55,17 @@ export default class UIManager extends React.Component {
       showLogin: true,
       showCreate: false,
       showPlay: false,
-      openMessage: false
+      openMessage: false,
+      scala: null
     };
     this.props = props;
     this.props.start(this.inicializarGame);
-    this.gameUI = null;
 
     //en px
     this.widthMenuJuego = 154;
     this.widthJuego = 17 * 32;
     this.heightJuego = 13 * 32;
     this.FOOTER_HEIGHT = 60;
-    this.escala = null;
   }
 
   updateDimensions = () => {
@@ -95,9 +90,9 @@ export default class UIManager extends React.Component {
     }, false);
   };
 
-  getScale() {
-    return this.escala;
-  }
+  getScale = () => {
+    return this.state.scala;
+  };
 
   center() {
     window.scrollTo(0, 1);
@@ -138,6 +133,7 @@ export default class UIManager extends React.Component {
     let gameWidth = this.widthMenuJuego + this.widthJuego;
     //let gameHeight = this.heightJuego + containerBorderWidth * 2;
     let gameHeight = this.heightJuego;
+    let scala = null;
 
     let gameRatio = gameWidth / gameHeight;
 
@@ -150,112 +146,43 @@ export default class UIManager extends React.Component {
     }
 
     if (gameRatio > windowRatio) { // limita el width
-      this.escala = windowWidth / gameWidth;
+      scala = windowWidth / gameWidth;
     } else {
-      this.escala = windowHeight / gameHeight;
+      scala = windowHeight / gameHeight;
     }
     this.setState({
-      widthContainer: Math.floor(this.escala * gameWidth),
-      heightContainer: Math.floor(this.escala * gameHeight),
-      inputChatFontSize: Math.max(14, Math.floor(12 * this.escala)) + 'px'
+      widthContainer: Math.floor(scala * gameWidth),
+      heightContainer: Math.floor(scala * gameHeight),
+      inputChatFontSize: Math.max(14, Math.floor(12 * scala)) + 'px',
+      scala
     });
 
     if (loadGameUI) {
-      this.setState({gameUISize: this.escala});
-      //this.gameUI.resize(this.escala);
+      this.gameUI.resize(scala);
     }
-  }
+  };
 
   hideIntro() {
     this.setState({loading: false});
     this.setLoginScreen();
   }
 
-  inicializarGameUI(gameManager, storage, setCrearPjScreenCallback) {
-    this.gameUI = new GameUI(gameManager, storage, setCrearPjScreenCallback);
-    return this.gameUI;
-  }
-
   showMensaje(mensaje) {
     this.mensaje.show(mensaje);
   }
 
-  _initCrearPjCallbacks = () => {
-    this.uiManager.crearPjUI.setBotonTirarDadosCallback(() => {
-      this.client.sendThrowDices();
-    });
-    this.uiManager.crearPjUI.setBotonVolverCallback(() => {
-      this.uiManager.setLoginScreen();
-    });
-    this.uiManager.crearPjUI.setBotonCrearCallback((nombre, password, raza, genero, clase, cabeza, mail, ciudad) => {
-      this.startGame(true, nombre, password, raza, genero, clase, cabeza, mail, ciudad);
-    });
-  };
-
-  inicializarGame = () => {
-    let renderer = new Renderer(this.assetManager, this.uiManager.escala);
-    this.gameManager = new GameManager(this.assetManager, renderer);
-
-    let gameUI = this.inicializarGameUI(this.gameManager, this.settings, () => {
-    });
-    this.client = new GameClient(this.gameManager.game, this.uiManager, this);
-    this._initClientCallbacks(this.client);
-    this.gameManager.setup(this.client, gameUI);
-    this.ready = true;
-  }
-
-  _initClientCallbacks = (client) => {
-
-    client.setDisconnectCallback((goToLoginScreen) => {
-      if (goToLoginScreen) {
-        this.setLoginScreen();
-      }
-      this.assetManager.audio.stopMusic();
-      this.gameManager.resetGame(this.escala);
-      this.starting = false;
-    });
-
-    client.setLogeadoCallback(() => {
-      this.gameManager.game.start();
-      this.setGameScreen();
-      this.starting = false;
-    });
-
-    client.setDadosCallback((Fuerza, Agilidad, Inteligencia, Carisma, Constitucion) => {
-      this.uiManager.crearPjUI.updateDados(Fuerza, Agilidad, Inteligencia, Carisma, Constitucion);
-    });
-
-  };
-
-  startGame = (newChar, username, userpw, raza, genero, clase, cabeza, mail, ciudad) => {
-    if (this.gameManager.game.started) {
-      return;
-    }
-    this.gameManager.game.inicializar(username);
-    if (!newChar) {
-      this.client.intentarLogear(username, userpw);
-    } else {
-      this.client.sendLoginNewChar(username, userpw, raza, genero, clase, cabeza, mail, ciudad);
-    }
+  submit = ({username, password, race, gender, classP, head, email, city}) => {
+    this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username, password, race, gender, classP, head, email, city} })
   };
 
   //this is a start game function
-  newStarGame = (userName, password) => {
-    let renderer = new Renderer(this.assetManager, this.uiManager.escala);
-    this.gameManager = new GameManager(this.assetManager, renderer);
-    let gameUI = this.inicializarGameUI(this.gameManager, this.settings, () => {
-    });
-    this.client = new GameClient(this.gameManager.game, this.uiManager, this);
-    this._initClientCallbacks(this.client);
-    this.gameManager.setup(this.client, gameUI);
-    this.ready = true;
-    this.gameManager.game.inicializar(userName);
-    this.client.intentarLogear(userName, password);
+  newStarGame = (username, password) => {
+    this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username, password} })
   };
 
-  render() {
-    const {load,assetManager} = this.props;
-    const {widthContainer, heightContainer, showLogin, showCreate, showPlay, openMessage} = this.state;
+  render = () => {
+    const {load, assetManager} = this.props;
+    const {widthContainer, heightContainer, showLogin, showCreate, showPlay, openMessage, objLogin, scala} = this.state;
     return (<div>
       {load < 99 && <LinearProgress
         value={load}
@@ -270,10 +197,12 @@ export default class UIManager extends React.Component {
           </Button>
           <Connect onClick={this.newStarGame}/>
         </div>}
-        {load > 99 && showCreate && <CreateCharacter assetManager={assetManager}/>}
-        {load > 99 && showPlay && <Game/>}
+        {load > 99 && showCreate && <CreateCharacter throwDice={() => {
+          this.client.sendThrowDices();
+        }} cb={this.submit} assetManager={assetManager}/>}
+        {load > 99 && showPlay && <Renderer objLogin={objLogin} uiManager={this} assetManager={assetManager} escala={scala}/>}
       </Container>}
     </div>);
-  }
+  };
 
 }

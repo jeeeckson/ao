@@ -55,13 +55,13 @@ class Index extends React.Component {
     let settings, assetManager;
     settings = new Settings();
     assetManager = new AssetManager();
+    let completed = this.initiate(assetManager, settings);
 
     this.state = {
-      completed: false,
+      completed: completed,
       settings: settings,
       assetManager: assetManager
     };
-    this.initiate(assetManager, settings);
   }
 
   progress = () => {
@@ -74,30 +74,28 @@ class Index extends React.Component {
     }
   };
 
+  setFinish = () => {
+    this.setState({percentajeLoading: 100});
+  };
+
   initiate = (assetManager, settings) => {
-    const {cb} = this.state;
     setupAudio(assetManager.audio, settings);
 
-    assetManager.preload(
-      () => {
-        setTimeout(() => {
-          cb && cb();
-        }, 800);
-      },
+    return assetManager.preload(
       (percentajeLoading) => {
         this.setState({percentajeLoading: percentajeLoading});
       });
   };
 
   render() {
-    const {percentajeLoading, assetManager, settings} = this.state;
+    const {percentajeLoading, assetManager, settings, completed} = this.state;
     if (!assetManager) return <div/>;
     return (
       <MuiThemeProvider theme={theme}>
         <UIManager
           start={(cb) => this.setState({cb})}
           assetManager={assetManager}
-          load={percentajeLoading}
+          load={completed ? 100 : percentajeLoading}
           settings={settings}/>
       </MuiThemeProvider>);
 

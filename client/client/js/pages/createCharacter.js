@@ -5,6 +5,7 @@ import SelectOption from './../components/SelectOption';
 import GenderSelector from './../components/genderSelector';
 import RenderChar from './../components/RenderChar';
 import TextField from '@material-ui/core/TextField';
+import creation from "../utils/creation";
 
 export default class CreateCharacter extends React.Component {
   constructor(props) {
@@ -40,11 +41,12 @@ export default class CreateCharacter extends React.Component {
     let head = this._getCabezaNum(headOffset);
     // ASCO clase = clase === 11 ? 12 : clase; //swich trabajador - pirata
 
-    this.props.cb(username, password, race, gender, classP, head, email, city);
+    this.props.cb({username, password, race, gender, classP, head, email, city});
   };
 
   _getCabezaNum(offset) {
-    let cabezas = this.getPrimerYUltimaCabezaNum();
+    let {race, gender} = this.state;
+    let cabezas = creation.getFirstAndLastHead({gender,race });
     let incremento = Utils.modulo(offset, (cabezas.ultima - cabezas.primera));
 
     return cabezas.primera + incremento;

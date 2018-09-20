@@ -44,16 +44,14 @@ export default class GameUI {
     this.showMensajeFunction = this.showMensaje.bind(this);
 
     this.interfaz = new Interfaz(game, acciones);
-    this.keyMouseListener = new KeyMouseListener(game, acciones, settings.getKeys(), comandosChat);
+    this.keyMouseListener = new KeyMouseListener(game, acciones, settings ? settings.getKeys() : [], comandosChat);
     this.initDOM();
   }
 
-  initDOM() {
-    this.interfaz.inicializar();
+  initDOM =()=> {
     this.keyMouseListener.initListeners();
-    let self = this;
-    $(window).blur(() => {
-      self.keyMouseListener.upKeyTeclasCaminar();
+    window.addEventListener("onblur",() => {
+      this.keyMouseListener.upKeyTeclasCaminar();
     });
   }
 

@@ -1,98 +1,23 @@
 /**
  * Created by horacio on 2/28/16.
  */
+import React from 'react';
 import ItemGrid from './itemgrid';
-import CharCodeMap from '../../utils/charcodemap';
+import SpellList from "../../components/SpellList";
+import Bar from "../../components/Bar";
 
-export default class Interfaz {
-  constructor(game, acciones) {
+export default class Interfaz extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    const {game, acciones} = this.props;
     this.acciones = acciones;
     this.game = game;
-    this.inventarioGrid = new ItemGrid('itemsGrid', 20, true);
-    let self = this;
-    this.inventarioGrid.setDobleClickCallback((slot) => {
-      self.acciones.usarConDobleClick(slot);
-    });
+    /*this.inventarioGrid.setDobleClickCallback((slot) => {
+      this.acciones.usarConDobleClick(slot);
+    });*/
   }
-
-  inicializar() {
-    let self = this;
-
-    $('#botonInventario').click(() => {
-      $('body').addClass('inventarioActivo');
-    });
-
-    $('#botonHechizos').click(() => {
-      $('body').removeClass('inventarioActivo');
-      //temp fix scroll hechizos
-      if (!self.scrollHechizosFixed) {
-        self.setSelectedSlotHechizo(35);
-        self.scrollHechizosFixed = true;
-      }
-    });
-
-    $('#botonLanzar').click(() => {
-      self.acciones.lanzarHechizo();
-    });
-
-    $('#botonInfo').click(() => {
-      self.game.escribirMsgConsola('To cast a spell, select from the list, click on cast, and then click on the target');
-    });
-
-    $('#botonTirarOro').click(() => {
-      self.game.gameUI.showTirar(true);
-    });
-
-    $('#botonAsignarSkills').click(() => {
-      self.game.gameUI.showSkills();
-    });
-
-    $('#botonSeguroResucitar').click(() => {
-      self.game.toggleSeguroResucitar();
-    });
-
-    $('#botonSeguroAtacar').click(() => {
-      self.game.toggleSeguroAtacar();
-    });
-
-    $('#botonMacroHechizos').click(() => {
-      self.acciones.toggleMacroHechizos();
-    });
-
-    $('#botonMacroTrabajo').click(() => {
-      self.acciones.toggleMacroTrabajo();
-    });
-
-    $('#menuJuegoBotonMenu').click(() => {
-      self.game.gameUI.showMenu();
-    });
-
-    $('#botonMoverHechizoArriba').click(() => {
-      let slot = self.game.gameUI.interfaz.getSelectedSlotHechizo();
-      if (!slot || slot === 1) {
-        return;
-      }
-      self.game.client.sendMoveSpell(true, slot);
-      self.game.swapSlotHechizos(slot, slot - 1);
-      self.setSelectedSlotHechizo(slot - 1);
-    });
-
-    $('#botonMoverHechizoAbajo').click(() => {
-      let slot = self.game.gameUI.interfaz.getSelectedSlotHechizo();
-      if (!slot) {
-        return;
-      }
-      self.game.client.sendMoveSpell(false, slot);
-      self.game.swapSlotHechizos(slot, slot + 1);
-      self.setSelectedSlotHechizo(slot + 1);
-    });
-
-    //FIX bug firefox que no previene movimiento scroll hehcizos
-    if (Detect.isFirefox()) {
-      self.setHechizosScrollFirefoxFix(self);
-    }
-  }
-
+/*
   cambiarSlotInventario(numSlot, Amount, numGrafico, equiped) {
     this.inventarioGrid.modificarSlot(numSlot, Amount, numGrafico, equiped);
   }
@@ -104,150 +29,123 @@ export default class Interfaz {
   resetSelectedSlotInventario() {
     this.inventarioGrid.deselect();
   }
-
+*/
   getSelectedSlotInventario() {
-    let slot = this.inventarioGrid.getSelectedSlot();
-    if (slot > 0) {
-      return slot;
-    }
+    /* let slot = this.inventarioGrid.getSelectedSlot();
+     if (slot > 0) {
+       return slot;
+     }*/
   }
 
   getSelectedSlotHechizo() {
-    let res = parseInt($('#hechizos').val());
-    if (res) {
-      return res;
-    }
-    else {
-      return 0;
-    }
+    return 0;
   }
 
-  setSelectedSlotHechizo(slot) {
-    $('#hechizos').val(parseInt(slot));
-  }
-
-  modificarSlotHechizo(slot, texto) {
-    let elemento = $('#hechizos option[value=' + slot + ']');
-    if (!elemento.length) { // nuevo elemento
-      let $nuevoHechizo = $('<option>').attr('value', slot).text(texto);
-      $('#hechizos').append($nuevoHechizo);
-    }
-    else {
-      $(elemento).text(texto);
-    }
-  }
-
-  updateAgilidad(agi) {
-    $('#indicadorAgilidad').text('A: ' + agi);
-  }
-
-  updateFuerza(fuerza) {
-    $('#indicadorFuerza').text('F: ' + fuerza);
-  }
-
-  updateOro(oro) {
-    $('#indicadorOro').text(oro);
-  }
-
-  _updateBarra(cant, max, $barra, $label, noInvertida) {
-    let porcentaje = 100;
-    if (max) {
-      if (noInvertida) {
-        porcentaje = Math.floor((cant / max) * 100);
-      } else {
-        porcentaje = 100 - Math.floor((cant / max) * 100);
+  modificarSlotHechizo(slot, name) {
+    const {spells} = this.state;
+    let saveSpell = false;
+    spells.forEach(spell => {
+      if (spell.slot === slot) {
+        spell.name = name;
+        saveSpell = true;
       }
-    }
-    $barra.css('width', porcentaje + '%');
-    $label.text(cant + '/' + max);
-  }
-
-  updateBarraEnergia(cant, max) {
-    this._updateBarra(cant, max, $('#barraEnergiaUsada'), $('#barraEnergiaTexto'));
-  }
-
-  updateBarraVida(cant, max) {
-    this._updateBarra(cant, max, $('#barraSaludUsada'), $('#barraSaludTexto'));
-  }
-
-  updateBarraMana(cant, max) {
-    this._updateBarra(cant, max, $('#barraManaUsada'), $('#barraManaTexto'));
-  }
-
-  updateBarraHambre(cant, max) {
-    this._updateBarra(cant, max, $('#barraHambreUsada'), $('#barraHambreTexto'));
-  }
-
-  updateBarraSed(cant, max) {
-    this._updateBarra(cant, max, $('#barraSedUsada'), $('#barraSedTexto'));
-  }
-
-  updateBarraExp(cant, max) {
-    this._updateBarra(cant, max, $('#barraExpUsada'), $('#barraExpTexto'));
-  }
-
-  updateNivel(nivel) {
-    $('#indicadorNivel').text('Level ' + nivel);
-  }
-
-  setMouseCrosshair(visible) {
-    if (visible) {
-      $('#gamecanvas').addClass('crosshair');
-    }
-    else {
-      $('#gamecanvas').removeClass('crosshair');
-    }
-  }
-
-  setSeguroResucitacion(activado) {
-    if (!activado) {
-      $('#botonSeguroResucitar').addClass('seguroOff');
-    } else {
-      $('#botonSeguroResucitar').removeClass('seguroOff');
-    }
-  }
-
-  setSeguroAtacar(activado) {
-    if (!activado) {
-      $('#botonSeguroAtacar').addClass('seguroOff');
-    } else {
-      $('#botonSeguroAtacar').removeClass('seguroOff');
-    }
-  }
-
-  setMacroTrabajo(activado) {
-    if (activado) {
-      $('#botonMacroTrabajo').addClass('macroActivado');
-    } else {
-      $('#botonMacroTrabajo').removeClass('macroActivado');
-    }
-  }
-
-  setMacroHechizos(activado) {
-    if (activado) {
-      $('#botonMacroHechizos').addClass('macroActivado');
-    } else {
-      $('#botonMacroHechizos').removeClass('macroActivado');
-    }
-  }
-
-  setHechizosScrollFirefoxFix(self) {
-    let $hechizos = $('#hechizos');
-    self.hechizos_realSelectedSlot = 1;
-
-    $hechizos.click(() => {
-      self.hechizos_realSelectedSlot = $hechizos.val();
-      $hechizos.blur();
     });
+    if (!saveSpell) {
+      this.setState({spells: spells.push({name: name, slot: slot})});
+    } else {
+      this.setState({spells});
+    }
+  }
 
-    let up = CharCodeMap.keys.indexOf('UP');
-    let down = CharCodeMap.keys.indexOf('DOWN');
-    let left = CharCodeMap.keys.indexOf('LEFT');
-    let right = CharCodeMap.keys.indexOf('RIGHT');
+  updateAgilidad = (agility) => {
+    this.setState({agility});
+  };
 
-    $hechizos.change(() => {
-      $hechizos.blur();
-    });
+  updateFuerza = (strength) => {
+    this.setState({strength});
+  };
+
+  updateOro = (gold) => {
+    this.setState({gold});
+  };
+
+  updateBarraEnergia = (qEnergy, mEnergy) => {
+    this.setState({qEnergy, mEnergy});
+  };
+
+  updateBarraVida = (qHealth, mHealth) => {
+    this.setState({qHealth, mHealth});
+  };
+
+  updateBarraMana = (qMana, mMana) => {
+    this.setState({qMana, mMana});
+  };
+
+  updateBarraHambre = (qHungry, mHungry) => {
+    this.setState({qHungry, mHungry});
+  };
+
+  updateBarraSed = (qThirst, mThirst) => {
+    this.setState({qThirst, mThirst});
+  };
+
+  updateBarraExp = (qExp, mExp) => {
+    this.setState({qExp, mExp});
+  };
+
+  updateNivel = (level) => {
+    this.setState({level});
+  };
+
+  render = () => {
+    const {spells, qEnergy, mEnergy, qHealth, mHealth, qMana, mMana, qHungry, mHungry, qThirst, mThirst, qExp, mExp, level, gold, strength, agility} = this.state;
+    return (<div>
+      <ItemGrid name='itemsGrid' quantity="20" dragAndDropEnable={true}/>
+      <SpellList spells={spells} throwSpell={this.acciones.lanzarHechizo}/>
+      <button id="botonInventario" className="botonNormal"/>
+      <button id="botonHechizos" className="botonNormal"/>
+      <button id="botonInfo" className="botonNormal" onClick={() => {
+        this.game.escribirMsgConsola('To cast a spell, select from the list, click on cast, and then click on the target');
+      }}>?
+      </button>
+      <button id="botonMoverHechizoArriba" className="botonNormal"/>
+      <button id="botonMoverHechizoAbajo" className="botonNormal"/>
+      <div id="imagenTabActiva" className="divImagen"/>
+      <div id="barras">
+        <Bar id="barraExp" qunatity={qExp} maxQuantity={mExp}/>
+        <Bar id="barraEnergia" qunatity={qEnergy} maxQuantity={mEnergy}/>
+        <Bar id="barraMana" qunatity={qMana} maxQuantity={mMana}/>
+        <Bar id="barraSalud" qunatity={qHealth} maxQuantity={mHealth}/>
+        <Bar id="barraHambre" qunatity={qHungry} maxQuantity={mHungry}/>
+        <Bar id="barraSed" qunatity={qThirst} maxQuantity={mThirst}/>
+      </div>
+      <button id="botonTirarOro" className="botonImagen" onClick={() => {
+        this.game.gameUI.showTirar(true);
+      }}/>
+      <span id="indicadorNivel">Level: {level}</span>
+      <span id="indicadorAgilidad">A: {agility}</span>
+      <span id="indicadorFuerza">S: {strength}</span>
+      <span id="indicadorOro">Gold: {gold}</span>
+
+      <button id="menuJuegoBotonMenu" className="botonCuadrado" onClick={() => {
+        this.game.gameUI.showMenu();
+      }}/>
+      <button id="botonAsignarSkills" onClick={() => {
+        this.game.gameUI.showSkills();
+      }}/>
+      <button id="botonSeguroResucitar" className="botonCuadrado" onClick={() => {
+        this.game.toggleSeguroResucitar();
+      }}/>
+      <button id="botonSeguroAtacar" className="botonCuadrado" onClick={() => {
+        this.game.toggleSeguroAtacar();
+      }}/>
+      <button id="botonMacroHechizos" className="botonCuadrado" onClick={() => {
+        this.acciones.toggleMacroHechizos();
+      }}/>
+      <button id="botonMacroTrabajo" className="botonCuadrado" onClick={() => {
+        this.acciones.toggleMacroTrabajo();
+      }}/>
+    </div>);
 
   }
 

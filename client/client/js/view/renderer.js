@@ -1,5 +1,6 @@
-//import PIXI from '../lib/pixi';
 import * as PIXI from 'pixi.js';
+import { Stage, Container, Sprite } from 'react-pixi-fiber';
+import React from 'react';
 import Camera from './camera';
 import Consola from './consola';
 import ContainerOrdenado from './containerordenado';
@@ -8,12 +9,37 @@ import EntityRenderer from './entityrenderer';
 import ClimaRenderer from './climarenderer';
 import MapaRenderer from './maparenderer';
 import RendererUtils from './rendererutils';
-import UIManager from '../ui/uimanager';
+import style from 'styled-components';
+import ItemGrid from "../ui/game/itemgrid";
+import GameManager from "../model/gamemanager";
+import GameClient from "../network/gameclient";
+import GameUI from "../ui/game/gameui";
+import ChatBox from "../components/ChatBox";
+const MenuGame = style.div`
+ 
+  @extend .exterior_border_default;
+  background-size: 100% 100%;
+  background-image: ${props => props.url}
+  border-right-width: 0px;
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  flex: 1;
+  display: inline-block;
+  position: relative;
 
-export default class Renderer {
-  constructor(assetManager) {
+  font-size:1.5vh;
+  .span {
+    cursor: default;
+    font-weight: bold;
+  }
+`;
+
+export default class Renderer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    const {assetManager, escala, uiManager, objLogin} = this.props;
     this.MAPA_WIDTH = 100; // todo: usarlo desde mapa
-    this.uiManager = new UIManager();
     this.assetManager = assetManager;
     this.grhs = assetManager.grhs;
     this.indices = assetManager.getIndices();
@@ -23,6 +49,19 @@ export default class Renderer {
     this.cuerpos = assetManager.getCuerpos();
     this.escudos = assetManager.getEscudos();
     this.fxs = assetManager.getFxs();
+    this.gameManager = new GameManager(assetManager, this);
+    this.gameUI = new GameUI(this.gameManager, null,  () => {});
+    this.client = new GameClient(this.gameManager.game, uiManager, this.gameUI);
+    this._initClientCallbacks(this.client);
+    this.gameManager.setup(this.client, this.gameUI);
+    this.ready = true;
+    const {username, password, race, gender, classP, head, email, city} = objLogin;
+    this.gameManager.game.inicializar(username);
+    if(gender && race && classP){
+      this.client.sendLoginNewChar(username, password, race, gender, classP, head, email, city);
+    } else {
+      this.client.intentarLogear(username, password);
+    }
 
     this.tilesize = 32;
     this.camera = new Camera(this.tilesize);
@@ -31,9 +70,31 @@ export default class Renderer {
     this.mapaRenderer = null;
     this.climaRenderer = null;
 
-    this._inicializarPixi();
-    this.rescale(this.uiManager.getEscala());
+    this.rescale(escala);
+    this.state={
+      gameCanvas: this._inicializarPixi()
+    }
+
   }
+
+  _initClientCallbacks = (client) => {
+
+    client.setDisconnectCallback((goToLoginScreen) => {
+      if (goToLoginScreen) {
+        this.setLoginScreen();
+      }
+      this.assetManager.audio.stopMusic();
+      this.gameManager.resetGame(this.escala);
+      this.starting = false;
+    });
+
+    client.setLogeadoCallback(() => {
+      this.gameManager.game.start();
+      this.setGameScreen();
+      this.starting = false;
+    });
+
+  };
 
   _inicializarPixi() {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -42,10 +103,8 @@ export default class Renderer {
     PIXI.settings.GC_MODES = PIXI.GC_MODES.MANUAL;
 
     this.pixiRenderer = new PIXI.autoDetectRenderer(this.camera.gridW * this.tilesize, this.camera.gridH * this.tilesize);
-    $(this.pixiRenderer.view).css('position', 'relative');
-    $(this.pixiRenderer.view).css('display', 'block');
-    $('#gamecanvas').append(this.pixiRenderer.view);
     this._initStage();
+    return this.pixiRenderer.view;
   }
 
   _initStage() {
@@ -90,7 +149,7 @@ export default class Renderer {
   }
 
   actualizarIndicadorMapa(numMap, x, y) {
-    return;
+    //return;
     this.indicadorMapa.actualizar(numMap, x, y);
   }
 
@@ -248,5 +307,24 @@ export default class Renderer {
     } else {
       this.stage.filters = [];
     }
+  }
+
+
+
+  
+  render = () => {
+    const {gamecanvas} = this.state;
+    if (!gamecanvas) return <div/>;
+    return (<div id="juego" style={{position: 'relative'}} className="exterior_border_default background_default">
+      <div id="gamecanvas" className="clickable" onClick={(event) => {
+        event.stopPropagation();
+      }}>{gamecanvas}</div>
+      <ChatBox id="chatbox" className="exterior_border_default background_default"/>
+
+      <MenuGame id="menuJuego" url="url('../imagenes/menuJuego_background.png');">
+        <ItemGrid id="itemsGrid" className="itemgrid"/>
+
+      </MenuGame>
+    </div>)
   }
 }

@@ -152,15 +152,14 @@ export default class Acciones {
     }
   }
 
-  lanzarHechizo() { /*todo: slot por parametro*/
+  lanzarHechizo(spellSlot) { /*todo: slot por parametro*/
     if (!this.intervalos.requestLanzarHechizo()) {
       return;
     }
-    let slot = this.game.gameUI.interfaz.getSelectedSlotHechizo();
-    if (!slot) {
+    if (!spellSlot) {
       return;
     }
-    this.game.client.sendCastSpell(slot);
+    this.game.client.sendCastSpell(spellSlot);
     this.game.client.sendWork(Enums.Skill.magia);
   }
 

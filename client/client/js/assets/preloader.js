@@ -20,8 +20,19 @@ export default class Preloader {
     });
   }
 
-  preload(terminar_callback, progress_callback) {
+  loadGraphics = () => {
+    PreloadGraficos.forEach(grafico => {
+      this.assetManager._setBaseTexture(grafico, this.loader.resources[grafico].texture.baseTexture);
+    });
+  };
 
+  preload(progress_callback) {
+
+    if (this.loader.resources.indices) {
+      this.loadGraphics();
+      this.assetManager.indices = this.loader.resources.indices.data;
+      return true;
+    }
     // fonts: // OJO: si se usan web fonts sacar esto y el script del index
     WebFont.load({
       custom: {
@@ -39,16 +50,15 @@ export default class Preloader {
     });
 
     this.loader.on('progress', (loader, loadedResource) => {
-      progress_callback(loader.progress-1);
+      progress_callback(loader.progress - 1);
     });
-    this.loader.on('complete', () => {progress_callback(100)});
+    this.loader.on('complete', () => {
+    });
 
     this.loader.load((loader, resources) => {
-      PreloadGraficos.forEach(grafico => {
-        this.assetManager._setBaseTexture(grafico, this.loader.resources[grafico].texture.baseTexture);
-      });
+      this.loadGraphics();
       this.assetManager.indices = resources.indices.data;
-      terminar_callback();
     });
+    return false;
   }
 }

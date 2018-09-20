@@ -8,7 +8,10 @@ export default class ItemGrid extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-
+    this.state = {
+      cantidadSlots: props.quantity || 40,
+      dragAndDropable: props.dragAndDropEnable
+    };
     this.crearSlots();
   }
 
@@ -21,15 +24,17 @@ export default class ItemGrid extends React.Component {
   }
 
   getSelectedSlot() {
-    const {listItems} = this.state;
+    const {listItems} = this.props;
     let slot = listItems.filter(item => item.selected === true).map(v => v);
     return slot && slot.length && slot[0];
   }
 
   crearSlots() {
-    return this.cantidadSlots.map((slot, index) => {
+    const {cantidadSlots, dragAndDropable} = this.state;
+    let newArray = new Array(cantidadSlots);
+    return newArray.map((slot, index) => {
       let data = {slotNumber: index + 1};
-      if (this.dragAndDropable) {
+      if (dragAndDropable) {
         /**$slot.droppable({
         hoverClass: 'ui-state-highlight', //TODO !!!
         drop: function (event, ui) {
