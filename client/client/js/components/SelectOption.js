@@ -23,9 +23,14 @@ const styles = theme => ({
 });
 
 class SelectOption extends React.Component {
-  state = {
-    selected: ''
-  };
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {
+      selected: this.props.selected || ''
+    }
+  }
+
 
   handleChange = event => {
     const {onChange} = this.props;
@@ -45,7 +50,6 @@ class SelectOption extends React.Component {
             className={classes.input}
             onChange={this.handleChange}
             input={<Input name="class" id="class"/>}
-            displayEmpty
             name={title}
           >
             <MenuItem value=""/>

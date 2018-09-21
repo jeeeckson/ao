@@ -32,9 +32,10 @@ ws.on('connection', (ws) => {
         return;
       }
 
-      console.log(res)
       pkg.setData(res);
-      protocol.handleData(ws, pkg.getPackageID());
+      let packageID = pkg.getPackageID();
+
+      protocol.handleData(ws, packageID);
 
     } catch (err) {
       funct.dumpError(err);
@@ -93,8 +94,8 @@ setInterval(() => {
 
 //TaskManager 60 ticks por segundo
 
-setInterval(() =>{
-  game.worldSave((data) =>{
+setInterval(() => {
+  game.worldSave((data) => {
     console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] WorldSave');
   });
 }, 300000);

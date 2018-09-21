@@ -1,4 +1,5 @@
 let ByteBuffer = require('bytebuffer');
+const utf8 = require('utf8');
 
 let pkg = new Package();
 
@@ -189,8 +190,8 @@ function Package() {
     click: 2,
     useItem: 3,
     equiparItem: 4,
-    connectCharacter: 5,
-    position: 6,
+    createCharacter: 5,
+    connectCharacter: 6,
     talk: 7,
     ping: 8,
     attackMele: 9,
@@ -200,7 +201,8 @@ function Package() {
     agarrarItem: 13,
     buyItem: 14,
     sellItem: 15,
-    changeSeguro: 17
+    changeSeguro: 17,
+    position: 18
   };
 
   this.bufferRcv = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, true);
@@ -212,8 +214,7 @@ function Package() {
 
   this.getPackageID = () => {
     // packageID
-    console.log("id " + this.getByte())
-    return this.getByte();
+    return Number(String.fromCharCode(this.getByte()));
   };
 
   this.setPackageID = (packageID) => {
@@ -283,9 +284,8 @@ function Package() {
     this.bufferSnd.writeString(dataString);
   };
 
-  this.getByte = (signed) => {
+  this.getByte = (signed = false) => {
     let dByte = 0;
-
     if (signed) {
       dByte = this.bufferRcv.readInt8();
     } else {
@@ -330,7 +330,7 @@ function Package() {
   this.getString = () => {
     let lengthStr = this.getShort();
 
-    return this.bufferRcv.readString(lengthStr, ByteBuffer.METRICS_CHARS);
+    return this.bufferRcv.readString(lengthStr, ByteBuffer.METRICS_BYTES);
 
   };
 

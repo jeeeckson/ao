@@ -13,37 +13,29 @@ let game = new Game();
  */
 function Game() {
   /**
-     * [legalPos Permite saber si hay bloqueos o agua en determinada posición]
-     * @param  {number} x          [description]
-     * @param  {number} y          [description]
-     * @param  {number} idMapa     [description]
-     * @param  {boolean} aguaValida [description]
-     * @return {Boolean}            [description]
-     */
-  this.legalPos = function(x, y, idMapa, aguaValida) {
+   * [legalPos Permite saber si hay bloqueos o agua en determinada posición]
+   * @param  {number} x          [description]
+   * @param  {number} y          [description]
+   * @param  {number} idMapa     [description]
+   * @param  {boolean} aguaValida [description]
+   * @return {Boolean}            [description]
+   */
+  this.legalPos = (x, y, idMapa, aguaValida) => {
     try {
       if (x >= 1 && y >= 1 && x <= 100 && y <= 100) {
         let ret = true;
 
         if (!vars.mapa[idMapa][y][x].blocked) {
-          if (vars.mapData[idMapa][y][x].id) {
-            ret = false;
-          } else {
-            ret = true;
-          }
+          ret = !vars.mapData[idMapa][y][x].id;
         } else {
           ret = false;
         }
 
         if (game.hayAgua(idMapa, {
-          x: x,
-          y: y
-        })) {
-          if (aguaValida && !vars.mapData[idMapa][y][x].id) {
-            ret = true;
-          } else {
-            ret = false;
-          }
+            x: x,
+            y: y
+          })) {
+          ret = aguaValida && !vars.mapData[idMapa][y][x].id;
         } else {
           if (aguaValida) {
             ret = false;
@@ -60,65 +52,53 @@ function Game() {
   };
 
   /**
-     * [hayAgua Permite saber si hay agua en determinada posición]
-     * @param  {number} idMap [description]
-     * @param  {object} pos   [description]
-     * @return {Boolean}       [description]
-     */
-  this.hayAgua = function(idMap, pos) {
-    if ((vars.mapa[idMap][pos.y][pos.x].graphics[1] >= 1505 && vars.mapa[idMap][pos.y][pos.x].graphics[1] <= 1520 && !vars.mapa[idMap][pos.y][pos.x].graphics[2]) || (vars.mapa[idMap][pos.y][pos.x].graphics[1] >= 5665 && vars.mapa[idMap][pos.y][pos.x].graphics[1] <= 5680 && !vars.mapa[idMap][pos.y][pos.x].graphics[2]) || vars.mapa[idMap][pos.y][pos.x].graphics[1] >= 13547 && vars.mapa[idMap][pos.y][pos.x].graphics[1] <= 13562 && !vars.mapa[idMap][pos.y][pos.x].graphics[2]) {
-      return true;
-    } else {
-      return false;
-    }
+   * [hayAgua Permite saber si hay agua en determinada posición]
+   * @param  {number} idMap [description]
+   * @param  {object} pos   [description]
+   * @return {Boolean}       [description]
+   */
+  this.hayAgua = (idMap, pos) => {
+    return (vars.mapa[idMap][pos.y][pos.x].graphics[1] >= 1505 && vars.mapa[idMap][pos.y][pos.x].graphics[1] <= 1520 && !vars.mapa[idMap][pos.y][pos.x].graphics[2]) || (vars.mapa[idMap][pos.y][pos.x].graphics[1] >= 5665 && vars.mapa[idMap][pos.y][pos.x].graphics[1] <= 5680 && !vars.mapa[idMap][pos.y][pos.x].graphics[2]) || vars.mapa[idMap][pos.y][pos.x].graphics[1] >= 13547 && vars.mapa[idMap][pos.y][pos.x].graphics[1] <= 13562 && !vars.mapa[idMap][pos.y][pos.x].graphics[2]
+
   };
 
   /**
-     * [isBlocked Permite saber si está bloqueada determinada posición]
-     * @param  {number}  idMap [description]
-     * @param  {object}  pos   [description]
-     * @return {Boolean}       [description]
-     */
-  this.isBlocked = function(idMap, pos) {
+   * [isBlocked Permite saber si está bloqueada determinada posición]
+   * @param  {number}  idMap [description]
+   * @param  {object}  pos   [description]
+   * @return {Boolean}       [description]
+   */
+  this.isBlocked = (idMap, pos) => {
     try {
-      if (vars.mapa[idMap][pos.y][pos.x].blocked) {
-        return true;
-      } else {
-        return false;
-      }
+      return vars.mapa[idMap][pos.y][pos.x].blocked;
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [legalPosUser Permite saber si es una posición legal para el usuario]
-     * @param  {number} x      [description]
-     * @param  {number} y      [description]
-     * @param  {number} idMapa [description]
-     * @return {Boolean}        [description]
-     */
-  this.legalPosUser = function(x, y, idMapa) {
+   * [legalPosUser Permite saber si es una posición legal para el usuario]
+   * @param  {number} x      [description]
+   * @param  {number} y      [description]
+   * @param  {number} idMapa [description]
+   * @return {Boolean}        [description]
+   */
+  this.legalPosUser = (x, y, idMapa) => {
     try {
-      if (x >= 1 && y >= 1 && x <= 100 && y <= 100 && !vars.mapData[idMapa][y][x].id) {
-        return true;
-      } else {
-        return false;
-      }
+      return x >= 1 && y >= 1 && x <= 100 && y <= 100 && !vars.mapData[idMapa][y][x].id;
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [getName Devuelve el nombre del usuario o npc]
-     * @param  {number} id [description]
-     * @return {String}    [description]
-     */
-  this.getName = function(id) {
+   * [getName Devuelve el nombre del usuario o npc]
+   * @param  {number} id [description]
+   * @return {String}    [description]
+   */
+  this.getName = function (id) {
     try {
       let pjSelected = vars.personajes[id];
-
       if (!pjSelected) {
         pjSelected = vars.npcs[id];
       }
@@ -130,30 +110,26 @@ function Game() {
   };
 
   /**
-     * [isBanned Devuelve si el usuario está baneado]
-     * @param  {object}  pj [description]
-     * @return {Boolean}    [description]
-     */
-  this.isBanned = function(pj) {
+   * [isBanned Devuelve si el usuario está baneado]
+   * @param  {object}  pj [description]
+   * @return {Boolean}    [description]
+   */
+  this.isBanned = function (pj) {
     try {
       let date = new Date();
-      if (pj.banned < date || pj.banned === 0) {
-        return false;
-      } else {
-        return true;
-      }
+      return !(pj.banned < date || pj.banned === 0);
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [useItem Acción de usar items]
-     * @param  {object} ws    [description]
-     * @param  {number} idPos [description]
-     * @return {}       [description]
-     */
-  this.useItem = function(ws, idPos) {
+   * [useItem Acción de usar items]
+   * @param  {object} ws    [description]
+   * @param  {number} idPos [description]
+   * @return {}       [description]
+   */
+  this.useItem = function (ws, idPos) {
     try {
       let user = vars.personajes[ws.id];
 
@@ -196,114 +172,114 @@ function Game() {
       let maxAttr = 0;
 
       switch (obj.objType) {
-      case vars.objType.pociones: //Pociones
-        if (user.dead) {
-          handleProtocol.console('Los muertos no pueden usar items.', 'white', 0, 0, ws);
-          return;
-        }
+        case vars.objType.pociones: //Pociones
+          if (user.dead) {
+            handleProtocol.console('Los muertos no pueden usar items.', 'white', 0, 0, ws);
+            return;
+          }
 
-        if (obj.tipoPocion === vars.typePociones.vida) { //Vida
-          if (user.hp < user.maxHp) {
-            user.hp += funct.randomIntFromInterval(obj.minModificador, obj.maxModificador);
+          if (obj.tipoPocion === vars.typePociones.vida) { //Vida
+            if (user.hp < user.maxHp) {
+              user.hp += funct.randomIntFromInterval(obj.minModificador, obj.maxModificador);
 
-            if (user.hp > user.maxHp) {
-              user.hp = user.maxHp;
+              if (user.hp > user.maxHp) {
+                user.hp = user.maxHp;
+              }
+
+              handleProtocol.updateHP(user.hp, ws);
+            }
+            game.quitarUserInvItem(ws.id, idPos, 1);
+          } else if (obj.tipoPocion === vars.typePociones.mana) { //Mana
+            if (user.mana < user.maxMana) {
+              user.mana += parseInt(user.maxMana * 0.04 + (user.level / 2) + (40 / user.level));
+
+              if (user.mana > user.maxMana) {
+                user.mana = user.maxMana;
+              }
+
+              handleProtocol.updateMana(user.mana, ws);
+            }
+            game.quitarUserInvItem(ws.id, idPos, 1);
+          } else if (obj.tipoPocion === vars.typePociones.agilidad) { //Agilidad
+            maxAttr = user.bkAttrAgilidad + 19;
+
+            if (user.attrAgilidad < maxAttr) {
+              user.attrAgilidad += funct.randomIntFromInterval(obj.minModificador, obj.maxModificador);
+
+              if (user.attrAgilidad > maxAttr) {
+                user.attrAgilidad = maxAttr;
+              }
+
+              handleProtocol.updateAgilidad(user.attrAgilidad, ws);
             }
 
-            handleProtocol.updateHP(user.hp, ws);
-          }
-          game.quitarUserInvItem(ws.id, idPos, 1);
-        } else if (obj.tipoPocion === vars.typePociones.mana) { //Mana
-          if (user.mana < user.maxMana) {
-            user.mana += parseInt(user.maxMana * 0.04 + (user.level / 2) + (40 / user.level));
+            user.cooldownAgilidad = +Date.now();
+            game.quitarUserInvItem(ws.id, idPos, 1);
+          } else if (obj.tipoPocion === vars.typePociones.fuerza) { //Fuerza
+            maxAttr = user.bkAttrFuerza + 19;
 
-            if (user.mana > user.maxMana) {
-              user.mana = user.maxMana;
+            if (user.attrFuerza < maxAttr) {
+              user.attrFuerza += funct.randomIntFromInterval(obj.minModificador, obj.maxModificador);
+
+              if (user.attrFuerza > maxAttr) {
+                user.attrFuerza = maxAttr;
+              }
+
+              handleProtocol.updateFuerza(user.attrFuerza, ws);
             }
 
-            handleProtocol.updateMana(user.mana, ws);
+            user.cooldownFuerza = +Date.now();
+            game.quitarUserInvItem(ws.id, idPos, 1);
           }
-          game.quitarUserInvItem(ws.id, idPos, 1);
-        } else if (obj.tipoPocion === vars.typePociones.agilidad) { //Agilidad
-          maxAttr = user.bkAttrAgilidad + 19;
+          break;
+        case vars.objType.pergaminos:
+          if (user.dead) {
+            handleProtocol.console('Los muertos no pueden usar items.', 'white', 0, 0, ws);
+            return;
+          }
 
-          if (user.attrAgilidad < maxAttr) {
-            user.attrAgilidad += funct.randomIntFromInterval(obj.minModificador, obj.maxModificador);
+          if (!user.maxMana) {
+            handleProtocol.console('Tu clase no puede aprender este hechizo.', 'white', 0, 0, ws);
+            return;
+          }
 
-            if (user.attrAgilidad > maxAttr) {
-              user.attrAgilidad = maxAttr;
+          let spellAprendido = false;
+          let arIdPos = [];
+          let idPosFinal = 1;
+
+          for (let spellIndex in user.spells) {
+            let spell = user.spells[spellIndex];
+            if (spell.idSpell === obj.spellIndex) {
+              spellAprendido = true;
             }
 
-            handleProtocol.updateAgilidad(user.attrAgilidad, ws);
+            arIdPos.push(spellIndex);
           }
 
-          user.cooldownAgilidad = +Date.now();
-          game.quitarUserInvItem(ws.id, idPos, 1);
-        } else if (obj.tipoPocion === vars.typePociones.fuerza) { //Fuerza
-          maxAttr = user.bkAttrFuerza + 19;
+          if (spellAprendido) {
+            handleProtocol.console('Este hechizo ya lo has aprendido.', 'white', 0, 0, ws);
+          } else {
+            arIdPos.sort(sorter);
 
-          if (user.attrFuerza < maxAttr) {
-            user.attrFuerza += funct.randomIntFromInterval(obj.minModificador, obj.maxModificador);
-
-            if (user.attrFuerza > maxAttr) {
-              user.attrFuerza = maxAttr;
+            while (arIdPos[idPosFinal - 1] === idPosFinal) {
+              idPosFinal++;
             }
 
-            handleProtocol.updateFuerza(user.attrFuerza, ws);
+            user.spells[idPosFinal] = {
+              idSpell: obj.spellIndex
+            };
+
+            query = 'INSERT INTO spells (idCharacter, idSpell, idPos) VALUES (' + user.idCharacter + ', ' + obj.spellIndex + ', ' + idPosFinal + ')';
+            database.query(query);
+
+            handleProtocol.aprenderSpell(ws.id, idPosFinal);
+            game.quitarUserInvItem(ws.id, idPos, 1);
           }
 
-          user.cooldownFuerza = +Date.now();
-          game.quitarUserInvItem(ws.id, idPos, 1);
-        }
-        break;
-      case vars.objType.pergaminos:
-        if (user.dead) {
-          handleProtocol.console('Los muertos no pueden usar items.', 'white', 0, 0, ws);
-          return;
-        }
-
-        if (!user.maxMana) {
-          handleProtocol.console('Tu clase no puede aprender este hechizo.', 'white', 0, 0, ws);
-          return;
-        }
-
-        let spellAprendido = false;
-        let arIdPos = [];
-        let idPosFinal = 1;
-
-        for (let spellIndex in user.spells) {
-          let spell = user.spells[spellIndex];
-          if (spell.idSpell === obj.spellIndex) {
-            spellAprendido = true;
-          }
-
-          arIdPos.push(spellIndex);
-        }
-
-        if (spellAprendido) {
-          handleProtocol.console('Este hechizo ya lo has aprendido.', 'white', 0, 0, ws);
-        } else {
-          arIdPos.sort(sorter);
-
-          while (arIdPos[idPosFinal - 1] === idPosFinal) {
-            idPosFinal++;
-          }
-
-          user.spells[idPosFinal] = {
-            idSpell: obj.spellIndex
-          };
-
-          query = 'INSERT INTO spells (idCharacter, idSpell, idPos) VALUES (' + user.idCharacter + ', ' + obj.spellIndex + ', ' + idPosFinal + ')';
-          database.query(query);
-
-          handleProtocol.aprenderSpell(ws.id, idPosFinal);
-          game.quitarUserInvItem(ws.id, idPos, 1);
-        }
-
-        break;
-      case vars.objType.barcos:
-        game.navegar(ws.id);
-        break;
+          break;
+        case vars.objType.barcos:
+          game.navegar(ws.id);
+          break;
       }
     } catch (err) {
       funct.dumpError(err);
@@ -311,33 +287,25 @@ function Game() {
   };
 
   /**
-     * [hayObjAndBlock Devuelve si hay un objeto y está bloqueado en determinada posición]
-     * @param  {number} idMap [description]
-     * @param  {number} pos   [description]
-     * @return {Boolean}       [description]
-     */
-  this.hayObjAndBlock = function(idMap, pos) {
+   * [hayObjAndBlock Devuelve si hay un objeto y está bloqueado en determinada posición]
+   * @param  {number} idMap [description]
+   * @param  {number} pos   [description]
+   * @return {Boolean}       [description]
+   */
+  this.hayObjAndBlock = function (idMap, pos) {
     try {
-      if (game.hayObj(idMap, pos)) {
-        return true;
-      } else {
-        if (game.isBlocked(idMap, pos)) {
-          return true;
-        } else {
-          return false;
-        }
-      }
+      return game.hayObj(idMap, pos) || game.isBlocked(idMap, pos);
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [agarrarItem Acción de agarrar item]
-     * @param  {object} ws [description]
-     * @return {}    [description]
-     */
-  this.agarrarItem = function(ws) {
+   * [agarrarItem Acción de agarrar item]
+   * @param  {object} ws [description]
+   * @return {}    [description]
+   */
+  this.agarrarItem = function (ws) {
     try {
       let user = vars.personajes[ws.id];
 
@@ -413,13 +381,13 @@ function Game() {
   };
 
   /**
-     * [putItemToInv Acción de meter item en inventario]
-     * @param  {number} idUser [description]
-     * @param  {number} idItem [description]
-     * @param  {number} cant   [description]
-     * @return {}        [description]
-     */
-  this.putItemToInv = function(idUser, idItem, cant) {
+   * [putItemToInv Acción de meter item en inventario]
+   * @param  {number} idUser [description]
+   * @param  {number} idItem [description]
+   * @param  {number} cant   [description]
+   * @return {}        [description]
+   */
+  this.putItemToInv = function (idUser, idItem, cant) {
     try {
       let user = vars.personajes[idUser];
 
@@ -473,13 +441,13 @@ function Game() {
   };
 
   /**
-     * [tirarItem Acción de tirar item]
-     * @param  {object} ws    [description]
-     * @param  {number} idPos [description]
-     * @param  {number} cant  [description]
-     * @return {}       [description]
-     */
-  this.tirarItem = function(ws, idPos, cant) {
+   * [tirarItem Acción de tirar item]
+   * @param  {object} ws    [description]
+   * @param  {number} idPos [description]
+   * @param  {number} cant  [description]
+   * @return {}       [description]
+   */
+  this.tirarItem = function (ws, idPos, cant) {
     try {
       let user = vars.personajes[ws.id];
 
@@ -562,28 +530,24 @@ function Game() {
   };
 
   /**
-     * [existPj Devuelve si el personaje existe o no]
-     * @param  {number} id [description]
-     * @return {Boolean}    [description]
-     */
-  this.existPj = function(id) {
+   * [existPj Devuelve si el personaje existe o no]
+   * @param  {number} id [description]
+   * @return {Boolean}    [description]
+   */
+  this.existPj = (id) => {
     try {
-      if (vars.personajes[id]) {
-        return true;
-      } else {
-        return false;
-      }
+      return vars.personajes[id];
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [existPjOrClose Si el personaje no existe cierra la conexión]
-     * @param  {object} ws [description]
-     * @return {Boolean}    [description]
-     */
-  this.existPjOrClose = function(ws) {
+   * [existPjOrClose Si el personaje no existe cierra la conexión]
+   * @param  {object} ws [description]
+   * @return {Boolean}    [description]
+   */
+  this.existPjOrClose = function (ws) {
     try {
       if (ws.readyState === ws.OPEN) {
         if (ws.id) {
@@ -610,11 +574,11 @@ function Game() {
   };
 
   /**
-     * [worldSave Guardado del mundo]
-     * @param  {Function} callback [description]
-     * @return {}            [description]
-     */
-  this.worldSave = function(callback) {
+   * [worldSave Guardado del mundo]
+   * @param  {Function} callback [description]
+   * @return {}            [description]
+   */
+  this.worldSave = function (callback) {
     try {
       for (let i in vars.personajes) {
         let user = vars.personajes[i];
@@ -651,12 +615,12 @@ function Game() {
   };
 
   /**
-     * [respawnNpc Devuelve la posición de nacimiento del nuevo NPC]
-     * @param  {number} map        [description]
-     * @param  {boolean} aguaValida [description]
-     * @return {Object}            [description]
-     */
-  this.respawnNpc = function(map, aguaValida) {
+   * [respawnNpc Devuelve la posición de nacimiento del nuevo NPC]
+   * @param  {number} map        [description]
+   * @param  {boolean} aguaValida [description]
+   * @return {Object}            [description]
+   */
+  this.respawnNpc = function (map, aguaValida) {
     try {
       let posNewX = funct.randomIntFromInterval(1, 100);
       let posNewY = funct.randomIntFromInterval(1, 100);
@@ -693,47 +657,39 @@ function Game() {
   };
 
   /**
-     * [validPosRespawn description]
-     * @param  {[type]} pos        [description]
-     * @param  {[type]} map        [description]
-     * @param  {[type]} aguaValida [description]
-     * @return {[type]}            [description]
-     */
-  this.validPosRespawn = function(pos, map, aguaValida) {
+   * [validPosRespawn description]
+   * @param  {[type]} pos        [description]
+   * @param  {[type]} map        [description]
+   * @param  {[type]} aguaValida [description]
+   * @return {[type]}            [description]
+   */
+  this.validPosRespawn = function (pos, map, aguaValida) {
     try {
-      if (game.legalPos(pos.x, pos.y, map, aguaValida) && !game.isTelep(pos.x, pos.y)) {
-        return true;
-      } else {
-        return false;
-      }
+      return game.legalPos(pos.x, pos.y, map, aguaValida) && !game.isTelep(pos.x, pos.y);
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [isTelep description]
-     * @param  {[type]}  posX [description]
-     * @param  {[type]}  posY [description]
-     * @return {Boolean}      [description]
-     */
-  this.isTelep = function(posX, posY) {
+   * [isTelep description]
+   * @param  {[type]}  posX [description]
+   * @param  {[type]}  posY [description]
+   * @return {Boolean}      [description]
+   */
+  this.isTelep = function (posX, posY) {
     try {
-      if ((posX >= 52 && posX <= 55) && (posY >= 48 && posY <= 51)) {
-        return true;
-      } else {
-        return false;
-      }
+      return (posX >= 52 && posX <= 55) && (posY >= 48 && posY <= 51);
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [setNewAreas description]
-     * @param {[type]} ws [description]
-     */
-  this.setNewAreas = function(ws) {
+   * [setNewAreas description]
+   * @param {[type]} ws [description]
+   */
+  this.setNewAreas = function (ws) {
     try {
       let user = vars.personajes[ws.id];
 
@@ -805,12 +761,12 @@ function Game() {
   };
 
   /**
-     * [loopArea description]
-     * @param  {[type]}   ws       [description]
-     * @param  {Function} callback [description]
-     * @return {[type]}            [description]
-     */
-  this.loopArea = function(ws, callback) {
+   * [loopArea description]
+   * @param  {[type]}   ws       [description]
+   * @param  {Function} callback [description]
+   * @return {[type]}            [description]
+   */
+  this.loopArea = (ws, callback) => {
     try {
       if (!ws) {
         return;
@@ -847,13 +803,13 @@ function Game() {
   };
 
   /**
-     * [loopAreaPos description]
-     * @param  {[type]}   idMap    [description]
-     * @param  {[type]}   pos      [description]
-     * @param  {Function} callback [description]
-     * @return {[type]}            [description]
-     */
-  this.loopAreaPos = function(idMap, pos, callback) {
+   * [loopAreaPos description]
+   * @param  {[type]}   idMap    [description]
+   * @param  {[type]}   pos      [description]
+   * @param  {Function} callback [description]
+   * @return {[type]}            [description]
+   */
+  this.loopAreaPos = function (idMap, pos, callback) {
     try {
       let posXStart = pos.x - 10;
       let posYStart = pos.y - 10;
@@ -883,14 +839,14 @@ function Game() {
   };
 
   /**
-     * [telep description]
-     * @param  {[type]} ws     [description]
-     * @param  {[type]} numMap [description]
-     * @param  {[type]} posX   [description]
-     * @param  {[type]} posY   [description]
-     * @return {[type]}        [description]
-     */
-  this.telep = function(ws, numMap, posX, posY) {
+   * [telep description]
+   * @param  {[type]} ws     [description]
+   * @param  {[type]} numMap [description]
+   * @param  {[type]} posX   [description]
+   * @param  {[type]} posY   [description]
+   * @return {[type]}        [description]
+   */
+  this.telep = (ws, numMap, posX, posY) => {
     try {
       let user = vars.personajes[ws.id];
       vars.mapData[user.map][user.pos.y][user.pos.x].id = 0;
@@ -919,8 +875,6 @@ function Game() {
         game.telep(ws, tileExit.map, tileExit.x, tileExit.y);
         return;
       }
-
-      let moveDirection = 1;
 
       let tmpPos = {
         x: posX,
@@ -992,13 +946,36 @@ function Game() {
     }
   };
 
+
   /**
-     * [puedePegar description]
-     * @param  {[type]} posX [description]
-     * @param  {[type]} posY [description]
-     * @return {[type]}      [description]
-     */
-  this.puedePegar = function(posX, posY) {
+   *
+   * [createCharacter description]
+   * @param UserAccount
+   * @param UserName
+   * @param Password
+   * @param Race
+   * @param Gender
+   * @param Class
+   * @param Head
+   * @param Mail
+   * @param Homeland
+   * @returns {boolean}
+   */
+  this.createCharacter = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
+    try {
+      return socket.createCharacter(UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland);
+    } catch (err) {
+      funct.dumpError(err);
+    }
+  };
+
+  /**
+   * [puedePegar description]
+   * @param  {[type]} posX [description]
+   * @param  {[type]} posY [description]
+   * @return {[type]}      [description]
+   */
+  this.puedePegar = (posX, posY) => {
     try {
       return true;
     } catch (err) {
@@ -1007,60 +984,60 @@ function Game() {
   };
 
   /**
-     * [bodyNaked description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.bodyNaked = function(idUser) {
+   * [bodyNaked description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.bodyNaked = (idUser) => {
     try {
       let user = vars.personajes[idUser],
         $idBody = 0;
 
       if (user.idGenero === vars.genero.hombre) {
         switch (user.idRaza) {
-        case vars.razas.humano:
-          $idBody = 21;
-          break;
+          case vars.razas.humano:
+            $idBody = 21;
+            break;
 
-        case vars.razas.elfo:
-          $idBody = 210;
-          break;
+          case vars.razas.elfo:
+            $idBody = 210;
+            break;
 
-        case vars.razas.elfoDrow:
-          $idBody = 32;
-          break;
+          case vars.razas.elfoDrow:
+            $idBody = 32;
+            break;
 
-        case vars.razas.enano:
-          $idBody = 53;
-          break;
+          case vars.razas.enano:
+            $idBody = 53;
+            break;
 
-        case vars.razas.gnomo:
-          $idBody = 222;
-          break;
+          case vars.razas.gnomo:
+            $idBody = 222;
+            break;
         }
       }
 
       if (user.idGenero === vars.genero.mujer) {
         switch (user.idRaza) {
-        case vars.razas.humano:
-          $idBody = 39;
-          break;
+          case vars.razas.humano:
+            $idBody = 39;
+            break;
 
-        case vars.razas.elfo:
-          $idBody = 259;
-          break;
+          case vars.razas.elfo:
+            $idBody = 259;
+            break;
 
-        case vars.razas.elfoDrow:
-          $idBody = 40;
-          break;
+          case vars.razas.elfoDrow:
+            $idBody = 40;
+            break;
 
-        case vars.razas.enano:
-          $idBody = 60;
-          break;
+          case vars.razas.enano:
+            $idBody = 60;
+            break;
 
-        case vars.razas.gnomo:
-          $idBody = 260;
-          break;
+          case vars.razas.gnomo:
+            $idBody = 260;
+            break;
         }
       }
 
@@ -1071,11 +1048,11 @@ function Game() {
   };
 
   /**
-     * [putBodyAndHeadDead description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.putBodyAndHeadDead = function(idUser) {
+   * [putBodyAndHeadDead description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.putBodyAndHeadDead = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -1117,11 +1094,11 @@ function Game() {
   };
 
   /**
-     * [revivirUsuario description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.revivirUsuario = function(idUser) {
+   * [revivirUsuario description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.revivirUsuario = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -1143,11 +1120,11 @@ function Game() {
   };
 
   /**
-     * [checkUserLevel description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.checkUserLevel = function(idUser) {
+   * [checkUserLevel description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.checkUserLevel = function (idUser) {
 
     try {
       let user = vars.personajes[idUser];
@@ -1185,76 +1162,76 @@ function Game() {
         let aumentoMana = 0;
 
         switch (user.idClase) {
-        case vars.clases.guerrero:
-          if (user.level > 35) {
-            aumentoHIT = 2;
-          } else {
+          case vars.clases.guerrero:
+            if (user.level > 35) {
+              aumentoHIT = 2;
+            } else {
+              aumentoHIT = 3;
+            }
+            break;
+
+          case vars.clases.cazador:
+            if (user.level > 35) {
+              aumentoHIT = 2;
+            } else {
+              aumentoHIT = 3;
+            }
+            break;
+
+          case vars.clases.pirata:
             aumentoHIT = 3;
-          }
-          break;
+            break;
 
-        case vars.clases.cazador:
-          if (user.level > 35) {
-            aumentoHIT = 2;
-          } else {
-            aumentoHIT = 3;
-          }
-          break;
+          case vars.clases.paladin:
+            if (user.level > 35) {
+              aumentoHIT = 1;
+            } else {
+              aumentoHIT = 3;
+            }
 
-        case vars.clases.pirata:
-          aumentoHIT = 3;
-          break;
+            aumentoMana = user.attrInteligencia;
+            break;
 
-        case vars.clases.paladin:
-          if (user.level > 35) {
+          case vars.clases.mago:
             aumentoHIT = 1;
-          } else {
-            aumentoHIT = 3;
-          }
 
-          aumentoMana = user.attrInteligencia;
-          break;
+            aumentoMana = 2.8 * user.attrInteligencia;
+            break;
 
-        case vars.clases.mago:
-          aumentoHIT = 1;
+          case vars.clases.trabajador:
+            aumentoHIT = 2;
+            break;
 
-          aumentoMana = 2.8 * user.attrInteligencia;
-          break;
+          case vars.clases.clerigo:
+            aumentoHIT = 2;
 
-        case vars.clases.trabajador:
-          aumentoHIT = 2;
-          break;
+            aumentoMana = 2 * user.attrInteligencia;
+            break;
 
-        case vars.clases.clerigo:
-          aumentoHIT = 2;
+          case vars.clases.druida:
+            aumentoHIT = 2;
 
-          aumentoMana = 2 * user.attrInteligencia;
-          break;
+            aumentoMana = 2 * user.attrInteligencia;
+            break;
 
-        case vars.clases.druida:
-          aumentoHIT = 2;
+          case vars.clases.asesino:
+            if (user.level > 35) {
+              aumentoHIT = 1;
+            } else {
+              aumentoHIT = 3;
+            }
 
-          aumentoMana = 2 * user.attrInteligencia;
-          break;
+            aumentoMana = user.attrInteligencia;
+            break;
 
-        case vars.clases.asesino:
-          if (user.level > 35) {
-            aumentoHIT = 1;
-          } else {
-            aumentoHIT = 3;
-          }
+          case vars.clases.bardo:
+            aumentoHIT = 2;
 
-          aumentoMana = user.attrInteligencia;
-          break;
+            aumentoMana = 2 * user.attrInteligencia;
+            break;
 
-        case vars.clases.bardo:
-          aumentoHIT = 2;
-
-          aumentoMana = 2 * user.attrInteligencia;
-          break;
-
-        default:
-          aumentoHIT = 2;
+          default:
+            aumentoHIT = 2;
         }
 
         aumentoMana = parseInt(aumentoMana);
@@ -1286,13 +1263,13 @@ function Game() {
   };
 
   /**
-     * [quitarUserInvItem description]
-     * @param  {[type]} idUser [description]
-     * @param  {[type]} idPos  [description]
-     * @param  {[type]} cant   [description]
-     * @return {[type]}        [description]
-     */
-  this.quitarUserInvItem = function(idUser, idPos, cant) {
+   * [quitarUserInvItem description]
+   * @param  {[type]} idUser [description]
+   * @param  {[type]} idPos  [description]
+   * @param  {[type]} cant   [description]
+   * @return {[type]}        [description]
+   */
+  this.quitarUserInvItem = (idUser, idPos, cant) => {
     try {
       let user = vars.personajes[idUser];
       let item = user.inv[idPos];
@@ -1314,13 +1291,13 @@ function Game() {
   };
 
   /**
-     * [userSpellNpc description]
-     * @param  {[type]} idUser  [description]
-     * @param  {[type]} idNpc   [description]
-     * @param  {[type]} idSpell [description]
-     * @return {[type]}         [description]
-     */
-  this.userSpellNpc = function(idUser, idNpc, idSpell) {
+   * [userSpellNpc description]
+   * @param  {[type]} idUser  [description]
+   * @param  {[type]} idNpc   [description]
+   * @param  {[type]} idSpell [description]
+   * @return {[type]}         [description]
+   */
+  this.userSpellNpc = (idUser, idNpc, idSpell) => {
     try {
       let user = vars.personajes[idUser];
       let npc = vars.npcs[idNpc];
@@ -1408,13 +1385,13 @@ function Game() {
   };
 
   /**
-     * [userSpellUser description]
-     * @param  {[type]} idUser         [description]
-     * @param  {[type]} idUserAttacked [description]
-     * @param  {[type]} idSpell        [description]
-     * @return {[type]}                [description]
-     */
-  this.userSpellUser = function(idUser, idUserAttacked, idSpell) {
+   * [userSpellUser description]
+   * @param  {[type]} idUser         [description]
+   * @param  {[type]} idUserAttacked [description]
+   * @param  {[type]} idSpell        [description]
+   * @return {[type]}                [description]
+   */
+  this.userSpellUser = (idUser, idUserAttacked, idSpell) => {
     try {
       let user = vars.personajes[idUser];
       let userAttacked = vars.personajes[idUserAttacked];
@@ -1610,11 +1587,11 @@ function Game() {
   };
 
   /**
-     * [calcularDmg description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.calcularDmg = function(idUser) {
+   * [calcularDmg description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.calcularDmg = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -1664,17 +1641,14 @@ function Game() {
   };
 
   /**
-     * [userDmgNpc description]
-     * @param  {[type]} idUser [description]
-     * @param  {[type]} idNpc  [description]
-     * @return {[type]}        [description]
-     */
-  this.userDmgNpc = function(idUser, idNpc) {
+   * [userDmgNpc description]
+   * @param  {[type]} idUser [description]
+   * @param  {[type]} idNpc  [description]
+   * @return {[type]}        [description]
+   */
+  this.userDmgNpc = function (idUser, idNpc) {
     try {
-      let user = vars.personajes[idUser];
       let npc = vars.npcs[idNpc];
-
-      let modClase = 0;
 
       let poderAtaque = game.poderAtaqueArma(idUser);
 
@@ -1712,12 +1686,12 @@ function Game() {
   };
 
   /**
-     * [userDmgUser description]
-     * @param  {[type]} idUser         [description]
-     * @param  {[type]} idUserAttacked [description]
-     * @return {[type]}                [description]
-     */
-  this.userDmgUser = function(idUser, idUserAttacked) {
+   * [userDmgUser description]
+   * @param  {[type]} idUser         [description]
+   * @param  {[type]} idUserAttacked [description]
+   * @return {[type]}                [description]
+   */
+  this.userDmgUser = function (idUser, idUserAttacked) {
     try {
       let user = vars.personajes[idUser];
       let userAttacked = vars.personajes[idUserAttacked];
@@ -1750,8 +1724,7 @@ function Game() {
 
       if (!user.criminal && !userAttacked.criminal && (vars.mapa[user.map][user.pos.y][user.pos.x].trigger !== 6 || vars.mapa[userAttacked.map][userAttacked.pos.y][userAttacked.pos.x].trigger !== 6)) {
         if (user.seguroActivado) {
-          handleProtocol.console('Debes desactilet el seguro para poder atacar a ciudadanos (S). ¡Te convertiras en un criminal!', 'white', 1, 0, vars.clients[idUser]);
-
+          handleProtocol.console('Debes desactivar el seguro para poder atacar a ciudadanos (S). ¡Te convertiras en un criminal!', 'white', 1, 0, vars.clients[idUser]);
           return;
         }
 
@@ -1765,42 +1738,42 @@ function Game() {
           absorbeDmg = 0;
 
         switch (lugarCuerpo) {
-        case vars.partesCuerpo.cabeza:
-          if (userAttacked.idItemHelmet) {
-            let itemInventaryHelmet = userAttacked.inv[userAttacked.idItemHelmet];
-            let idItemHelmet = itemInventaryHelmet.idItem;
-            let itemHelmet = vars.datObj[idItemHelmet];
+          case vars.partesCuerpo.cabeza:
+            if (userAttacked.idItemHelmet) {
+              let itemInventaryHelmet = userAttacked.inv[userAttacked.idItemHelmet];
+              let idItemHelmet = itemInventaryHelmet.idItem;
+              let itemHelmet = vars.datObj[idItemHelmet];
 
-            absorbeDmg = funct.randomIntFromInterval(itemHelmet.minDef, itemHelmet.maxDef);
-          }
+              absorbeDmg = funct.randomIntFromInterval(itemHelmet.minDef, itemHelmet.maxDef);
+            }
 
-          break;
-        default:
-          let minDef = 0,
-            maxDef = 0;
+            break;
+          default:
+            let minDef = 0,
+              maxDef = 0;
 
-          if (userAttacked.idItemBody) {
-            let itemInventaryBody = userAttacked.inv[userAttacked.idItemBody];
-            let idItemBody = itemInventaryBody.idItem;
-            let itemBody = vars.datObj[idItemBody];
+            if (userAttacked.idItemBody) {
+              let itemInventaryBody = userAttacked.inv[userAttacked.idItemBody];
+              let idItemBody = itemInventaryBody.idItem;
+              let itemBody = vars.datObj[idItemBody];
 
-            minDef = itemBody.minDef;
-            maxDef = itemBody.maxDef;
-          }
+              minDef = itemBody.minDef;
+              maxDef = itemBody.maxDef;
+            }
 
-          if (userAttacked.idItemShield) {
-            let itemInventaryShield = userAttacked.inv[userAttacked.idItemShield];
-            let idItemShield = itemInventaryShield.idItem;
-            let itemShield = vars.datObj[idItemShield];
+            if (userAttacked.idItemShield) {
+              let itemInventaryShield = userAttacked.inv[userAttacked.idItemShield];
+              let idItemShield = itemInventaryShield.idItem;
+              let itemShield = vars.datObj[idItemShield];
 
-            minDef += itemShield.minDef;
-            maxDef += itemShield.maxDef;
-          }
+              minDef += itemShield.minDef;
+              maxDef += itemShield.maxDef;
+            }
 
-          if (maxDef > 0) {
-            absorbeDmg = funct.randomIntFromInterval(minDef, maxDef);
-          }
-          break;
+            if (maxDef > 0) {
+              absorbeDmg = funct.randomIntFromInterval(minDef, maxDef);
+            }
+            break;
         }
 
         dmg -= absorbeDmg;
@@ -1814,30 +1787,30 @@ function Game() {
         handleProtocol.updateHP(userAttacked.hp, vars.clients[idUserAttacked]);
 
         switch (lugarCuerpo) {
-        case vars.partesCuerpo.cabeza:
-          handleProtocol.console(user.nameCharacter + ' te ha pegado en la cabeza por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
-          handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en la cabeza por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
-          break;
-        case vars.partesCuerpo.piernaIzquierda:
-          handleProtocol.console(user.nameCharacter + ' te ha pegado en la pierna izquierda por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
-          handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en la pierna izquierda por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
-          break;
-        case vars.partesCuerpo.piernaDerecha:
-          handleProtocol.console(user.nameCharacter + ' te ha pegado en la pierna derecha por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
-          handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en la pierna derecha por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
-          break;
-        case vars.partesCuerpo.brazoDerecho:
-          handleProtocol.console(user.nameCharacter + ' te ha pegado en el brazo derecho por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
-          handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en el brazo derecho por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
-          break;
-        case vars.partesCuerpo.brazoIzquierdo:
-          handleProtocol.console(user.nameCharacter + ' te ha pegado en el brazo izquierdo por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
-          handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en el brazo izquierdo por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
-          break;
-        case vars.partesCuerpo.torso:
-          handleProtocol.console(user.nameCharacter + ' te ha pegado en el torso por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
-          handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en el torso por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
-          break;
+          case vars.partesCuerpo.cabeza:
+            handleProtocol.console(user.nameCharacter + ' te ha pegado en la cabeza por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
+            handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en la cabeza por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
+            break;
+          case vars.partesCuerpo.piernaIzquierda:
+            handleProtocol.console(user.nameCharacter + ' te ha pegado en la pierna izquierda por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
+            handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en la pierna izquierda por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
+            break;
+          case vars.partesCuerpo.piernaDerecha:
+            handleProtocol.console(user.nameCharacter + ' te ha pegado en la pierna derecha por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
+            handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en la pierna derecha por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
+            break;
+          case vars.partesCuerpo.brazoDerecho:
+            handleProtocol.console(user.nameCharacter + ' te ha pegado en el brazo derecho por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
+            handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en el brazo derecho por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
+            break;
+          case vars.partesCuerpo.brazoIzquierdo:
+            handleProtocol.console(user.nameCharacter + ' te ha pegado en el brazo izquierdo por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
+            handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en el brazo izquierdo por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
+            break;
+          case vars.partesCuerpo.torso:
+            handleProtocol.console(user.nameCharacter + ' te ha pegado en el torso por ' + dmg, 'red', 1, 0, vars.clients[idUserAttacked]);
+            handleProtocol.console('Le has pegado a ' + userAttacked.nameCharacter + ' en el torso por ' + dmg, 'red', 1, 0, vars.clients[idUser]);
+            break;
         }
 
         if (userAttacked.hp > 0 && game.puedeApu(idUser)) {
@@ -1887,13 +1860,13 @@ function Game() {
   };
 
   /**
-     * [apuNpc description]
-     * @param  {[type]} idUser [description]
-     * @param  {[type]} idNpc  [description]
-     * @param  {[type]} dmg    [description]
-     * @return {[type]}        [description]
-     */
-  this.apuNpc = function(idUser, idNpc, dmg) {
+   * [apuNpc description]
+   * @param  {[type]} idUser [description]
+   * @param  {[type]} idNpc  [description]
+   * @param  {[type]} dmg    [description]
+   * @return {[type]}        [description]
+   */
+  this.apuNpc = function (idUser, idNpc, dmg) {
     try {
       let user = vars.personajes[idUser];
       let npc = vars.npcs[idNpc];
@@ -1922,13 +1895,13 @@ function Game() {
   };
 
   /**
-     * [apuUser description]
-     * @param  {[type]} idUser         [description]
-     * @param  {[type]} idUserAttacked [description]
-     * @param  {[type]} dmg            [description]
-     * @return {[type]}                [description]
-     */
-  this.apuUser = function(idUser, idUserAttacked, dmg) {
+   * [apuUser description]
+   * @param  {[type]} idUser         [description]
+   * @param  {[type]} idUserAttacked [description]
+   * @param  {[type]} dmg            [description]
+   * @return {[type]}                [description]
+   */
+  this.apuUser = function (idUser, idUserAttacked, dmg) {
     try {
       let user = vars.personajes[idUser];
       let userAttacked = vars.personajes[idUserAttacked];
@@ -1964,11 +1937,11 @@ function Game() {
   };
 
   /**
-     * [getSkillTacticasCombate description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.getSkillTacticasCombate = function(idUser) {
+   * [getSkillTacticasCombate description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.getSkillTacticasCombate = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -1985,11 +1958,11 @@ function Game() {
   };
 
   /**
-     * [getSkillDefensa description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.getSkillDefensa = function(idUser) {
+   * [getSkillDefensa description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.getSkillDefensa = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -2006,11 +1979,11 @@ function Game() {
   };
 
   /**
-     * [getSkillArmas description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.getSkillArmas = function(idUser) {
+   * [getSkillArmas description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.getSkillArmas = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -2027,11 +2000,11 @@ function Game() {
   };
 
   /**
-     * [getSkillApu description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.getSkillApu = function(idUser) {
+   * [getSkillApu description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.getSkillApu = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -2048,11 +2021,11 @@ function Game() {
   };
 
   /**
-     * [puedeApu description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.puedeApu = function(idUser) {
+   * [puedeApu description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.puedeApu = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2070,22 +2043,18 @@ function Game() {
 
       let skillApu = game.getSkillApu(idUser);
 
-      if (skillApu < 10 && user.idClase !== vars.clases.asesino) {
-        return false;
-      } else {
-        return true;
-      }
+      return !(skillApu < 10 && user.idClase !== vars.clases.asesino);
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [poderEvasion description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.poderEvasion = function(idUser) {
+   * [poderEvasion description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.poderEvasion = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2100,11 +2069,11 @@ function Game() {
   };
 
   /**
-     * [poderEvasionEscudo description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.poderEvasionEscudo = function(idUser) {
+   * [poderEvasionEscudo description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.poderEvasionEscudo = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2117,11 +2086,11 @@ function Game() {
   };
 
   /**
-     * [poderAtaqueArma description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.poderAtaqueArma = function(idUser) {
+   * [poderAtaqueArma description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.poderAtaqueArma = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2147,30 +2116,26 @@ function Game() {
   };
 
   /**
-     * [hayObj description]
-     * @param  {[type]} idMap [description]
-     * @param  {[type]} pos   [description]
-     * @return {[type]}       [description]
-     */
-  this.hayObj = function(idMap, pos) {
+   * [hayObj description]
+   * @param  {[type]} idMap [description]
+   * @param  {[type]} pos   [description]
+   * @return {[type]}       [description]
+   */
+  this.hayObj = function (idMap, pos) {
     try {
-      if (vars.mapa[idMap][pos.y][pos.x] && vars.mapa[idMap][pos.y][pos.x].objInfo && vars.mapa[idMap][pos.y][pos.x].objInfo.objIndex > 0 && vars.mapa[idMap][pos.y][pos.x].objInfo.amount > 0) {
-        return true;
-      } else {
-        return false;
-      }
+      return vars.mapa[idMap][pos.y][pos.x] && vars.mapa[idMap][pos.y][pos.x].objInfo && vars.mapa[idMap][pos.y][pos.x].objInfo.objIndex > 0 && vars.mapa[idMap][pos.y][pos.x].objInfo.amount > 0;
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [objMap description]
-     * @param  {[type]} idMap [description]
-     * @param  {[type]} pos   [description]
-     * @return {[type]}       [description]
-     */
-  this.objMap = function(idMap, pos) {
+   * [objMap description]
+   * @param  {[type]} idMap [description]
+   * @param  {[type]} pos   [description]
+   * @return {[type]}       [description]
+   */
+  this.objMap = function (idMap, pos) {
     try {
       return vars.mapa[idMap][pos.y][pos.x].objInfo;
     } catch (err) {
@@ -2179,11 +2144,11 @@ function Game() {
   };
 
   /**
-     * [tirarItemsUser description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.tirarItemsUser = function(idUser) {
+   * [tirarItemsUser description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.tirarItemsUser = function (idUser) {
     try {
       let user = vars.personajes[idUser];
 
@@ -2204,13 +2169,13 @@ function Game() {
   };
 
   /**
-     * [blockMap description]
-     * @param  {[type]} idMap [description]
-     * @param  {[type]} pos   [description]
-     * @param  {[type]} block [description]
-     * @return {[type]}       [description]
-     */
-  this.blockMap = function(idMap, pos, block) {
+   * [blockMap description]
+   * @param  {[type]} idMap [description]
+   * @param  {[type]} pos   [description]
+   * @param  {[type]} block [description]
+   * @return {[type]}       [description]
+   */
+  this.blockMap = function (idMap, pos, block) {
     try {
       vars.mapa[idMap][pos.y][pos.x].blocked = block;
 
@@ -2223,13 +2188,13 @@ function Game() {
   };
 
   /**
-     * [changeObjIndex description]
-     * @param  {[type]} idMap    [description]
-     * @param  {[type]} pos      [description]
-     * @param  {[type]} objIndex [description]
-     * @return {[type]}          [description]
-     */
-  this.changeObjIndex = function(idMap, pos, objIndex) {
+   * [changeObjIndex description]
+   * @param  {[type]} idMap    [description]
+   * @param  {[type]} pos      [description]
+   * @param  {[type]} objIndex [description]
+   * @return {[type]}          [description]
+   */
+  this.changeObjIndex = (idMap, pos, objIndex) => {
     try {
       vars.mapa[idMap][pos.y][pos.x].objInfo.objIndex = objIndex;
 
@@ -2242,14 +2207,14 @@ function Game() {
   };
 
   /**
-     * [openDoor description]
-     * @param  {[type]} idUser [description]
-     * @param  {[type]} pos    [description]
-     * @param  {[type]} objMap [description]
-     * @param  {[type]} obj    [description]
-     * @return {[type]}        [description]
-     */
-  this.openDoor = function(idUser, pos, objMap, obj) {
+   * [openDoor description]
+   * @param  {[type]} idUser [description]
+   * @param  {[type]} pos    [description]
+   * @param  {[type]} objMap [description]
+   * @param  {[type]} obj    [description]
+   * @return {[type]}        [description]
+   */
+  this.openDoor = (idUser, pos, objMap, obj) => {
     try {
 
       let user = vars.personajes[idUser];
@@ -2289,13 +2254,13 @@ function Game() {
   };
 
   /**
-     * [buyItem description]
-     * @param  {[type]} idUser [description]
-     * @param  {[type]} idPos  [description]
-     * @param  {[type]} cant   [description]
-     * @return {[type]}        [description]
-     */
-  this.buyItem = function(idUser, idPos, cant) {
+   * [buyItem description]
+   * @param  {[type]} idUser [description]
+   * @param  {[type]} idPos  [description]
+   * @param  {[type]} cant   [description]
+   * @return {[type]}        [description]
+   */
+  this.buyItem = (idUser, idPos, cant) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2342,13 +2307,13 @@ function Game() {
   };
 
   /**
-     * [sellItem description]
-     * @param  {[type]} idUser [description]
-     * @param  {[type]} idPos  [description]
-     * @param  {[type]} cant   [description]
-     * @return {[type]}        [description]
-     */
-  this.sellItem = function(idUser, idPos, cant) {
+   * [sellItem description]
+   * @param  {[type]} idUser [description]
+   * @param  {[type]} idPos  [description]
+   * @param  {[type]} cant   [description]
+   * @return {[type]}        [description]
+   */
+  this.sellItem = (idUser, idPos, cant) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2405,11 +2370,11 @@ function Game() {
   };
 
   /**
-     * [accionMeditar description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.accionMeditar = function(idUser) {
+   * [accionMeditar description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.accionMeditar = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2469,11 +2434,11 @@ function Game() {
   };
 
   /**
-     * [meditar description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.meditar = function(idUser) {
+   * [meditar description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.meditar = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2506,11 +2471,11 @@ function Game() {
   };
 
   /**
-     * [closeForce description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.closeForce = function(idUser) {
+   * [closeForce description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.closeForce = (idUser) => {
     try {
       handleProtocol.closeForce(idUser);
 
@@ -2521,13 +2486,13 @@ function Game() {
   };
 
   /**
-     * [calcularExp description]
-     * @param  {[type]} idUser [description]
-     * @param  {[type]} idNpc  [description]
-     * @param  {[type]} dmg    [description]
-     * @return {[type]}        [description]
-     */
-  this.calcularExp = function(idUser, idNpc, dmg) {
+   * [calcularExp description]
+   * @param  {[type]} idUser [description]
+   * @param  {[type]} idNpc  [description]
+   * @param  {[type]} dmg    [description]
+   * @return {[type]}        [description]
+   */
+  this.calcularExp = (idUser, idNpc, dmg) => {
     try {
       let user = vars.personajes[idUser];
       let npc = vars.npcs[idNpc];
@@ -2561,11 +2526,11 @@ function Game() {
   };
 
   /**
-     * [navegar description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.navegar = function(idUser) {
+   * [navegar description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.navegar = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2640,11 +2605,11 @@ function Game() {
   };
 
   /**
-     * [deleteUserToAllNpcs description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.deleteUserToAllNpcs = function(idUser) {
+   * [deleteUserToAllNpcs description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.deleteUserToAllNpcs = function (idUser) {
     try {
       game.loopArea(vars.clients[idUser], (target) => {
         if (target.isNpc && target.movement === 3) {
@@ -2661,11 +2626,11 @@ function Game() {
   };
 
   /**
-     * [hacerCriminal description]
-     * @param  {[type]} idUser [description]
-     * @return {[type]}        [description]
-     */
-  this.hacerCriminal = function(idUser) {
+   * [hacerCriminal description]
+   * @param  {[type]} idUser [description]
+   * @return {[type]}        [description]
+   */
+  this.hacerCriminal = (idUser) => {
     try {
       let user = vars.personajes[idUser];
 
@@ -2683,28 +2648,24 @@ function Game() {
   };
 
   /**
-     * [isRazaEnana description]
-     * @param  {[type]}  idRaza [description]
-     * @return {Boolean}        [description]
-     */
-  this.isRazaEnana = function(idRaza) {
+   * [isRazaEnana description]
+   * @param  {[type]}  idRaza [description]
+   * @return {Boolean}        [description]
+   */
+  this.isRazaEnana = (idRaza) => {
     try {
-      if (idRaza === vars.razas.gnomo || idRaza === vars.razas.enano) {
-        return true;
-      } else {
-        return false;
-      }
+      return idRaza === vars.razas.gnomo || idRaza === vars.razas.enano;
     } catch (err) {
       funct.dumpError(err);
     }
   };
 
   /**
-     * [sorter description]
-     * @param  {[type]} a [description]
-     * @param  {[type]} b [description]
-     * @return {[type]}   [description]
-     */
+   * [sorter description]
+   * @param  {[type]} a [description]
+   * @param  {[type]} b [description]
+   * @return {[type]}   [description]
+   */
   function sorter(a, b) {
     try {
       return a - b;

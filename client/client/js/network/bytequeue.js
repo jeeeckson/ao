@@ -126,6 +126,7 @@ export default class ByteQueue {
   flush() {
     //Is open
     if (this.ws.readyState === 1) {
+      console.log(this._data)
       this.ws.send(this._data);
       this._data = [];
     } else {

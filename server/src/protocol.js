@@ -19,6 +19,7 @@ dictionaryServer[pkg.serverPacketID.click] = eventClick;
 dictionaryServer[pkg.serverPacketID.useItem] = useItem;
 dictionaryServer[pkg.serverPacketID.equiparItem] = equiparItem;
 dictionaryServer[pkg.serverPacketID.connectCharacter] = connectCharacter;
+dictionaryServer[pkg.serverPacketID.createCharacter] = createCharacter;
 dictionaryServer[pkg.serverPacketID.position] = position;
 dictionaryServer[pkg.serverPacketID.talk] = talk;
 dictionaryServer[pkg.serverPacketID.ping] = ping;
@@ -36,6 +37,23 @@ function Protocol() {
     this.handleData = (ws, packageID) => {
       dictionaryServer[packageID](ws);
     };
+  } catch (err) {
+    funct.dumpError(err);
+  }
+}
+
+function createCharacter(ws) {
+  try {
+    let UserName = pkg.getString();
+    let Password = pkg.getString();
+    let Race = pkg.getByte();
+    let Gender = pkg.getByte();
+    let Class = pkg.getByte();
+    let Head = pkg.getInt();
+    let Mail = pkg.getString();
+    let Homeland = pkg.getByte();
+
+    game.createCharacter('Sebas', UserName, Password, Race, Gender, Class, Head, Mail, Homeland);
   } catch (err) {
     funct.dumpError(err);
   }

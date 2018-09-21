@@ -194,10 +194,9 @@ function LoginNewChar(buffer) {
 
   this.id = ClientPacketID.LoginNewChar /* 2 */;
   if (buffer) {
-    console.log("buffer")
     buffer.ReadByte();
     /* PacketID */
-    this.UserName = buffer.ReadUnicodeString();
+     this.UserName = buffer.ReadUnicodeString();
     this.Password = buffer.ReadUnicodeString();
     this.Race = buffer.ReadByte();
     this.Gender = buffer.ReadByte();
@@ -212,12 +211,12 @@ function LoginNewChar(buffer) {
     /* PacketID: 2 */
     buffer.WriteUnicodeString(this.UserName);
     buffer.WriteUnicodeString(this.Password);
-    buffer.WriteByte(this.Race);
-    buffer.WriteByte(this.Gender);
-    buffer.WriteByte(this.Class);
-    buffer.WriteInteger(this.Head);
+    buffer.WriteByte(Number(this.Race));
+    buffer.WriteByte(Number(this.Gender));
+    buffer.WriteByte(Number(this.Class));
+    buffer.WriteInteger(Number(this.Head));
     buffer.WriteUnicodeString(this.Mail);
-    buffer.WriteByte(this.Homeland);
+    buffer.WriteByte(Number(this.Homeland));
 
     buffer.flush();
   };
@@ -8141,12 +8140,12 @@ export default class Protocolo {
     let e = new LoginNewChar();
     e.UserName = UserName;
     e.Password = Password;
-    e.Race = Race;
-    e.Gender = Gender;
-    e.Class = Class;
-    e.Head = Head;
+    e.Race = Number(Race);
+    e.Gender = Number(Gender);
+    e.Class = Number(Class);
+    e.Head = Number(Head);
     e.Mail = Mail;
-    e.Homeland = Homeland;
+    e.Homeland = Number(Homeland);
     return e;
   }
 

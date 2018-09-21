@@ -172,7 +172,9 @@ export default class UIManager extends React.Component {
   }
 
   submit = ({username, password, race, gender, classP, head, email, city}) => {
-    this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username, password, race, gender, classP, head, email, city} })
+    //this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username, password, race, gender, classP, head, email, city} })
+    //Mock
+    this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username: "Sebas", password: "mock", race: 1, gender:2, classP:1, head:79, email:"pepe@gmail.com", city:2} })
   };
 
   //this is a start game function

@@ -14,11 +14,11 @@ export default class CreateCharacter extends React.Component {
       password: 'fromweb',
       username: '',
       email: 'from@web.com',
-      classP: '',
-      race: '',
+      classP: '1',
+      race: '1',
       head: '',
       body: '',
-      gender: '',
+      gender: '1',
       city: '',
       headOffset: Math.floor(Math.random() * 100)
     };
@@ -63,7 +63,7 @@ export default class CreateCharacter extends React.Component {
   };
 
   render() {
-    let {password, email, headOffset, gender, race} = this.state;
+    let {password, email, headOffset, gender, race, classP} = this.state;
     let {assetManager} = this.props;
     return <div id="crearPJ" style={{width: '100%', height: '100%'}}>
       <div className="container">
@@ -103,6 +103,7 @@ export default class CreateCharacter extends React.Component {
                        maxWidth: '80%'
                      }}>
                   <SelectOption
+                    selected={classP}
                     onChange={(value) => {
                       this.setState({classP: value});
                     }}
@@ -118,6 +119,7 @@ export default class CreateCharacter extends React.Component {
                        maxWidth: '80%'
                      }}>
                   <SelectOption
+                    selected={race}
                     style={{
                       width: '50%',
                       lineHeight: '30px',

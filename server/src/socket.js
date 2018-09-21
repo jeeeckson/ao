@@ -257,64 +257,28 @@ function Socket() {
     }
   };
 
-  this.saveUser = (UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
-    try {
+  //This function save the account and the user if this not exist
+  this.saveUser = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
       let queryExist = `SELECT * FROM characters c WHERE c.nameCharacter = ?`;
-      database.query(queryExist, [UserName], (err, rows, fields) => {
+      return database.query(queryExist, [UserName]).then( (rows) => {
         if (rows.length > 0) {
-          handleProtocol.console('[INFO] El usuario ' + rows[0].nameCharacter + ' ya existe', '#E69500', 0, 0, ws);
+          handleProtocol.console('[INFO] User ' + rows[0].nameCharacter + ' already exist', '#E69500', 0, 0, ws);
+          return -1;
         } else {
-          let idAccount = this.saveAccount(UserName, Password, Mail);
-          console.log("idAccount" + idAccount)
-          let query = `INSERT INTO characters (idAccount, nameCharacter, idClase, gold, equipped, idLastHead, idLastBody,
+          let idAccount = this.saveAccount(UserAccount, Password, Mail);
+          console.log("idAccount" + idAccount);
+          let query = `INSERT INTO characters (idAccount, nameCharacter, idClase, map, idLastHead, idLastBody,
           idLastHelmet, idLastWeapon, idLastShield, idShield, idItemWeapon,idItemBody,idItemShield,
-          idItemHelmet, attrFuerza, attrAgilidad,attrInteligencia, attrConstitucion, privileges,
-          countKilled, countDie, exp, expNextLevel, level, dead, criminal, navegando, npcMatados, ciudadanosMatados, 
-          criminalesMatados,fianza, connected ) VALUES (${idAccount}, ${UserName}, ${Class}, ${idAccount}, equipped, idLastHead,
-           idLastBody, idLastHelmet, idLastWeapon, idLastShield, idShield, idItemWeapon,idItemBody,idItemShield,
-          idItemHelmet, attrFuerza, attrAgilidad,attrInteligencia, attrConstitucion, privileges,
-          countKilled, countDie, exp, expNextLevel, level, dead, criminal, navegando, npcMatados, ciudadanosMatados, 
-          criminalesMatados,fianza, connected )`;
-
-          handleProtocol.console('[INFO] No existe ningun usuario con el nombre ' + name, '#E69500', 0, 0, ws);
+          idItemHelmet, idRaza, idGenero, attrFuerza, attrAgilidad,attrInteligencia, attrConstitucion) VALUES (${idAccount}, ${UserName}, ${Class}, ${Homeland}, ${Head}, ${0},
+          ${0}, ${0}, ${0}, ${0}, ${0},${0},${0},
+          ${0}, ${Race}, ${Gender} ${15}, ${15},${15}, ${15})`;
+          return database.query(query).then(res=>{
+            handleProtocol.console('[INFO] User created succesful ' + UserName, '#E69500', 0, 0, ws);
+            vars.personajes.push(res.insertId);
+            return res.insertId;
+          });
         }
       });
-
-      let user = vars.personajes[idUser];
-
-      if (Object.keys(user.inv).length > 0) {
-
-        //Borro todos los items de la base de datos
-        let auxQuery = 'DELETE FROM inventary WHERE idCharacter="' + user.idCharacter + '"';
-        database.query(auxQuery);
-
-        //Inserto todos los items de nuevo
-        query = 'INSERT INTO inventary (idCharacter, idPos, idItem, cant, equipped, created_at, updated_at) VALUES ';
-
-        let count = 0;
-
-        for (let idPos in user.inv) {
-          count++;
-
-          let item = user.inv[idPos];
-          let idItem = item.idItem;
-
-          query += '(' + user.idCharacter + ', ' + idPos + ', ' + idItem + ', ' + item.cant + ', ' + item.equipped + ', NOW(), NOW())';
-
-          if (Object.keys(user.inv).length > count) {
-            query += ', ';
-          }
-        }
-
-        database.query(query);
-      } else {
-        let query = 'DELETE FROM inventary WHERE idCharacter="' + user.idCharacter + '"';
-
-        database.query(query);
-      }
-    } catch (err) {
-      funct.dumpError(err);
-    }
   };
   //   handleProtocol.console('[INFO] El usuario ' + rows[0].nameCharacter + ' ya existe', '#E69500', 0, 0, ws);
   this.saveAccount = (UserAccount, Password, Email) => {
