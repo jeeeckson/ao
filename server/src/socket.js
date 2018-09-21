@@ -2,6 +2,7 @@ let funct = require('./functions');
 let database = require('./database');
 let vars = require('./vars');
 let pkg = require('./package');
+let handleProtocol = require('./handleProtocol');
 
 let socket = new Socket();
 
@@ -254,6 +255,82 @@ function Socket() {
     } catch (err) {
       funct.dumpError(err);
     }
+  };
+
+  this.saveUser = (UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
+    try {
+      let queryExist = `SELECT * FROM characters c WHERE c.nameCharacter = ?`;
+      database.query(queryExist, [UserName], (err, rows, fields) => {
+        if (rows.length > 0) {
+          handleProtocol.console('[INFO] El usuario ' + rows[0].nameCharacter + ' ya existe', '#E69500', 0, 0, ws);
+        } else {
+          let idAccount = this.saveAccount(UserName, Password, Mail);
+          console.log("idAccount" + idAccount)
+          let query = `INSERT INTO characters (idAccount, nameCharacter, idClase, gold, equipped, idLastHead, idLastBody,
+          idLastHelmet, idLastWeapon, idLastShield, idShield, idItemWeapon,idItemBody,idItemShield,
+          idItemHelmet, attrFuerza, attrAgilidad,attrInteligencia, attrConstitucion, privileges,
+          countKilled, countDie, exp, expNextLevel, level, dead, criminal, navegando, npcMatados, ciudadanosMatados, 
+          criminalesMatados,fianza, connected ) VALUES (${idAccount}, ${UserName}, ${Class}, ${idAccount}, equipped, idLastHead,
+           idLastBody, idLastHelmet, idLastWeapon, idLastShield, idShield, idItemWeapon,idItemBody,idItemShield,
+          idItemHelmet, attrFuerza, attrAgilidad,attrInteligencia, attrConstitucion, privileges,
+          countKilled, countDie, exp, expNextLevel, level, dead, criminal, navegando, npcMatados, ciudadanosMatados, 
+          criminalesMatados,fianza, connected )`;
+
+          handleProtocol.console('[INFO] No existe ningun usuario con el nombre ' + name, '#E69500', 0, 0, ws);
+        }
+      });
+
+      let user = vars.personajes[idUser];
+
+      if (Object.keys(user.inv).length > 0) {
+
+        //Borro todos los items de la base de datos
+        let auxQuery = 'DELETE FROM inventary WHERE idCharacter="' + user.idCharacter + '"';
+        database.query(auxQuery);
+
+        //Inserto todos los items de nuevo
+        query = 'INSERT INTO inventary (idCharacter, idPos, idItem, cant, equipped, created_at, updated_at) VALUES ';
+
+        let count = 0;
+
+        for (let idPos in user.inv) {
+          count++;
+
+          let item = user.inv[idPos];
+          let idItem = item.idItem;
+
+          query += '(' + user.idCharacter + ', ' + idPos + ', ' + idItem + ', ' + item.cant + ', ' + item.equipped + ', NOW(), NOW())';
+
+          if (Object.keys(user.inv).length > count) {
+            query += ', ';
+          }
+        }
+
+        database.query(query);
+      } else {
+        let query = 'DELETE FROM inventary WHERE idCharacter="' + user.idCharacter + '"';
+
+        database.query(query);
+      }
+    } catch (err) {
+      funct.dumpError(err);
+    }
+  };
+  //   handleProtocol.console('[INFO] El usuario ' + rows[0].nameCharacter + ' ya existe', '#E69500', 0, 0, ws);
+  this.saveAccount = (UserAccount, Password, Email) => {
+    let queryExist = `SELECT * FROM accounts c WHERE c.nameAccount = ?`;
+    return database.query(queryExist, [UserAccount]).then((result) => {
+      if (rows.length === 0) {
+        let query = `INSERT INTO accounts (nameAccount, password, email, cant, equipped, created_at, updated_at) VALUES 
+        (${UserAccount},${Password},${Email})`;
+        return database.query(query).then(result => {
+          console.log("1 record inserted, ID: " + result.insertId);
+          return result.insertId;
+        })
+      } else {
+        return result[0].id;
+      }
+    });
   };
 }
 

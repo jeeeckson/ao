@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { Stage, Container, Sprite } from 'react-pixi-fiber';
+import {Stage, Container, Sprite} from 'react-pixi-fiber';
 import React from 'react';
 import Camera from './camera';
 import Consola from './consola';
@@ -15,6 +15,7 @@ import GameManager from "../model/gamemanager";
 import GameClient from "../network/gameclient";
 import GameUI from "../ui/game/gameui";
 import ChatBox from "../components/ChatBox";
+
 const MenuGame = style.div`
  
   @extend .exterior_border_default;
@@ -38,7 +39,7 @@ export default class Renderer extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    const {assetManager, escala, uiManager, objLogin} = this.props;
+    const {assetManager, uiManager} = this.props;
     this.MAPA_WIDTH = 100; // todo: usarlo desde mapa
     this.assetManager = assetManager;
     this.grhs = assetManager.grhs;
@@ -50,35 +51,18 @@ export default class Renderer extends React.Component {
     this.escudos = assetManager.getEscudos();
     this.fxs = assetManager.getFxs();
     this.gameManager = new GameManager(assetManager, this);
-    this.gameUI = new GameUI(this.gameManager, null,  () => {});
+    this.gameUI = new GameUI(this.gameManager, null, () => {
+    });
     this.client = new GameClient(this.gameManager.game, uiManager, this.gameUI);
     this._initClientCallbacks(this.client);
-    this.gameManager.setup(this.client, this.gameUI);
-    this.ready = true;
-    const {username, password, race, gender, classP, head, email, city} = objLogin;
-    this.gameManager.game.inicializar(username);
-    if(gender && race && classP){
-      this.client.sendLoginNewChar(username, password, race, gender, classP, head, email, city);
-    } else {
-      this.client.intentarLogear(username, password);
-    }
-
-    this.tilesize = 32;
-    this.camera = new Camera(this.tilesize);
-
-    this.entityRenderer = null;
-    this.mapaRenderer = null;
-    this.climaRenderer = null;
-
-    this.rescale(escala);
-    this.state={
-      gameCanvas: this._inicializarPixi()
+    this.state = {
+      gameCanvas: null
     }
 
   }
 
   _initClientCallbacks = (client) => {
-
+    client.intentarCrearPersonaje(this.initiateAfterLogin);
     client.setDisconnectCallback((goToLoginScreen) => {
       if (goToLoginScreen) {
         this.setLoginScreen();
@@ -94,6 +78,31 @@ export default class Renderer extends React.Component {
       this.starting = false;
     });
 
+  };
+
+  initiateAfterLogin = () => {
+    const {escala, objLogin} = this.props;
+    this.gameManager.setup(this.client, this.gameUI);
+    this.ready = true;
+    const {username, password, race, gender, classP, head, email, city} = objLogin;
+    this.gameManager.game.inicializar(username);
+    if (gender && race && classP) {
+      this.client.sendLoginNewChar(username, password, race, gender, classP, head, email, city);
+    } else {
+      this.client.intentarLogear(username, password);
+    }
+
+    this.tilesize = 32;
+    this.camera = new Camera(this.tilesize);
+
+    this.entityRenderer = null;
+    this.mapaRenderer = null;
+    this.climaRenderer = null;
+
+    this.setState({
+      gameCanvas: this._inicializarPixi()
+    })
+    this.rescale(escala);
   };
 
   _inicializarPixi() {
@@ -310,8 +319,6 @@ export default class Renderer extends React.Component {
   }
 
 
-
-  
   render = () => {
     const {gamecanvas} = this.state;
     if (!gamecanvas) return <div/>;

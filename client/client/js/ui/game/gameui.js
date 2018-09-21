@@ -53,7 +53,7 @@ export default class GameUI {
     window.addEventListener("onblur",() => {
       this.keyMouseListener.upKeyTeclasCaminar();
     });
-  }
+  };
 
   resize(escala) {
     this.game.resize(escala); // todo <- este resize del renderer deberia ir fuera de game

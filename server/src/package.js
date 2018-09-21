@@ -3,7 +3,7 @@ let ByteBuffer = require('bytebuffer');
 let pkg = new Package();
 
 function Package() {
-  this.newClientPacketID= {
+  this.newClientPacketID = {
     LoginExistingChar: 0,
     ThrowDices: 1,
     LoginNewChar: 2,
@@ -212,6 +212,7 @@ function Package() {
 
   this.getPackageID = () => {
     // packageID
+    console.log("id " + this.getByte())
     return this.getByte();
   };
 

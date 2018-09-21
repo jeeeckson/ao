@@ -5,10 +5,10 @@ import Enums from '../enums';
 let ClientPacketID = {
   LoginExistingChar: 0,
   ThrowDices: 1,
-  LoginNewChar: 2,
+  Whisper: 2,
   Talk: 3,
   Yell: 4,
-  Whisper: 5,
+  LoginNewChar: 5,
   Walk: 6,
   RequestPositionUpdate: 7,
   Attack: 8,
@@ -194,13 +194,11 @@ function LoginNewChar(buffer) {
 
   this.id = ClientPacketID.LoginNewChar /* 2 */;
   if (buffer) {
+    console.log("buffer")
     buffer.ReadByte();
     /* PacketID */
     this.UserName = buffer.ReadUnicodeString();
     this.Password = buffer.ReadUnicodeString();
-    this.VerA = buffer.ReadByte();
-    this.VerB = buffer.ReadByte();
-    this.VerC = buffer.ReadByte();
     this.Race = buffer.ReadByte();
     this.Gender = buffer.ReadByte();
     this.Class = buffer.ReadByte();
@@ -214,9 +212,6 @@ function LoginNewChar(buffer) {
     /* PacketID: 2 */
     buffer.WriteUnicodeString(this.UserName);
     buffer.WriteUnicodeString(this.Password);
-    buffer.WriteByte(this.VerA);
-    buffer.WriteByte(this.VerB);
-    buffer.WriteByte(this.VerC);
     buffer.WriteByte(this.Race);
     buffer.WriteByte(this.Gender);
     buffer.WriteByte(this.Class);
@@ -8142,13 +8137,10 @@ export default class Protocolo {
   }
 
 
-  BuildLoginNewChar(UserName, Password, VerA, VerB, VerC, Race, Gender, Class, Head, Mail, Homeland) {
+  BuildLoginNewChar(UserName, Password, Race, Gender, Class, Head, Mail, Homeland) {
     let e = new LoginNewChar();
     e.UserName = UserName;
     e.Password = Password;
-    e.VerA = VerA;
-    e.VerB = VerB;
-    e.VerC = VerC;
     e.Race = Race;
     e.Gender = Gender;
     e.Class = Class;

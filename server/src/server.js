@@ -19,6 +19,7 @@ let loadMaps = require('./loadMaps');
 let loadObjs = require('./loadObjs');
 let loadSpells = require('./loadSpells');
 let handleProtocol = require('./handleProtocol');
+let serialize = require('node-serialize');
 
 console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] Iniciando servidor.');
 console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] Cargando hechizos.');
@@ -31,6 +32,7 @@ ws.on('connection', (ws) => {
         return;
       }
 
+      console.log(res)
       pkg.setData(res);
       protocol.handleData(ws, pkg.getPackageID());
 

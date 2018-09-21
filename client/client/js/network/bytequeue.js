@@ -76,8 +76,7 @@ export default class ByteQueue {
   ReadInteger() {
 
     let int = this.ws.rQshift16();
-    if (int & 0x8000) // ultimo bit de los 16 es 1 -> numero negativo, extiendo los demas bits
-    {
+    if (int & 0x8000){ // ultimo bit de los 16 es 1 -> numero negativo, extiendo los demas bits
       int = int | 0xFFFF0000;
     }
     return int;

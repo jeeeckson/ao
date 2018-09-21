@@ -10,7 +10,7 @@ import CharacterText from './charactertext';
 import SpriteGrh from './spritegrh';
 import RendererUtils from './rendererutils';
 
-class EntityRenderer {
+export default class EntityRenderer {
   constructor(escala, entityContainer, entityNamesContainer, entityChatContainer, camera, assetManager) {
 
     this.CLIPPING_EXTRA_POSITIONS = {

@@ -25,33 +25,37 @@ export default class GameClient {
   }
 
   _connect(conectarse_callback) {
-    this.ws.on('open', () => {
+    this.ws.onopen = () => {
       this.conectado = true;
       conectarse_callback();
-    });
-    this.ws.on('connectFailed', (err) => {
-      this.conectado = false;
-      console.log("Error to connect" + err.message)
-    });
-
-    this.ws.on('message', () => {
-      try {
-        while (this.byteQueue.length() > 0) {
-          this.protocolo.ServerPacketDecodeAndDispatch(this.byteQueue, this);
-        }
-      } catch (e) {
-        alert(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack); // TODO: DESCOMENTAR
-        console.log(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack);
-      }
-    });
-    this.ws.on('close', () => {
+    };
+    this.ws.onclose = () => {
       this.conectado = false;
       this.disconnect_callback(!this.onDisconnect);
       if (this.onDisconnect) {
         this.onDisconnect();
         this.onDisconnect = null;
       }
-    });
+    };
+
+    this.ws.onerror = (error) => {
+      this.conectado = false;
+      console.log("Error to connect" + error.message)
+    };
+
+    //to receive the message from server
+    this.ws.onmessage = (e) => {
+      if (!e) {
+        while (this.byteQueue.length() > 0) {
+          this.protocolo.ServerPacketDecodeAndDispatch(this.byteQueue, this);
+        }
+      }
+      alert(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack); // TODO: DESCOMENTAR
+      console.log(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack);
+
+    };
+
+
 
   }
 
@@ -461,7 +465,7 @@ export default class GameClient {
     //TODO: usar GuildNews
     this.handleGuildMemberInfo(GuildList, MemberList);
     log.error(aspirantes);
-    var aspirantes = Utils.splitNullArray(JoinRequests);
+    let aspirantes = Utils.splitNullArray(JoinRequests);
     if (aspirantes[0]) {
       this.game.gameUI.clanes.setNombresSolicitantes(aspirantes);
     } else {
@@ -614,32 +618,32 @@ export default class GameClient {
 
   handleWorkRequestTarget(skill) {
     switch (skill) {
-    case Enums.Skill.magia:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_MAGIA, Font.SKILLINFO);
-      break;
-    case Enums.Skill.pesca:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_PESCA, Font.SKILLINFO);
-      break;
-    case Enums.Skill.talar:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_TALAR, Font.SKILLINFO);
-      break;
-    case Enums.Skill.mineria:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_MINERIA, Font.SKILLINFO);
-      break;
-    case Enums.Skill.fundirmetal:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_FUNDIRMETAL, Font.SKILLINFO);
-      break;
-    case Enums.Skill.proyectiles:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_PROYECTILES, Font.SKILLINFO);
-      break;
-    case Enums.Skill.robar:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_ROBAR, Font.SKILLINFO);
-      break;
-    case Enums.Skill.domar:
-      this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_DOMAR, Font.SKILLINFO);
-      break;
-    default:
-      log.error('Numero de skill invalido: ' + skill);
+      case Enums.Skill.magia:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_MAGIA, Font.SKILLINFO);
+        break;
+      case Enums.Skill.pesca:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_PESCA, Font.SKILLINFO);
+        break;
+      case Enums.Skill.talar:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_TALAR, Font.SKILLINFO);
+        break;
+      case Enums.Skill.mineria:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_MINERIA, Font.SKILLINFO);
+        break;
+      case Enums.Skill.fundirmetal:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_FUNDIRMETAL, Font.SKILLINFO);
+        break;
+      case Enums.Skill.proyectiles:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_PROYECTILES, Font.SKILLINFO);
+        break;
+      case Enums.Skill.robar:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_ROBAR, Font.SKILLINFO);
+        break;
+      case Enums.Skill.domar:
+        this.game.escribirMsgConsola(Enums.MensajeConsola.TRABAJO_DOMAR, Font.SKILLINFO);
+        break;
+      default:
+        log.error('Numero de skill invalido: ' + skill);
     }
     this.game.setTrabajoPendiente(skill);
   }
@@ -749,7 +753,7 @@ export default class GameClient {
   }
 
   sendLoginExistingChar(UserName, Password) {
-    let p = this.protocolo.BuildLoginExistingChar(UserName, Password, this.VER_A, this.VER_B, this.VER_C);
+    let p = this.protocolo.BuildLoginExistingChar(UserName, Password);
     p.serialize(this.byteQueue);
   }
 
@@ -759,7 +763,8 @@ export default class GameClient {
   }
 
   sendLoginNewChar(UserName, Password, Race, Gender, Class, Head, Mail, Homeland) {
-    let p = this.protocolo.BuildLoginNewChar(UserName, Password, this.VER_A, this.VER_B, this.VER_C, Race, Gender, Class, Head, Mail, Homeland);
+    let p = this.protocolo.BuildLoginNewChar(UserName, Password, Race, Gender, Class, Head, Mail, Homeland);
+    console.log(p)
     p.serialize(this.byteQueue);
   }
 
