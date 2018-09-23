@@ -5,14 +5,13 @@ let WebSocketServer = require('ws').Server,
     port: 7666
   }),
   util = require('util');
-
+let ByteQueue = require('./bytequeue');
 let funct = require('./functions');
 let protocol = require('./protocol');
 let game = require('./game');
 let socket = require('./socket');
 let vars = require('./vars');
 let database = require('./database');
-let pkg = require('./package');
 let npcs = require('./npcs');
 //let loadMaps = require('./createMaps');
 let loadMaps = require('./loadMaps');
@@ -20,6 +19,8 @@ let loadObjs = require('./loadObjs');
 let loadSpells = require('./loadSpells');
 let handleProtocol = require('./handleProtocol');
 let serialize = require('node-serialize');
+let byte = new ByteQueue(ws);
+let pkg = require('./package');
 
 console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] Iniciando servidor.');
 console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] Cargando hechizos.');

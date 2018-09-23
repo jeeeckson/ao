@@ -101,7 +101,7 @@ export default class Renderer extends React.Component {
 
     this.setState({
       gameCanvas: this._inicializarPixi()
-    })
+    });
     this.rescale(escala);
   };
 

@@ -1,7 +1,4 @@
 let ByteBuffer = require('bytebuffer');
-const utf8 = require('utf8');
-
-let pkg = new Package();
 
 function Package() {
   this.newClientPacketID = {
@@ -209,12 +206,13 @@ function Package() {
   this.bufferSnd = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, true);
 
   this.setData = (data) => {
+
     this.bufferRcv = new ByteBuffer.wrap(data, 'utf8', true);
   };
 
   this.getPackageID = () => {
     // packageID
-    return Number(String.fromCharCode(this.getByte()));
+    return this.getByte();
   };
 
   this.setPackageID = (packageID) => {
@@ -330,8 +328,7 @@ function Package() {
   this.getString = () => {
     let lengthStr = this.getShort();
 
-    return this.bufferRcv.readString(lengthStr, ByteBuffer.METRICS_BYTES);
-
+    return this.bufferRcv.readString(lengthStr, ByteBuffer.METRICS_CHARS);
   };
 
   this.dataSend = () => {
@@ -340,4 +337,4 @@ function Package() {
   };
 }
 
-module.exports = pkg;
+module.exports = new Package();

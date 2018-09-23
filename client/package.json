@@ -12,6 +12,7 @@
     "assets": "^3.0.0",
     "babel-preset-env": "latest",
     "babel-preset-react": "latest",
+    "bytebuffer": "^5.0.1",
     "enums": "^1.0.1",
     "jquery-ui": "^1.12.1",
     "jss": "latest",

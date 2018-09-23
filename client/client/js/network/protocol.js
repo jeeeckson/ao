@@ -2,6 +2,7 @@
 
 
 import Enums from '../enums';
+
 let ClientPacketID = {
   LoginExistingChar: 0,
   ThrowDices: 1,
@@ -144,37 +145,27 @@ function LoginExistingChar(buffer) {
     /* PacketID */
     this.UserName = buffer.ReadUnicodeString();
     this.Password = buffer.ReadUnicodeString();
-    this.VerA = buffer.ReadByte();
-    this.VerB = buffer.ReadByte();
-    this.VerC = buffer.ReadByte();
-
   }
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.LoginExistingChar);
     /* PacketID: 0 */
     buffer.WriteUnicodeString(this.UserName);
     buffer.WriteUnicodeString(this.Password);
-    buffer.WriteByte(this.VerA);
-    buffer.WriteByte(this.VerB);
-    buffer.WriteByte(this.VerC);
 
     buffer.flush();
   };
 
   this.dispatch = function (d) {
     d.handleLoginExistingChar(this);
-
   };
-
 }
 
 function ThrowDices(buffer) {
-
+  debugger;
   this.id = ClientPacketID.ThrowDices /* 1 */;
   if (buffer) {
     buffer.ReadByte();
     /* PacketID */
-
   }
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.ThrowDices);
@@ -185,9 +176,7 @@ function ThrowDices(buffer) {
 
   this.dispatch = function (d) {
     d.handleThrowDices(this);
-
   };
-
 }
 
 function LoginNewChar(buffer) {
@@ -196,7 +185,7 @@ function LoginNewChar(buffer) {
   if (buffer) {
     buffer.ReadByte();
     /* PacketID */
-     this.UserName = buffer.ReadUnicodeString();
+    this.UserName = buffer.ReadUnicodeString();
     this.Password = buffer.ReadUnicodeString();
     this.Race = buffer.ReadByte();
     this.Gender = buffer.ReadByte();
@@ -6889,9 +6878,9 @@ function HigherAdminsMessage(buffer) {
 }
 
 
-function ServerPacketDecodeAndDispatch(buffer, handler) {
+function ServerPacketDecodeAndDispatch(PacketID, pkg, handler) {
+  let buffer = pkg;
   if (buffer.length() < 1) return;
-  let PacketID = buffer.ReadByte();
 
   switch (PacketID) {
 
@@ -8118,21 +8107,20 @@ function ServerPacketDecodeAndDispatch(buffer, handler) {
 
 export default class Protocolo {
 
-  BuildLoginExistingChar(UserName, Password, VerA, VerB, VerC) {
+  constructor(pkg) {
+    this.pkg = pkg;
+  }
+
+  BuildLoginExistingChar(UserName, Password) {
     let e = new LoginExistingChar();
     e.UserName = UserName;
     e.Password = Password;
-    e.VerA = VerA;
-    e.VerB = VerB;
-    e.VerC = VerC;
     return e;
   }
 
 
   BuildThrowDices() {
-    let e = new ThrowDices();
-
-    return e;
+    return new ThrowDices();
   }
 
 
@@ -10142,8 +10130,8 @@ export default class Protocolo {
   }
 
 
-  ServerPacketDecodeAndDispatch(buffer, handler) {
-    ServerPacketDecodeAndDispatch(buffer, handler);
+  ServerPacketDecodeAndDispatch(buffer, pkg, handler) {
+    ServerPacketDecodeAndDispatch(buffer, pkg, handler);
   }
 
 }

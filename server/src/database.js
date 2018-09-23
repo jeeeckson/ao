@@ -8,6 +8,10 @@ class Database {
       password: 'root',
       database: 'aoweb'
     });
+    this.connection.on('enqueue', (sequence) => {
+      console.log(sequence.sql);
+
+    });
   }
 
   query(sql, args) {

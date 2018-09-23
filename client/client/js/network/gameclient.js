@@ -2,7 +2,7 @@ import Utils from '../utils/util';
 import Enums from './../enums';
 import Font from './../font';
 import Protocolo from './protocol';
-import ByteQueue from './bytequeue';
+import Package from './Package';
 import config from '../../config.json';
 
 export default class GameClient {
@@ -17,10 +17,9 @@ export default class GameClient {
     this.gameUI = gameUI;
     this.conectado = false;
 
-    this.protocolo = new Protocolo();
     this.ws = new WebSocket('ws://' + config.ip + ':' + config.port);
-    this.byteQueue = new ByteQueue(this.ws);
-
+    this.pkg = new Package(this.ws);
+    this.protocolo = new Protocolo(this.pkg);
     this.onDisconnect = null;
   }
 
@@ -45,16 +44,20 @@ export default class GameClient {
 
     //to receive the message from server
     this.ws.onmessage = (e) => {
+      if (this.ws.readyState !== this.ws.OPEN) {
+        return;
+      }
+      this.pkg.setData(e);
+      let packageID = this.pkg.getPackageID();
       if (!e) {
-        while (this.byteQueue.length() > 0) {
-          this.protocolo.ServerPacketDecodeAndDispatch(this.byteQueue, this);
+        while (this.pkg.length() > 0) {
+          this.protocolo.ServerPacketDecodeAndDispatch(packageID, this.pkg, this);
         }
       }
       alert(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack); // TODO: DESCOMENTAR
       console.log(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack);
 
     };
-
 
 
   }
@@ -753,1393 +756,1393 @@ export default class GameClient {
   }
 
   sendLoginExistingChar(UserName, Password) {
+    debugger;
     let p = this.protocolo.BuildLoginExistingChar(UserName, Password);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendThrowDices() {
     let p = this.protocolo.BuildThrowDices();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendLoginNewChar(UserName, Password, Race, Gender, Class, Head, Mail, Homeland) {
     let p = this.protocolo.BuildLoginNewChar(UserName, Password, Race, Gender, Class, Head, Mail, Homeland);
-    console.log(p)
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTalk(Chat) {
     let p = this.protocolo.BuildTalk(Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendYell(Chat) {
     let p = this.protocolo.BuildYell(Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWhisper(TargetName, Chat) {
     let p = this.protocolo.BuildWhisper(TargetName, Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWalk(Heading) {
     let p = this.protocolo.BuildWalk(Heading);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestPositionUpdate() {
     let p = this.protocolo.BuildRequestPositionUpdate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAttack() {
     let p = this.protocolo.BuildAttack();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPickUp() {
     let p = this.protocolo.BuildPickUp();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSafeToggle() {
     let p = this.protocolo.BuildSafeToggle();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendResuscitationSafeToggle() {
     let p = this.protocolo.BuildResuscitationSafeToggle();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestGuildLeaderInfo() {
     let p = this.protocolo.BuildRequestGuildLeaderInfo();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestAtributes() {
     let p = this.protocolo.BuildRequestAtributes();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestFame() {
     let p = this.protocolo.BuildRequestFame();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestSkills() {
     let p = this.protocolo.BuildRequestSkills();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestMiniStats() {
     let p = this.protocolo.BuildRequestMiniStats();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCommerceEnd() {
     let p = this.protocolo.BuildCommerceEnd();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUserCommerceEnd() {
     let p = this.protocolo.BuildUserCommerceEnd();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUserCommerceConfirm() {
     let p = this.protocolo.BuildUserCommerceConfirm();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCommerceChat(Chat) {
     let p = this.protocolo.BuildCommerceChat(Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBankEnd() {
     let p = this.protocolo.BuildBankEnd();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUserCommerceOk() {
     let p = this.protocolo.BuildUserCommerceOk();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUserCommerceReject() {
     let p = this.protocolo.BuildUserCommerceReject();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendDrop(Slot, Amount) {
     let p = this.protocolo.BuildDrop(Slot, Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCastSpell(Spell) {
     let p = this.protocolo.BuildCastSpell(Spell);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendLeftClick(X, Y) {
     let p = this.protocolo.BuildLeftClick(X, Y);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendDoubleClick(X, Y) {
     let p = this.protocolo.BuildDoubleClick(X, Y);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWork(Skill) {
     let p = this.protocolo.BuildWork(Skill);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUseSpellMacro() {
     let p = this.protocolo.BuildUseSpellMacro();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUseItem(Slot) {
     let p = this.protocolo.BuildUseItem(Slot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCraftBlacksmith(Item) {
     let p = this.protocolo.BuildCraftBlacksmith(Item);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCraftCarpenter(Item) {
     let p = this.protocolo.BuildCraftCarpenter(Item);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWorkLeftClick(X, Y, Skill) {
     let p = this.protocolo.BuildWorkLeftClick(X, Y, Skill);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCreateNewGuild(Desc, GuildName, Site, Codex) {
     let p = this.protocolo.BuildCreateNewGuild(Desc, GuildName, Site, Codex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSpellInfo(Slot) {
     let p = this.protocolo.BuildSpellInfo(Slot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendEquipItem(Slot) {
     let p = this.protocolo.BuildEquipItem(Slot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeHeading(Heading) {
     let p = this.protocolo.BuildChangeHeading(Heading);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendModifySkills(Skills) { // Skills : vector de 20 pos conteniendo los puntos a adicionar a cada skill
     let p = this.protocolo.BuildModifySkills(Skills);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTrain(PetIndex) {
     let p = this.protocolo.BuildTrain(PetIndex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCommerceBuy(Slot, Amount) {
     let p = this.protocolo.BuildCommerceBuy(Slot, Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBankExtractItem(Slot, Amount) {
     let p = this.protocolo.BuildBankExtractItem(Slot, Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCommerceSell(Slot, Amount) {
     let p = this.protocolo.BuildCommerceSell(Slot, Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBankDeposit(Slot, Amount) {
     let p = this.protocolo.BuildBankDeposit(Slot, Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendForumPost(MsgType, Title, Post) {
     let p = this.protocolo.BuildForumPost(MsgType, Title, Post);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendMoveSpell(Direction, Slot) {
     let p = this.protocolo.BuildMoveSpell(Direction, Slot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendMoveBank(Direction, Slot) {
     let p = this.protocolo.BuildMoveBank(Direction, Slot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendClanCodexUpdate(Desc, Codex) {
     let p = this.protocolo.BuildClanCodexUpdate(Desc, Codex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUserCommerceOffer(Slot, Amount, OfferSlot) {
     let p = this.protocolo.BuildUserCommerceOffer(Slot, Amount, OfferSlot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildAcceptPeace(Guild) {
     let p = this.protocolo.BuildGuildAcceptPeace(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildRejectAlliance(Guild) {
     let p = this.protocolo.BuildGuildRejectAlliance(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildRejectPeace(Guild) {
     let p = this.protocolo.BuildGuildRejectPeace(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildAcceptAlliance(Guild) {
     let p = this.protocolo.BuildGuildAcceptAlliance(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildOfferPeace(Guild, Proposal) {
     let p = this.protocolo.BuildGuildOfferPeace(Guild, Proposal);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildOfferAlliance(Guild, Proposal) {
     let p = this.protocolo.BuildGuildOfferAlliance(Guild, Proposal);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildAllianceDetails(Guild) {
     let p = this.protocolo.BuildGuildAllianceDetails(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildPeaceDetails(Guild) {
     let p = this.protocolo.BuildGuildPeaceDetails(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildRequestJoinerInfo(User) {
     let p = this.protocolo.BuildGuildRequestJoinerInfo(User);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildAlliancePropList() {
     let p = this.protocolo.BuildGuildAlliancePropList();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildPeacePropList() {
     let p = this.protocolo.BuildGuildPeacePropList();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildDeclareWar(Guild) {
     let p = this.protocolo.BuildGuildDeclareWar(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildNewWebsite(Website) {
     let p = this.protocolo.BuildGuildNewWebsite(Website);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildAcceptNewMember(UserName) {
     let p = this.protocolo.BuildGuildAcceptNewMember(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildRejectNewMember(UserName, Reason) {
     let p = this.protocolo.BuildGuildRejectNewMember(UserName, Reason);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildKickMember(UserName) {
     let p = this.protocolo.BuildGuildKickMember(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildUpdateNews(News) {
     let p = this.protocolo.BuildGuildUpdateNews(News);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildMemberInfo(UserName) {
     let p = this.protocolo.BuildGuildMemberInfo(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildOpenElections() {
     let p = this.protocolo.BuildGuildOpenElections();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildRequestMembership(Guild, Application) {
     let p = this.protocolo.BuildGuildRequestMembership(Guild, Application);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildRequestDetails(Guild) {
     let p = this.protocolo.BuildGuildRequestDetails(Guild);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendOnline() {
     let p = this.protocolo.BuildOnline();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendQuit() {
     let p = this.protocolo.BuildQuit();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildLeave() {
     let p = this.protocolo.BuildGuildLeave();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestAccountState() {
     let p = this.protocolo.BuildRequestAccountState();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPetStand() {
     let p = this.protocolo.BuildPetStand();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPetFollow() {
     let p = this.protocolo.BuildPetFollow();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendReleasePet() {
     let p = this.protocolo.BuildReleasePet();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTrainList() {
     let p = this.protocolo.BuildTrainList();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRest() {
     let p = this.protocolo.BuildRest();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendMeditate() {
     let p = this.protocolo.BuildMeditate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendResucitate() {
     let p = this.protocolo.BuildResucitate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendHeal() {
     let p = this.protocolo.BuildHeal();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendHelp() {
     let p = this.protocolo.BuildHelp();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestStats() {
     let p = this.protocolo.BuildRequestStats();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCommerceStart() {
     let p = this.protocolo.BuildCommerceStart();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBankStart() {
     let p = this.protocolo.BuildBankStart();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendEnlist() {
     let p = this.protocolo.BuildEnlist();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendInformation() {
     let p = this.protocolo.BuildInformation();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendReward() {
     let p = this.protocolo.BuildReward();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestMOTD() {
     let p = this.protocolo.BuildRequestMOTD();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUpTime() {
     let p = this.protocolo.BuildUpTime();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartyLeave() {
     let p = this.protocolo.BuildPartyLeave();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartyCreate() {
     let p = this.protocolo.BuildPartyCreate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartyJoin() {
     let p = this.protocolo.BuildPartyJoin();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendInquiry() {
     let p = this.protocolo.BuildInquiry();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildMessage(Chat) {
     let p = this.protocolo.BuildGuildMessage(Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartyMessage(Chat) {
     let p = this.protocolo.BuildPartyMessage(Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCentinelReport(Code) {
     let p = this.protocolo.BuildCentinelReport(Code);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildOnline() {
     let p = this.protocolo.BuildGuildOnline();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartyOnline() {
     let p = this.protocolo.BuildPartyOnline();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCouncilMessage(Chat) {
     let p = this.protocolo.BuildCouncilMessage(Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRoleMasterRequest(Request) {
     let p = this.protocolo.BuildRoleMasterRequest(Request);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGMRequest() {
     let p = this.protocolo.BuildGMRequest();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBugReport(Report) {
     let p = this.protocolo.BuildBugReport(Report);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeDescription(Description) {
     let p = this.protocolo.BuildChangeDescription(Description);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildVote(Vote) {
     let p = this.protocolo.BuildGuildVote(Vote);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPunishments(Name) {
     let p = this.protocolo.BuildPunishments(Name);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangePassword(OldPass, NewPass) {
     let p = this.protocolo.BuildChangePassword(OldPass, NewPass);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGamble(Amount) {
     let p = this.protocolo.BuildGamble(Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendInquiryVote(Opt) {
     let p = this.protocolo.BuildInquiryVote(Opt);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendLeaveFaction() {
     let p = this.protocolo.BuildLeaveFaction();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBankExtractGold(Amount) {
     let p = this.protocolo.BuildBankExtractGold(Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBankDepositGold(Amount) {
     let p = this.protocolo.BuildBankDepositGold(Amount);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendDenounce(Text) {
     let p = this.protocolo.BuildDenounce(Text);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildFundate() {
     let p = this.protocolo.BuildGuildFundate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildFundation(ClanType) {
     let p = this.protocolo.BuildGuildFundation(ClanType);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartyKick(UserName) {
     let p = this.protocolo.BuildPartyKick(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartySetLeader(UserName) {
     let p = this.protocolo.BuildPartySetLeader(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPartyAcceptMember(UserName) {
     let p = this.protocolo.BuildPartyAcceptMember(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendPing() {
     let p = this.protocolo.BuildPing();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestPartyForm() {
     let p = this.protocolo.BuildRequestPartyForm();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendItemUpgrade(ItemIndex) {
     let p = this.protocolo.BuildItemUpgrade(ItemIndex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGMCommands() {
     let p = this.protocolo.BuildGMCommands();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendInitCrafting(TotalItems, ItemsPorCiclo) {
     let p = this.protocolo.BuildInitCrafting(TotalItems, ItemsPorCiclo);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendHome() {
     let p = this.protocolo.BuildHome();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendShowGuildNews() {
     let p = this.protocolo.BuildShowGuildNews();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendShareNpc() {
     let p = this.protocolo.BuildShareNpc();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendStopSharingNpc() {
     let p = this.protocolo.BuildStopSharingNpc();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendConsultation() {
     let p = this.protocolo.BuildConsultation();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendMoveItem(OldSlot, NewSlot) {
     let p = this.protocolo.BuildMoveItem(OldSlot, NewSlot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGMMessage(Chat) {
     let p = this.protocolo.BuildGMMessage(Chat);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendShowName() {
     let p = this.protocolo.BuildShowName();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendOnlineRoyalArmy() {
     let p = this.protocolo.BuildOnlineRoyalArmy();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendOnlineChaosLegion() {
     let p = this.protocolo.BuildOnlineChaosLegion();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGoNearby(UserName) {
     let p = this.protocolo.BuildGoNearby(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendComment(Data) {
     let p = this.protocolo.BuildComment(Data);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendServerTime() {
     let p = this.protocolo.BuildServerTime();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWhere(UserName) {
     let p = this.protocolo.BuildWhere(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCreaturesInMap(Map) {
     let p = this.protocolo.BuildCreaturesInMap(Map);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWarpMeToTarget() {
     let p = this.protocolo.BuildWarpMeToTarget();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWarpChar(UserName, Map, X, Y) {
     let p = this.protocolo.BuildWarpChar(UserName, Map, X, Y);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSilence(UserName) {
     let p = this.protocolo.BuildSilence(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSOSShowList() {
     let p = this.protocolo.BuildSOSShowList();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSOSRemove(UserName) {
     let p = this.protocolo.BuildSOSRemove(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGoToChar(UserName) {
     let p = this.protocolo.BuildGoToChar(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendInvisible() {
     let p = this.protocolo.BuildInvisible();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGMPanel() {
     let p = this.protocolo.BuildGMPanel();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestUserList() {
     let p = this.protocolo.BuildRequestUserList();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWorking() {
     let p = this.protocolo.BuildWorking();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendHiding() {
     let p = this.protocolo.BuildHiding();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendJail(UserName, Reason, JailTime) {
     let p = this.protocolo.BuildJail(UserName, Reason, JailTime);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendKillNPC() {
     let p = this.protocolo.BuildKillNPC();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendWarnUser(UserName, Reason) {
     let p = this.protocolo.BuildWarnUser(UserName, Reason);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendEditChar(UserName, Opcion, Arg1, Arg2) {
     let p = this.protocolo.BuildEditChar(UserName, Opcion, Arg1, Arg2);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestCharInfo(TargetName) {
     let p = this.protocolo.BuildRequestCharInfo(TargetName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestCharStats(UserName) {
     let p = this.protocolo.BuildRequestCharStats(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestCharGold(UserName) {
     let p = this.protocolo.BuildRequestCharGold(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestCharInventory(UserName) {
     let p = this.protocolo.BuildRequestCharInventory(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestCharBank(UserName) {
     let p = this.protocolo.BuildRequestCharBank(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestCharSkills(UserName) {
     let p = this.protocolo.BuildRequestCharSkills(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendReviveChar(UserName) {
     let p = this.protocolo.BuildReviveChar(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendOnlineGM() {
     let p = this.protocolo.BuildOnlineGM();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendOnlineMap(Map) {
     let p = this.protocolo.BuildOnlineMap(Map);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendForgive(UserName) {
     let p = this.protocolo.BuildForgive(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendKick(UserName) {
     let p = this.protocolo.BuildKick(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendExecute(UserName) {
     let p = this.protocolo.BuildExecute(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBanChar(UserName, Reason) {
     let p = this.protocolo.BuildBanChar(UserName, Reason);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUnbanChar(UserName) {
     let p = this.protocolo.BuildUnbanChar(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendNPCFollow() {
     let p = this.protocolo.BuildNPCFollow();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSummonChar(UserName) {
     let p = this.protocolo.BuildSummonChar(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSpawnListRequest() {
     let p = this.protocolo.BuildSpawnListRequest();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSpawnCreature(NPC) {
     let p = this.protocolo.BuildSpawnCreature(NPC);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendResetNPCInventory() {
     let p = this.protocolo.BuildResetNPCInventory();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCleanWorld() {
     let p = this.protocolo.BuildCleanWorld();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendServerMessage(Message) {
     let p = this.protocolo.BuildServerMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendNickToIP(UserName) {
     let p = this.protocolo.BuildNickToIP(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendIPToNick(A, B, C, D) {
     let p = this.protocolo.BuildIPToNick(A, B, C, D);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildOnlineMembers(GuildName) {
     let p = this.protocolo.BuildGuildOnlineMembers(GuildName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTeleportCreate(Map, X, Y, Radio) {
     let p = this.protocolo.BuildTeleportCreate(Map, X, Y, Radio);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTeleportDestroy() {
     let p = this.protocolo.BuildTeleportDestroy();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRainToggle() {
     let p = this.protocolo.BuildRainToggle();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSetCharDescription(Description) {
     let p = this.protocolo.BuildSetCharDescription(Description);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendForceMIDIToMap(MidiID, Map) {
     let p = this.protocolo.BuildForceMIDIToMap(MidiID, Map);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendForceWAVEToMap(Wave, Map, X, Y) {
     let p = this.protocolo.BuildForceWAVEToMap(Wave, Map, X, Y);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRoyalArmyMessage(Message) {
     let p = this.protocolo.BuildRoyalArmyMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChaosLegionMessage(Message) {
     let p = this.protocolo.BuildChaosLegionMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCitizenMessage(Message) {
     let p = this.protocolo.BuildCitizenMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCriminalMessage(Message) {
     let p = this.protocolo.BuildCriminalMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTalkAsNPC(Message) {
     let p = this.protocolo.BuildTalkAsNPC(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendDestroyAllItemsInArea() {
     let p = this.protocolo.BuildDestroyAllItemsInArea();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAcceptRoyalCouncilMember(UserName) {
     let p = this.protocolo.BuildAcceptRoyalCouncilMember(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAcceptChaosCouncilMember(UserName) {
     let p = this.protocolo.BuildAcceptChaosCouncilMember(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendItemsInTheFloor() {
     let p = this.protocolo.BuildItemsInTheFloor();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendMakeDumb(UserName) {
     let p = this.protocolo.BuildMakeDumb(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendMakeDumbNoMore(UserName) {
     let p = this.protocolo.BuildMakeDumbNoMore(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendDumpIPTables() {
     let p = this.protocolo.BuildDumpIPTables();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCouncilKick(UserName) {
     let p = this.protocolo.BuildCouncilKick(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSetTrigger(Trigger) {
     let p = this.protocolo.BuildSetTrigger(Trigger);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAskTrigger() {
     let p = this.protocolo.BuildAskTrigger();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBannedIPList() {
     let p = this.protocolo.BuildBannedIPList();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBannedIPReload() {
     let p = this.protocolo.BuildBannedIPReload();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildMemberList(GuildName) {
     let p = this.protocolo.BuildGuildMemberList(GuildName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendGuildBan(GuildName) {
     let p = this.protocolo.BuildGuildBan(GuildName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendBanIP(IP, Reason) {
     let p = this.protocolo.BuildBanIP(IP, Reason);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendUnbanIP(IP) {
     let p = this.protocolo.BuildUnbanIP(IP);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCreateItem(Item) {
     let p = this.protocolo.BuildCreateItem(Item);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendDestroyItems() {
     let p = this.protocolo.BuildDestroyItems();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChaosLegionKick(UserName, Reason) {
     let p = this.protocolo.BuildChaosLegionKick(UserName, Reason);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRoyalArmyKick(UserName, Reason) {
     let p = this.protocolo.BuildRoyalArmyKick(UserName, Reason);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendForceMIDIAll(MidiID) {
     let p = this.protocolo.BuildForceMIDIAll(MidiID);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendForceWAVEAll(WaveID) {
     let p = this.protocolo.BuildForceWAVEAll(WaveID);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRemovePunishment(UserName, Punishment, NewText) {
     let p = this.protocolo.BuildRemovePunishment(UserName, Punishment, NewText);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTileBlockedToggle() {
     let p = this.protocolo.BuildTileBlockedToggle();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendKillNPCNoRespawn() {
     let p = this.protocolo.BuildKillNPCNoRespawn();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendKillAllNearbyNPCs() {
     let p = this.protocolo.BuildKillAllNearbyNPCs();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendLastIP(UserName) {
     let p = this.protocolo.BuildLastIP(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMOTD() {
     let p = this.protocolo.BuildChangeMOTD();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSetMOTD(Motd) {
     let p = this.protocolo.BuildSetMOTD(Motd);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSystemMessage(Message) {
     let p = this.protocolo.BuildSystemMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCreateNPC(NpcIndex) {
     let p = this.protocolo.BuildCreateNPC(NpcIndex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCreateNPCWithRespawn(NpcIndex) {
     let p = this.protocolo.BuildCreateNPCWithRespawn(NpcIndex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendImperialArmour(Index, ObjIndex) {
     let p = this.protocolo.BuildImperialArmour(Index, ObjIndex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChaosArmour(Index, ObjIndex) {
     let p = this.protocolo.BuildChaosArmour(Index, ObjIndex);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendNavigateToggle() {
     let p = this.protocolo.BuildNavigateToggle();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendServerOpenToUsersToggle() {
     let p = this.protocolo.BuildServerOpenToUsersToggle();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTurnOffServer() {
     let p = this.protocolo.BuildTurnOffServer();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendTurnCriminal(UserName) {
     let p = this.protocolo.BuildTurnCriminal(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendResetFactions(UserName) {
     let p = this.protocolo.BuildResetFactions(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRemoveCharFromGuild(UserName) {
     let p = this.protocolo.BuildRemoveCharFromGuild(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRequestCharMail(UserName) {
     let p = this.protocolo.BuildRequestCharMail(UserName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAlterPassword(UserName, CopyFrom) {
     let p = this.protocolo.BuildAlterPassword(UserName, CopyFrom);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAlterMail(UserName, NewMail) {
     let p = this.protocolo.BuildAlterMail(UserName, NewMail);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAlterName(UserName, NewName) {
     let p = this.protocolo.BuildAlterName(UserName, NewName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendToggleCentinelActivated() {
     let p = this.protocolo.BuildToggleCentinelActivated();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendDoBackUp() {
     let p = this.protocolo.BuildDoBackUp();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendShowGuildMessages(GuildName) {
     let p = this.protocolo.BuildShowGuildMessages(GuildName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSaveMap() {
     let p = this.protocolo.BuildSaveMap();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoPK(Pk) {
     let p = this.protocolo.BuildChangeMapInfoPK(Pk);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoBackup(Backup) {
     let p = this.protocolo.BuildChangeMapInfoBackup(Backup);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoRestricted(RestrictedTo) {
     let p = this.protocolo.BuildChangeMapInfoRestricted(RestrictedTo);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoNoMagic(NoMagic) {
     let p = this.protocolo.BuildChangeMapInfoNoMagic(NoMagic);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoNoInvi(NoInvi) {
     let p = this.protocolo.BuildChangeMapInfoNoInvi(NoInvi);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoNoResu(NoResu) {
     let p = this.protocolo.BuildChangeMapInfoNoResu(NoResu);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoLand(Data) {
     let p = this.protocolo.BuildChangeMapInfoLand(Data);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoZone(Data) {
     let p = this.protocolo.BuildChangeMapInfoZone(Data);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoStealNpc(RoboNpc) {
     let p = this.protocolo.BuildChangeMapInfoStealNpc(RoboNpc);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoNoOcultar(NoOcultar) {
     let p = this.protocolo.BuildChangeMapInfoNoOcultar(NoOcultar);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChangeMapInfoNoInvocar(NoInvocar) {
     let p = this.protocolo.BuildChangeMapInfoNoInvocar(NoInvocar);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSaveChars() {
     let p = this.protocolo.BuildSaveChars();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCleanSOS() {
     let p = this.protocolo.BuildCleanSOS();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendShowServerForm() {
     let p = this.protocolo.BuildShowServerForm();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendNight() {
     let p = this.protocolo.BuildNight();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendKickAllChars() {
     let p = this.protocolo.BuildKickAllChars();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendReloadNPCs() {
     let p = this.protocolo.BuildReloadNPCs();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendReloadServerIni() {
     let p = this.protocolo.BuildReloadServerIni();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendReloadSpells() {
     let p = this.protocolo.BuildReloadSpells();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendReloadObjects() {
     let p = this.protocolo.BuildReloadObjects();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRestart() {
     let p = this.protocolo.BuildRestart();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendResetAutoUpdate() {
     let p = this.protocolo.BuildResetAutoUpdate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendChatColor(R, G, B) {
     let p = this.protocolo.BuildChatColor(R, G, B);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendIgnored() {
     let p = this.protocolo.BuildIgnored();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCheckSlot(UserName, Slot) {
     let p = this.protocolo.BuildCheckSlot(UserName, Slot);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSetIniVar(Seccion, Clave, Valor) {
     let p = this.protocolo.BuildSetIniVar(Seccion, Clave, Valor);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendCreatePretorianClan(Map, X, Y) {
     let p = this.protocolo.BuildCreatePretorianClan(Map, X, Y);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRemovePretorianClan(Map) {
     let p = this.protocolo.BuildRemovePretorianClan(Map);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendEnableDenounces() {
     let p = this.protocolo.BuildEnableDenounces();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendShowDenouncesList() {
     let p = this.protocolo.BuildShowDenouncesList();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendMapMessage(Message) {
     let p = this.protocolo.BuildMapMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendSetDialog(Message) {
     let p = this.protocolo.BuildSetDialog(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendImpersonate() {
     let p = this.protocolo.BuildImpersonate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendImitate() {
     let p = this.protocolo.BuildImitate();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRecordAdd(UserName, Reason) {
     let p = this.protocolo.BuildRecordAdd(UserName, Reason);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRecordRemove(Index) {
     let p = this.protocolo.BuildRecordRemove(Index);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRecordAddObs(Index, Obs) {
     let p = this.protocolo.BuildRecordAddObs(Index, Obs);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRecordListRequest() {
     let p = this.protocolo.BuildRecordListRequest();
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendRecordDetailsRequest(Index) {
     let p = this.protocolo.BuildRecordDetailsRequest(Index);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendAlterGuildName(OldGuildName, NewGuildName) {
     let p = this.protocolo.BuildAlterGuildName(OldGuildName, NewGuildName);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 
   sendHigherAdminsMessage(Message) {
     let p = this.protocolo.BuildHigherAdminsMessage(Message);
-    p.serialize(this.byteQueue);
+    p.serialize(this.pkg);
   }
 }

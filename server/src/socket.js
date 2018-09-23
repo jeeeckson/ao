@@ -258,41 +258,41 @@ function Socket() {
   };
 
   //This function save the account and the user if this not exist
-  this.saveUser = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
-      let queryExist = `SELECT * FROM characters c WHERE c.nameCharacter = ?`;
-      return database.query(queryExist, [UserName]).then( (rows) => {
-        if (rows.length > 0) {
-          handleProtocol.console('[INFO] User ' + rows[0].nameCharacter + ' already exist', '#E69500', 0, 0, ws);
-          return -1;
-        } else {
-          let idAccount = this.saveAccount(UserAccount, Password, Mail);
-          console.log("idAccount" + idAccount);
+  this.createCharacter = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
+    let queryExist = `SELECT * FROM characters c WHERE c.nameCharacter = ?`;
+    return database.query(queryExist, [UserName]).then((rows) => {
+      if (rows.length > 0) {
+        return -1;
+      } else {
+        return this.saveAccount(UserAccount, Password, Mail).then(idAccount => {
+
           let query = `INSERT INTO characters (idAccount, nameCharacter, idClase, map, idLastHead, idLastBody,
           idLastHelmet, idLastWeapon, idLastShield, idShield, idItemWeapon,idItemBody,idItemShield,
-          idItemHelmet, idRaza, idGenero, attrFuerza, attrAgilidad,attrInteligencia, attrConstitucion) VALUES (${idAccount}, ${UserName}, ${Class}, ${Homeland}, ${Head}, ${0},
-          ${0}, ${0}, ${0}, ${0}, ${0},${0},${0},
-          ${0}, ${Race}, ${Gender} ${15}, ${15},${15}, ${15})`;
-          return database.query(query).then(res=>{
-            handleProtocol.console('[INFO] User created succesful ' + UserName, '#E69500', 0, 0, ws);
+          idItemHelmet, idRaza, idGenero, attrFuerza, attrAgilidad,attrInteligencia, attrConstitucion) VALUES 
+          ('${idAccount}', '${UserName}', '${Class}', '${Homeland}', '${Head}', '${0}',
+          '${0}', '${0}', '${0}', '${0}', '${0}','${0}','${0}',
+          '${0}', '${Race}', '${Gender}', '${15}', '${15}','${15}', '${15}')`;
+          return database.query(query).then(res => {
+            console.log('[INFO] User created successful ' + UserName);
             vars.personajes.push(res.insertId);
             return res.insertId;
           });
-        }
-      });
+        });
+      }
+    });
   };
   //   handleProtocol.console('[INFO] El usuario ' + rows[0].nameCharacter + ' ya existe', '#E69500', 0, 0, ws);
   this.saveAccount = (UserAccount, Password, Email) => {
     let queryExist = `SELECT * FROM accounts c WHERE c.nameAccount = ?`;
-    return database.query(queryExist, [UserAccount]).then((result) => {
+    return database.query(queryExist, [UserAccount]).then((rows) => {
       if (rows.length === 0) {
-        let query = `INSERT INTO accounts (nameAccount, password, email, cant, equipped, created_at, updated_at) VALUES 
-        (${UserAccount},${Password},${Email})`;
+        let query = `INSERT INTO accounts (nameAccount, password, email) VALUES ('${UserAccount}','${Password}','${Email}')`;
         return database.query(query).then(result => {
           console.log("1 record inserted, ID: " + result.insertId);
           return result.insertId;
         })
       } else {
-        return result[0].id;
+        return rows[0].id;
       }
     });
   };

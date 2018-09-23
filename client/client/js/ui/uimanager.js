@@ -174,12 +174,26 @@ export default class UIManager extends React.Component {
   submit = ({username, password, race, gender, classP, head, email, city}) => {
     //this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username, password, race, gender, classP, head, email, city} })
     //Mock
-    this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username: "Sebas", password: "mock", race: 1, gender:2, classP:1, head:79, email:"pepe@gmail.com", city:2} })
+    this.setState({
+      showPlay: true,
+      showCreate: false,
+      showLogin: false,
+      objLogin: {
+        username: "Sebas",
+        password: "mock",
+        race: 1,
+        gender: 2,
+        classP: 1,
+        head: 79,
+        email: "pepegmail.com",
+        city: 2
+      }
+    })
   };
 
   //this is a start game function
   newStarGame = (username, password) => {
-    this.setState({showPlay: true, showCreate: false, showLogin: false ,objLogin: {username, password} })
+    this.setState({showPlay: true, showCreate: false, showLogin: false, objLogin: {username, password}})
   };
 
   render = () => {
@@ -200,9 +214,10 @@ export default class UIManager extends React.Component {
           <Connect onClick={this.newStarGame}/>
         </div>}
         {load > 99 && showCreate && <CreateCharacter throwDice={() => {
-          this.client.sendThrowDices();
+          //this.client.sendThrowDices();
         }} cb={this.submit} assetManager={assetManager}/>}
-        {load > 99 && showPlay && <Renderer objLogin={objLogin} uiManager={this} assetManager={assetManager} escala={scala}/>}
+        {load > 99 && showPlay &&
+        <Renderer objLogin={objLogin} uiManager={this} assetManager={assetManager} escala={scala}/>}
       </Container>}
     </div>);
   };

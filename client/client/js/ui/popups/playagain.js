@@ -35,7 +35,7 @@ export default class playAgain extends PopUp {
       this.game.client.onDisconnect = () => {
         setTimeout(() => {
           client._connect(() => {
-            client.sendThrowDices();
+            //client.sendThrowDices();
             $('#crearBotonCrear').trigger('click');
           });
         }, 1);
@@ -48,7 +48,7 @@ export default class playAgain extends PopUp {
       this.game.client.onDisconnect = () => {
         setTimeout(() => {
           client._connect(() => {
-            client.sendThrowDices();
+            //client.sendThrowDices();
             this.setCrearPjScreenCb();
           });
         }, 1);
