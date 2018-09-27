@@ -2,14 +2,15 @@ let fs = require('fs');
 
 let WebSocketServer = require('ws').Server,
   ws = new WebSocketServer({
-    port: 7666
+    port: 7666,
+    binaryType: 'arrayBuffer'
   }),
   util = require('util');
+import socket from './socket';
 let ByteQueue = require('./bytequeue');
 let funct = require('./functions');
 let protocol = require('./protocol');
 let game = require('./game');
-let socket = require('./socket');
 let vars = require('./vars');
 let database = require('./database');
 let npcs = require('./npcs');
@@ -32,7 +33,7 @@ ws.on('connection', (ws) => {
       if (ws.readyState !== ws.OPEN) {
         return;
       }
-
+      vars.clients[ws.id] = ws;
       pkg.setData(res);
       let packageID = pkg.getPackageID();
 

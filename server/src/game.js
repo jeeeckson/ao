@@ -1,6 +1,6 @@
+import socket from './socket';
 let fs = require('fs');
 let funct = require('./functions');
-let socket = require('./socket');
 let vars = require('./vars');
 let database = require('./database');
 let pkg = require('./package');
@@ -575,21 +575,19 @@ function Game() {
 
   /**
    * [worldSave Guardado del mundo]
-   * @param  {Function} callback [description]
-   * @return {}            [description]
+   * @param callback
    */
   this.worldSave = function (callback) {
     try {
+      let query = '';
       for (let i in vars.personajes) {
         let user = vars.personajes[i];
-
         query = 'UPDATE characters SET ';
-
         for (let save in vars.toSave) {
           if (vars.toSave[save] === 'posX') {
-            query += vars.toSave[save] + '="' + user.pos.x + '"';
+            query += vars.toSave[save] + '="' + user.posX + '"';
           } else if (vars.toSave[save] === 'posY') {
-            query += vars.toSave[save] + '="' + user.pos.y + '"';
+            query += vars.toSave[save] + '="' + user.posY + '"';
           } else if (!user[vars.toSave[save]]) {
             query += vars.toSave[save] + '=0';
           } else {
@@ -961,9 +959,9 @@ function Game() {
    * @param Homeland
    * @returns {boolean}
    */
-  this.createCharacter = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
+  this.createCharacter = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland, ws) => {
     try {
-      return socket.createCharacter(UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland);
+      return socket.createCharacter(UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland, ws);
     } catch (err) {
       funct.dumpError(err);
     }

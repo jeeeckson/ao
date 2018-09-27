@@ -14,24 +14,16 @@
     "ws": "^0.8.0"
   },
   "devDependencies": {
-    "eslint": "^4.13.1",
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.3",
-    "babel-preset-env": "latest",
-    "babel-preset-stage-2": "^6.24.1"
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^4.13.1",
+    "nodemon": "^1.18.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint --fix --ext js src ",
-    "start": "node src/server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com:dcatanzaro/argentumonlineweb-cliente.git"
-  },
-  "author": "Damián Catanzaro",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dcatanzaro/argentumonlineweb-servidor/issues"
-  },
-  "homepage": "https://github.com/dcatanzaro/argentumonlineweb-servidor/blob/master/README.md"
+    "start": "nodemon $NODE_DEBUG_OPTION --exec babel-node src/server.js"
+  }
 }

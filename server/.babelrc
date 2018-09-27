@@ -1,14 +1,9 @@
 {
   "presets": [
-    [
-      "es2015",
-      {
-        "loose": true,
-        "modules": false
-      }
-    ],
+    "env",
     "stage-2"
   ],
   "plugins": [
+    "transform-class-properties"
   ]
 }

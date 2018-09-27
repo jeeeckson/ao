@@ -43,7 +43,7 @@ fs.readFile('obj.dat', 'UTF-8', (err, data) => {
     let response = responseArr[line];
 
     let responseSplit = response.split('[OBJ');
-    npcNum = responseSplit[1];
+    let npcNum = responseSplit[1];
 
     if (npcNum) {
       objIndex = npcNum.trim().split(']')[0];

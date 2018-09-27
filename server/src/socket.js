@@ -4,7 +4,7 @@ let vars = require('./vars');
 let pkg = require('./package');
 let handleProtocol = require('./handleProtocol');
 
-let socket = new Socket();
+export default new Socket();
 
 function Socket() {
   this.send = function (ws) {
@@ -258,10 +258,12 @@ function Socket() {
   };
 
   //This function save the account and the user if this not exist
-  this.createCharacter = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland) => {
+  this.createCharacter = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland, ws) => {
     let queryExist = `SELECT * FROM characters c WHERE c.nameCharacter = ?`;
+    let character = null;
     return database.query(queryExist, [UserName]).then((rows) => {
       if (rows.length > 0) {
+        vars.personajes[ws.id] = rows[0];
         return -1;
       } else {
         return this.saveAccount(UserAccount, Password, Mail).then(idAccount => {
@@ -274,11 +276,16 @@ function Socket() {
           '${0}', '${Race}', '${Gender}', '${15}', '${15}','${15}', '${15}')`;
           return database.query(query).then(res => {
             console.log('[INFO] User created successful ' + UserName);
-            vars.personajes.push(res.insertId);
+            console.log(res)
+            vars.personajes[ws.id] = {};
             return res.insertId;
           });
         });
       }
+    }).then(index => {
+      //NO se el client si es ese
+      handleProtocol.sendMyCharacter(vars.personajes[ws.id], ws.id);
+      return index;
     });
   };
   //   handleProtocol.console('[INFO] El usuario ' + rows[0].nameCharacter + ' ya existe', '#E69500', 0, 0, ws);
@@ -297,5 +304,3 @@ function Socket() {
     });
   };
 }
-
-module.exports = socket;

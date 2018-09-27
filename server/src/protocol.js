@@ -53,7 +53,7 @@ function createCharacter(ws) {
     let Mail = pkg.getString();
     let Homeland = pkg.getByte();
 
-    game.createCharacter('Sebas', UserName, Password, Race, Gender, Class, Head, Mail, Homeland);
+    game.createCharacter('Sebas', UserName, Password, Race, Gender, Class, Head, Mail, Homeland, ws);
   } catch (err) {
     funct.dumpError(err);
   }

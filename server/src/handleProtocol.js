@@ -1,6 +1,6 @@
 let vars = require('./vars');
 let pkg = require('./package');
-let socket = require('./socket');
+import socket from './socket';
 
 let handleServer = new HandleServer();
 
@@ -182,31 +182,50 @@ function HandleServer() {
     socket.send(client);
   };
 
-  this.sendMyCharacter = function (character) {
+  this.writeUserIndexInServer = (idUser) => {
+    pkg.setPackageID(pkg.clientPacketID.writeUserIndexInServer);
+    pkg.writeInt(idUser);
+    socket.send(client);
+  };
+
+  this.writeChangeMap = (idUser, character) => {
+    pkg.setPackageID(pkg.clientPacketID.writeChangeMap);
+    pkg.writeInt(idUser);
+    pkg.writeInt(character.map);
+    socket.send(client);
+  };
+
+  this.sendMyCharacter = (character, idUser) => {
     pkg.setPackageID(pkg.clientPacketID.getMyCharacter);
-    pkg.writeShort(vars.versions.config);
+    /*pkg.writeShort(vars.versions.config);
     pkg.writeShort(vars.versions.messages);
     pkg.writeShort(vars.versions.connection);
     pkg.writeShort(vars.versions.console);
     pkg.writeShort(vars.versions.engine);
     pkg.writeShort(vars.versions.package);
-
-    pkg.writeDouble(character.id);
+    */
+    pkg.writeInt(character.id);
     pkg.writeString(character.nameCharacter);
+    pkg.writeInt(character.idBody);
+    pkg.writeInt(character.idHead);
+    pkg.writeByte(4);
+    //heading
+    pkg.writeByte(character.posX);
+    pkg.writeByte(character.posY);
+    pkg.writeInt(character.idWeapon);
+    pkg.writeInt(character.idShield);
+    pkg.writeInt(character.idHelmet);
+    pkg.writeByte(character.color);
+    pkg.writeByte(character.privileges);
+
+    /*
     pkg.writeByte(character.idClase);
     pkg.writeShort(character.map);
-    pkg.writeByte(character.pos.x);
-    pkg.writeByte(character.pos.y);
     pkg.writeShort(character.idHead);
-    pkg.writeShort(character.idHelmet);
-    pkg.writeShort(character.idWeapon);
-    pkg.writeShort(character.idShield);
-    pkg.writeShort(character.idBody);
     pkg.writeShort(character.hp);
     pkg.writeShort(character.maxHp);
     pkg.writeShort(character.mana);
     pkg.writeShort(character.maxMana);
-    pkg.writeByte(character.privileges);
     pkg.writeDouble(character.exp);
     pkg.writeDouble(character.expNextLevel);
     pkg.writeByte(character.level);
@@ -214,18 +233,17 @@ function HandleServer() {
     pkg.writeByte(character.heading);
     pkg.writeByte(character.inmovilizado);
     pkg.writeByte(character.zonaSegura);
-    pkg.writeString(character.color);
     pkg.writeString(character.clan);
     pkg.writeByte(character.navegando);
     pkg.writeByte(character.attrAgilidad);
     pkg.writeByte(character.attrFuerza);
+    pkg.writeByte(0);
+    /*
     pkg.writeByte(Object.keys(character.inv).length);
-
-    for (let idPos in character.inv) {
-      let item = character.inv[idPos];
+    character.inv.forEach((item, index) => {
       let idItem = item.idItem;
 
-      pkg.writeByte(idPos);
+      pkg.writeByte(index);
       pkg.writeInt(idItem);
       pkg.writeString(vars.datObj[idItem].name);
       pkg.writeByte(item.equipped);
@@ -235,23 +253,25 @@ function HandleServer() {
       pkg.writeByte(vars.datObj[idItem].objType);
       pkg.writeByte(itemValidUser(character.id, idItem));
       pkg.writeString(dataObj(idItem));
-    }
-
+    });
+    */
+    /*
     if (character.maxMana > 0) {
       pkg.writeByte(Object.keys(character.spells).length);
+      character.spells.forEach((spell, index) => {
 
-      for (idPos in character.spells) {
-        let spell = character.spells[idPos];
         let idSpell = spell.idSpell;
 
         let datSpell = vars.datSpell[idSpell];
 
-        pkg.writeByte(idPos);
+        pkg.writeByte(index);
         pkg.writeShort(idSpell);
         pkg.writeString(datSpell.name);
         pkg.writeShort(datSpell.manaRequired);
-      }
+      })
     }
+    */
+    socket.send(vars.clients[idUser]);
   };
 
   this.sendNpc = function (npc) {
@@ -540,52 +560,52 @@ function HandleServer() {
       let data = '';
 
       switch (obj.objType) {
-      case vars.objType.armas:
-        data = 'Daño: ' + obj.minHit + '/' + obj.maxHit;
+        case vars.objType.armas:
+          data = 'Daño: ' + obj.minHit + '/' + obj.maxHit;
 
-        if (obj.apu) {
-          data += ' | Apuñala';
-        }
-
-        if (obj.staffDamageBonus) {
-          data += ' | Daño mágico: ' + obj.staffDamageBonus;
-        }
-        break;
-
-      case vars.objType.armaduras:
-        data = 'Defensa: ' + obj.minDef + '/' + obj.maxDef;
-        break;
-
-      case vars.objType.escudos:
-        data = 'Defensa: ' + obj.minDef + '/' + obj.maxDef;
-        break;
-
-      case vars.objType.cascos:
-        data = 'Defensa: ' + obj.minDef + '/' + obj.maxDef;
-
-        if (obj.minDefMag && obj.maxDefMag) {
-          data += ' | Defensa Mágica: ' + obj.minDefMag + '/' + obj.maxDefMag;
-        }
-        break;
-
-      case vars.objType.flechas:
-        data = 'Daño: ' + obj.minHit + '/' + obj.maxHit;
-        break;
-
-
-      case vars.objType.pergaminos:
-        let spell = vars.datSpell[obj.spellIndex];
-
-        if (spell.minHp && spell.maxHp) {
-          if (spell.subeHp === 1) {
-            data = 'Curación: ' + spell.minHp + '/' + spell.maxHp + ' | ';
-          } else if (spell.subeHp === 2) {
-            data = 'Daño: ' + spell.minHp + '/' + spell.maxHp + ' | ';
+          if (obj.apu) {
+            data += ' | Apuñala';
           }
-        }
 
-        data += 'Maná requerida: ' + spell.manaRequired;
-        break;
+          if (obj.staffDamageBonus) {
+            data += ' | Daño mágico: ' + obj.staffDamageBonus;
+          }
+          break;
+
+        case vars.objType.armaduras:
+          data = 'Defensa: ' + obj.minDef + '/' + obj.maxDef;
+          break;
+
+        case vars.objType.escudos:
+          data = 'Defensa: ' + obj.minDef + '/' + obj.maxDef;
+          break;
+
+        case vars.objType.cascos:
+          data = 'Defensa: ' + obj.minDef + '/' + obj.maxDef;
+
+          if (obj.minDefMag && obj.maxDefMag) {
+            data += ' | Defensa Mágica: ' + obj.minDefMag + '/' + obj.maxDefMag;
+          }
+          break;
+
+        case vars.objType.flechas:
+          data = 'Daño: ' + obj.minHit + '/' + obj.maxHit;
+          break;
+
+
+        case vars.objType.pergaminos:
+          let spell = vars.datSpell[obj.spellIndex];
+
+          if (spell.minHp && spell.maxHp) {
+            if (spell.subeHp === 1) {
+              data = 'Curación: ' + spell.minHp + '/' + spell.maxHp + ' | ';
+            } else if (spell.subeHp === 2) {
+              data = 'Daño: ' + spell.minHp + '/' + spell.maxHp + ' | ';
+            }
+          }
+
+          data += 'Maná requerida: ' + spell.manaRequired;
+          break;
       }
 
       return data;

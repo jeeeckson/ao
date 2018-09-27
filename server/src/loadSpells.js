@@ -191,7 +191,7 @@ fs.readFile('hechizos.dat', 'UTF-8', (err, data) => {
       vars.datSpell[spellIndex].subeAg = parseInt(subeAg.trim());
     }
 
-    esponseSplit = response.split('MinAG=');
+    responseSplit = response.split('MinAG=');
     let minAg = responseSplit[1];
 
     if (minAg) {
@@ -212,7 +212,7 @@ fs.readFile('hechizos.dat', 'UTF-8', (err, data) => {
       vars.datSpell[spellIndex].subeFz = parseInt(subeFz.trim());
     }
 
-    esponseSplit = response.split('MinFU=');
+    responseSplit = response.split('MinFU=');
     let minFz = responseSplit[1];
 
     if (minFz) {
