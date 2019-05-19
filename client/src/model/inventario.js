@@ -1,7 +1,7 @@
 /**
  * Created by horacio on 4/10/16.
  */
-
+import _ from 'lodash';
 export default class Inventario {
   constructor() {
     this._slots = [];

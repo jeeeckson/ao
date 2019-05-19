@@ -33,7 +33,7 @@ export default class ItemGrid extends React.Component {
     const {cantidadSlots, dragAndDropable} = this.state;
     let newArray = new Array(cantidadSlots);
     return newArray.map((slot, index) => {
-      let data = {slotNumber: index + 1};
+      //let data = {slotNumber: index + 1};
       if (dragAndDropable) {
         /**slot.droppable({
         hoverClass: 'ui-state-highlight', //TODO !!!
@@ -142,7 +142,8 @@ export default class ItemGrid extends React.Component {
   }
 
   render = () => {
-    const {gridID, cantidadSlots, dragAndDropable, listItems} = this.props;
+    //const {gridID, cantidadSlots, dragAndDropable, listItems} = this.props;
+    const {gridID} = this.props;
     return (<ul id={gridID}>
       {this.crearSlots()}
     </ul>);

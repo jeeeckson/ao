@@ -9,6 +9,7 @@ import CharacterName from './charactername';
 import CharacterText from './charactertext';
 import SpriteGrh from './spritegrh';
 import RendererUtils from './rendererutils';
+import log from '../utils/log';
 
 export default class EntityRenderer {
   constructor(escala, entityContainer, entityNamesContainer, entityChatContainer, camera, assetManager) {

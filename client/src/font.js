@@ -2,8 +2,6 @@
  * Created by horacio on 5/11/16.
  */
 
-import Palette from './utils/palette';
-
 let FONT_FAMILY = 'Myriad Pro, Arial';
 
 export default {
@@ -13,8 +11,8 @@ export default {
   },
 
   NickColor: {
-    CRIMINAL: Palette.get('red'),
-    CIUDADANO: Palette.get('blue')
+    CRIMINAL: '#123211',
+    CIUDADANO: '#923211'
   },
 
   Index: {
@@ -67,7 +65,7 @@ export default {
     stroke: 'black',
     strokeThickness: 2,
     align: 'center',
-    fill: Palette.get('white')
+    fill: 'rgb(130, 130, 130)'
   },
 
   HOVERING_BASE_FONT: {
@@ -84,19 +82,19 @@ export default {
     fontSize: '7',
     stroke: 'black',
     strokeThickness: 0.2,
-    fill: Palette.get('yellow'),
+    fill: 'rgb(130, 130, 130)',
   },
 
   CLAN_CHAT: {
-    fill: Palette.get('cyan', 'A200')
+    fill: 'rgb(130, 130, 130)'
   },
 
   NOTIFICATION: {
-    fill: Palette.get('orange')
+    fill: 'rgb(130, 130, 130)'
   },
 
   FIGHT: {
-    fill: Palette.get('red'),
+    fill: 'rgb(130, 130, 130)',
     bold: 1
   },
   WARNING: {
@@ -106,16 +104,16 @@ export default {
   },
 
   INFO: {
-    fill: Palette.get('teal', '300')
+    fill: 'rgb(130, 130, 130)'
   },
 
   INFOBOLD: {
-    fill: Palette.get('teal', 'A400'),
+    fill: 'rgb(130, 130, 130)',
     bold: 1
   },
 
   SKILLINFO: {
-    fill: Palette.get('yellow'),
+    fill: 'rgb(130, 130, 130)',
   },
 
   EJECUCION: {
@@ -128,7 +126,7 @@ export default {
   },
 
   VENENO: {
-    fill: Palette.get('light green'),
+    fill: 'rgb(130, 130, 130)',
   },
 
   GUILD: {
@@ -165,7 +163,7 @@ export default {
   },
 
   CENTINELA: {
-    fill: Palette.get('green'),
+    fill: 'rgb(130, 130, 130)',
     bold: 1
   },
 
@@ -180,7 +178,7 @@ export default {
   },
 
   CITIZEN: {
-    fill: Palette.get('blue'),
+    fill: 'rgb(130, 130, 130)',
     bold: 1
   },
 

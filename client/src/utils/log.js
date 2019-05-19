@@ -39,11 +39,6 @@ Logger.prototype.network = (message) => {
 Logger.prototype.error = (message, stacktrace) => {
   if (window.console) {
     console.error(message);
-    if (stacktrace !== undefined && stacktrace === true) {
-      let trace = printStackTrace();
-      console.error(trace.join('\n\n'));
-      console.error('-----------------------------');
-    }
   }
 };
 let log = new Logger('debug');

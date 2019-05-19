@@ -2,11 +2,7 @@
  * Created by horacio on 3/27/16.
  */
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 
 export default class PopUp extends React.Component {
   constructor(props) { // los pop ups generales se ven en todas las pantallas (no solo juego) y estan centrados en el medio
@@ -15,7 +11,7 @@ export default class PopUp extends React.Component {
     this.state = {
       open: this.props.open
     };
-    this.options = { autoOpen: false, close: this.handleClose, ...this.props.addiotionalOptions};
+    this.options = {autoOpen: false, close: this.handleClose, ...this.props.addiotionalOptions};
   }
 
   handleClose = () => {
@@ -37,7 +33,7 @@ export default class PopUp extends React.Component {
         </DialogContent>
         <DialogActions>
           {actions.map((action, index) => {
-            return <Button key={index} onClick={()=>{
+            return <Button key={index} onClick={() => {
               action.close && this.handleClose();
               action.onClick();
             }} color={action.color || 'primary'} autoFocus>

@@ -1,9 +1,9 @@
-import jsonArmas from '../../resources/indices/armas.json';
-import jsonCabezas from '../../resources/indices/cabezas.json';
-import jsonCascos from '../../resources/indices/cascos.json';
-import jsonCuerpos from '../../resources/indices/cuerpos.json';
-import jsonEscudos from '../../resources/indices/escudos.json';
-import jsonFxs from '../../resources/indices/fxs.json';
+import jsonArmas from '../resources/indices/armas';
+import jsonCabezas from '../resources/indices/cabezas';
+import jsonCascos from '../resources/indices/cascos';
+import jsonCuerpos from '../resources/indices/cuerpos';
+import jsonEscudos from '../resources/indices/escudos';
+import jsonFxs from '../resources/indices/fxs';
 //import PIXI from './../lib/pixi';
 import * as PIXI from 'pixi.js';
 import Preloader from './preloader';
@@ -108,7 +108,7 @@ export default class AssetManager {
     if (!this.dataMapas[numMapa]) {
       axios.get('mapas/mapa' + numMapa + '.json').then((data) => {
         this.dataMapas[numMapa] = data.data;
-        completeCallback(self.dataMapas[numMapa]);
+        completeCallback(this.dataMapas[numMapa]);
       }).catch((err) => {
         alert('Error cargando mapa: ' + numMapa + ' - ' + err.message);
         this.getMapaASync(numMapa, completeCallback);

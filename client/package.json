@@ -3,14 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "npm run copy && parcel index.html --out-dir dist  ",
-    "build": "parcel build index.html --public-url ./",
-    "lint": "npx eslint --fix --ext jsx,js client",
+    "start": "react-scripts start",
     "copy": "npm run scss-compile && npm run copyGraphics && npm run copyAudio&& npm run copyIndex",
-    "copyIndex": "copyfiles --flat --verbose --soft ./resources/indices/*.json dist/indices",
+    "copyIndex": "copyfiles --flat --verbose --soft src/resources/indices/*.json dist/indices",
     "copyGraphics": "copyfiles --flat --verbose --soft ./resources/graficos/*.png dist/graficos",
     "copyAudio": "copyfiles --flat --verbose --soft ./resources/audio/sonidos/*.webm dist/audio/sonidos",
-    "scss-compile": "node-sass --include-path scss resources/css/main.scss  resources/css/main.css"
+    "scss-compile": "node-sass --include-path scss src/resources/css/main.scss  resources/css/main.css"
   },
   "author": "",
   "license": "ISC",
@@ -18,26 +16,34 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "^3.0.1",
     "@types/pixi.js": "^4.7.1",
-    "babel-preset-env": "latest",
-    "babel-preset-react": "latest",
+    "axios": "^0.18.0",
     "bytebuffer": "^5.0.1",
+    "howler": "^2.1.2",
     "jss": "latest",
+    "lodash": "^4.17.11",
     "pixi.js": "^4.8.2",
     "react": "^16.5.2",
     "react-dom": "latest",
     "react-jss": "latest",
+    "react-pixi-fiber": "^0.4.9",
+    "react-scripts": "^3.0.1",
     "styled-components": "^3.4.5",
-    "websocket": "^1.0.28",
-    "react-pixi-fiber": "^0.4.9"
+    "websocket": "^1.0.28"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.3",
-    "parcel-bundler": "latest",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.5",
-    "babel-preset-stage-2": "^6.24.1",
     "copyfiles": "^2.1.0",
-    "eslint": "^4.13.1",
     "node-sass": "^4.9.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

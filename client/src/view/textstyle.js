@@ -8,7 +8,7 @@ import * as PIXI from 'pixi.js';
 export default class TextStyle extends PIXI.TextStyle {
   constructor(baseFont, escala, font) {
     if (font) {
-      $.extend(baseFont, baseFont, font);
+      //$.extend(baseFont, baseFont, font);
     }
     super(baseFont);
     this._font = baseFont;

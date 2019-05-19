@@ -5,6 +5,7 @@
 import Enums from './../enums';
 import Font from './../font';
 import Macros from './macros';
+import log from '../utils/log'
 
 export default class Acciones {
   constructor(game, intervalos) {

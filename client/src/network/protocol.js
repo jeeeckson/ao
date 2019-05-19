@@ -3198,7 +3198,7 @@ function MoveItem(buffer) {
   };
 
 }
-
+let ClientPacketID_GMCommands = {};
 let ClientGMPacketID = {
   GMMessage: 1,
   ShowName: 2,

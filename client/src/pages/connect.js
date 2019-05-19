@@ -1,5 +1,5 @@
 import React from 'react';
-import './../../resources/css/main.css';
+import '../resources/css/main.css';
 import TextField from '@material-ui/core/TextField';
 
 export default class Connect extends React.Component {

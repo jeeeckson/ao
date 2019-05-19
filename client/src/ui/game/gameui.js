@@ -4,27 +4,6 @@
 
 import KeyMouseListener from './keymouselistener';
 import Interfaz from './interfaz';
-import popUpSkills from '../popups/popupskills';
-import Comerciar from '../popups/comerciar';
-import InGameMensaje from '../popups/ingamemensaje';
-import Tirar from '../popups/tirar';
-import Boveda from '../popups/boveda';
-import GuiaMapa from '../popups/guiamapa';
-import Opciones from '../popups/opciones';
-import Carpinteria from '../popups/carpinteria';
-import Herreria from '../popups/herreria';
-import Clanes from '../popups/clanes';
-import DetallesClan from '../popups/detallesclan';
-import SolicitudClan from '../popups/solicitudclan';
-import EleccionFaccionClan from '../popups/eleccionfaccionclan';
-import CrearClan from '../popups/crearclan';
-import NoticiasClan from '../popups/noticiasclan';
-import DetallesPersonaje from '../popups/detallespersonaje';
-import Estadisticas from '../popups/estadisticas';
-import PartyLider from '../popups/partylider';
-import PartyMiembro from '../popups/partymiembro';
-import PlayAgain from '../popups/playagain';
-import Menu from '../popups/menu';
 
 export default class GameUI {
 
@@ -231,107 +210,86 @@ export default class GameUI {
   }
 
   get inGameMensaje() {
-    this._inGameMensaje = this._inGameMensaje || this._initPopUp(new InGameMensaje());
-    return this._inGameMensaje;
+    return null
   }
 
   get comerciar() {
-    this._comerciar = this._comerciar || this._initPopUp(new Comerciar(this.game, this.acciones));
-    return this._comerciar;
+    return null
   }
 
   get tirar() {
-    this._tirar = this._tirar || this._initPopUp(new Tirar(this.game, this.acciones));
-    return this._tirar;
+    return null
   }
 
   get boveda() {
-    this._boveda = this._boveda || this._initPopUp(new Boveda(this.game, this.acciones));
-    return this._boveda;
+    return null
   }
 
   get guiaMapa() {
-    this._guiaMapa = this._guiaMapa || this._initPopUp(new GuiaMapa());
-    return this._guiaMapa;
+    return null
   }
 
   get opciones() {
-    this._opciones = this._opciones || this._initPopUp(new Opciones(this.game, this.settings, this.updateKeysCallback.bind(this), this.showMensajeFunction));
-    return this._opciones;
+    return null
   }
 
   get skills() {
-    this._skills = this._skills || this._initPopUp(new popUpSkills(this.game));
-    return this._skills;
+    return null
   }
 
   get menu() {
-    this._menu = this._menu || this._initPopUp(new Menu(this.game, this.showMapa.bind(this), this.showEstadisticas.bind(this), this.showClanes.bind(this), this.showOpciones.bind(this)));
-    return this._menu;
+    return null
   }
 
   get detallesClan() {
-    this._detallesClan = this._detallesClan || this._initPopUp(new DetallesClan(this.game, this._showSolicitudClan.bind(this)));
-    return this._detallesClan;
+    return null
   }
 
   get clanes() {
-    this._clanes = this._clanes || this._initPopUp(new Clanes(this.game, this.detallesClan, this.showMensajeFunction, this._showSolicitudClan.bind(this)));
-    return this._clanes;
+    return null
   }
 
   get solicitudClan() {
-    this._solicitudClan = this._solicitudClan || this._initPopUp(new SolicitudClan(this.game));
-    return this._solicitudClan;
+    return null
   }
 
   get eleccionFaccionClan() {
-    this._eleccionFaccionClan = this._eleccionFaccionClan || this._initPopUp(new EleccionFaccionClan(this.game));
-    return this._eleccionFaccionClan;
+    return null
   }
 
   get crearClan() {
-    this._crearClan = this._crearClan || this._initPopUp(new CrearClan(this.game, this.showMensajeFunction));
-    return this._crearClan;
+    return null
   }
 
   get noticiasClan() {
-    this._noticiasClan = this._noticiasClan || this._initPopUp(new NoticiasClan());
-    return this._noticiasClan;
+    return null
   }
 
   get detallesPersonaje() {
-    this._detallesPersonaje = this._detallesPersonaje || this._initPopUp(new DetallesPersonaje());
-    return this._detallesPersonaje;
+    return null
   }
 
   get estadisticas() {
-    this._estadisticas = this._estadisticas || this._initPopUp(new Estadisticas(this.game));
-    return this._estadisticas;
+    return null
   }
 
   get partyLider() {
-    this._partyLider = this._partyLider || this._initPopUp(new PartyLider(this.game, this.showMensajeFunction));
-    return this._partyLider;
+    return null
   }
 
   get partyMiembro() {
-    this._partyMiembro = this._partyMiembro || this._initPopUp(new PartyMiembro(this.game, this.showMensajeFunction));
-    return this._partyMiembro;
+    return null
   }
 
   get carpinteria() {
-    this._carpinteria = this._carpinteria || this._initPopUp(new Carpinteria(this.game));
-    return this._carpinteria;
+    return null
   }
 
   get herreria() {
-    this._herreria = this._herreria || this._initPopUp(new Herreria(this.game));
-    return this._herreria;
+    return null
   }
 
   get playAgain() {
-    this._playAgain = this._playAgain || this._initPopUp(new PlayAgain(this.game, this.setCrearPjScreenCb));
-    return this._playAgain;
+    return null
   }
 }

@@ -2,6 +2,7 @@
  * Created by horacio on 4/23/16.
  */
 import Enums from './../enums';
+import _ from 'lodash';
 
 export default class Skills {
   constructor() {

@@ -63,7 +63,6 @@ class SpellList extends React.Component {
 
   render = () => {
     return <List
-      className={classes.root}
       component="nav"
       subheader={<ListSubheader component="div">Spells</ListSubheader>}
     >

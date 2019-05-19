@@ -8,6 +8,8 @@ import Utils from '../utils/util';
 import * as PIXI from 'pixi.js';
 import SpriteGrh from './spritegrh';
 import RendererUtils from './rendererutils';
+import log from '../utils/log';
+import _ from 'lodash';
 
 export default class MapaRenderer {
   constructor(camera, assetManager, layer1Container, layer2Container, layer3Container, layer4Container) {
@@ -171,7 +173,6 @@ export default class MapaRenderer {
       this._spritesLayer3[k] = [];
       this._spritesLayer4[k] = [];
     }
-    let nuevoSprite;
 
     let self = this;
     this.camera.forEachVisiblePosition((i, j) => {
@@ -200,7 +201,6 @@ export default class MapaRenderer {
       let grh2 = self.mapa.getGrh2(i, j);
       let grh3 = self.mapa.getGrh3(i, j);
       let grh4 = self.mapa.getGrh4(i, j);
-      let nuevoSprite;
       if (grh2) {
         if (self._spritesLayer2[i][j]) {
           return;

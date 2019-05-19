@@ -129,44 +129,44 @@ export default class Camera {
     }
 
     switch (direccion) {
-    case Enums.Heading.oeste:
-      izqGridX -= 1;
-      if (izqGridX < 1) {
-        return;
-      }
-      for (var y = topGridY; y <= botGridY; y++) {
-        callback(izqGridX, y);
-      }
-      break;
-    case Enums.Heading.este:
-      derGridX += 1;
-      if (derGridX > 100) {
-        return;
-      }
-      for (var y = topGridY; y <= botGridY; y++) {
-        callback(derGridX, y);
-      }
-      break;
-    case Enums.Heading.norte:
-      topGridY -= 1;
-      if (topGridY < 1) {
-        return;
-      }
-      for (var x = izqGridX; x <= derGridX; x++) {
-        callback(x, topGridY);
-      }
-      break;
-    case Enums.Heading.sur:
-      botGridY += 1;
-      if (botGridY > 100) {
-        return;
-      } // <-- ojo
-      for (var x = izqGridX; x <= derGridX; x++) {
-        callback(x, botGridY);
-      }
-      break;
-    default:
-      throw new Error('Heading invalido');
+      case Enums.Heading.oeste:
+        izqGridX -= 1;
+        if (izqGridX < 1) {
+          return;
+        }
+        for (let y = topGridY; y <= botGridY; y++) {
+          callback(izqGridX, y);
+        }
+        break;
+      case Enums.Heading.este:
+        derGridX += 1;
+        if (derGridX > 100) {
+          return;
+        }
+        for (let y = topGridY; y <= botGridY; y++) {
+          callback(derGridX, y);
+        }
+        break;
+      case Enums.Heading.norte:
+        topGridY -= 1;
+        if (topGridY < 1) {
+          return;
+        }
+        for (let x = izqGridX; x <= derGridX; x++) {
+          callback(x, topGridY);
+        }
+        break;
+      case Enums.Heading.sur:
+        botGridY += 1;
+        if (botGridY > 100) {
+          return;
+        } // <-- ojo
+        for (let x = izqGridX; x <= derGridX; x++) {
+          callback(x, botGridY);
+        }
+        break;
+      default:
+        throw new Error('Heading invalido');
     }
   }
 
@@ -191,6 +191,8 @@ export default class Camera {
       dirInversa = Enums.Heading.norte;
       offsetY = 1;
       break;
+    default:
+      break;
     }
     this.forEachVisibleNextLinea(dirInversa, callback, extraPositions, offsetX, offsetY);
   }
@@ -202,12 +204,8 @@ export default class Camera {
       extraXOeste = extraPositions.oeste,
       extraYSur = extraPositions.sur,
       extraYNorte = extraPositions.norte;
-    if ((gridY >= (this.gridY - extraYNorte)) && (gridY < (this.gridY + this.gridH + extraYSur))
-      && (gridX >= (this.gridX - extraXOeste)) && (gridX < (this.gridX + this.gridW + extraXEste))) {
-      return true;
-    } else {
-      return false;
-    }
+    return (gridY >= (this.gridY - extraYNorte)) && (gridY < (this.gridY + this.gridH + extraYSur))
+      && (gridX >= (this.gridX - extraXOeste)) && (gridX < (this.gridX + this.gridW + extraXEste));
   }
 
   rectVisible(rect, extraPositions) { // eje x,y en esquina izquierda superior de rect

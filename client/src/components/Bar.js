@@ -17,7 +17,7 @@ export default class Bar extends React.Component {
   };
 
   _updateBar = () => {
-    const {quantity, maxQuantity, noInverse} = this.state;
+    const {quantity, maxQuantity, noInverse, max} = this.state;
     let percentage = 100;
     if (max) {
       if (noInverse) {
@@ -35,6 +35,6 @@ export default class Bar extends React.Component {
     return <div>
       <div>{label}</div>
       <BarComponent percentage={percentage}/>
-    </div>
+    </div>;
   }
 }

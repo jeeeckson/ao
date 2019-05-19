@@ -128,17 +128,15 @@ export default class Game {
         return;
       }
       this.world.sacarCharacter(entity);
-    }
-    else if (entity instanceof Item) {
+    } else if (entity instanceof Item) {
       this.world.sacarItem(entity);
-    }
-    else {
-      log.error('Tipo de entity desconocido!');
+    } else {
+      //log.error('Tipo de entity desconocido!');
     }
   }
 
   moverCharacter(CharIndex, gridX, gridY) {
-
+    let X = 0, Y = 0;
     if (CharIndex === this.player.id) {
       if ((X !== this.player.gridX) || (Y !== this.player.gridY)) {
         this.resetPosCharacter(CharIndex, X, Y);
@@ -176,8 +174,7 @@ export default class Game {
     }
     if (this.playerState.navegando) { //todo: que sea dependiendo si el char navega, no el player
       this.assetManager.audio.playSound(Enums.SONIDOS.pasoNavegando);
-    }
-    else {
+    } else {
       char.pasoDerecho = !char.pasoDerecho;
       if (char.pasoDerecho) {
         this.assetManager.audio.playSound(Enums.SONIDOS.paso1);
@@ -212,7 +209,7 @@ export default class Game {
   }
 
   agregarCharacter(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name,
-    NickColor, Privileges) {
+                   NickColor, Privileges) {
 
     let nombre, clan;
     if (Name.indexOf('<') > 0) {
@@ -280,24 +277,24 @@ export default class Game {
       if (this.playerMovement.estaCaminando()) {
         let dir;
         switch (this.playerMovement.getDirMov()) {
-        case Enums.Heading.sur:
-          Y = Y - 1;
-          dir = Enums.Heading.sur;
-          break;
-        case Enums.Heading.norte:
-          Y = Y + 1;
-          dir = Enums.Heading.norte;
-          break;
-        case Enums.Heading.este:
-          X = X - 1;
-          dir = Enums.Heading.este;
-          break;
-        case Enums.Heading.oeste:
-          X = X + 1;
-          dir = Enums.Heading.oeste;
-          break;
-        default:
-          break;
+          case Enums.Heading.sur:
+            Y = Y - 1;
+            dir = Enums.Heading.sur;
+            break;
+          case Enums.Heading.norte:
+            Y = Y + 1;
+            dir = Enums.Heading.norte;
+            break;
+          case Enums.Heading.este:
+            X = X - 1;
+            dir = Enums.Heading.este;
+            break;
+          case Enums.Heading.oeste:
+            X = X + 1;
+            dir = Enums.Heading.oeste;
+            break;
+          default:
+            break;
         }
         this.playerMovement.forceCaminar(dir);
         this.ignorarProximoSonidoPaso = true; // que no haga sonido este paso forzado
@@ -449,20 +446,20 @@ export default class Game {
       let x = this.player.gridX;
       let y = this.player.gridY;
       switch (direccion) {
-      case Enums.Heading.oeste:
-        x--;
-        break;
-      case Enums.Heading.este:
-        x++;
-        break;
-      case Enums.Heading.norte:
-        y--;
-        break;
-      case Enums.Heading.sur:
-        y++;
-        break;
-      default:
-        throw new Error('Direccion invalida!');
+        case Enums.Heading.oeste:
+          x--;
+          break;
+        case Enums.Heading.este:
+          x++;
+          break;
+        case Enums.Heading.norte:
+          y--;
+          break;
+        case Enums.Heading.sur:
+          y++;
+          break;
+        default:
+          throw new Error('Direccion invalida!');
       }
 
       if (this.map.isBlocked(x, y)) {
@@ -477,8 +474,7 @@ export default class Game {
       if (charInPos) {
         if (!charInPos.muerto) {
           return false;
-        }
-        else {
+        } else {
           // tienen que estar o ambos en agua o ambos en tierra (player y casper)
           if (this.map.hayAgua(x, y) !== this.map.hayAgua(this.player.gridX, this.player.gridY)) {
             return false;
@@ -572,11 +568,11 @@ export default class Game {
     this.logeado = true;
     this.started = true;
     this.initGameTick();
-    log.info('Game loop started.');
+    //log.info('Game loop started.');
   }
 
   stop() {
-    log.info('Game stopped.');
+    //log.info('Game stopped.');
     this.isStopped = true;
   }
 

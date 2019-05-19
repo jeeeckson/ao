@@ -5,12 +5,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import style from 'styled-components';
 import Mensaje from './popups/mensaje';
-import './../../resources/css/main.css';
+import '../resources/css/main.css';
 import Connect from '../pages/connect';
 import Renderer from '../view/renderer';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CreateCharacter from '../pages/createCharacter';
 import Button from '@material-ui/core/Button';
+import _ from 'lodash';
 
 // Container widths
 //

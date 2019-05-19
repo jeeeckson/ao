@@ -12,8 +12,6 @@ import UIManager from "./ui/uimanager";
 import AssetManager from "./assets/assetmanager";
 import withRoot from "./withRoot";
 import setupAudio from "./setupAudio";
-import './lib/lodash';
-import './lib/stacktrace';
 import './utils/log';
 import './detect';
 
@@ -50,7 +48,7 @@ class Main extends React.Component {
       settings: settings,
       assetManager: assetManager,
       app: new PIXI.Application({width: 600, height: 600, transparent: false})
-    }
+    };
   }
 
   updatePixiCnt = (element) => {

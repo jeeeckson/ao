@@ -3,7 +3,7 @@
  */
 
 import DOMdata from '../../../resources/menus/controls';
-import PopUp from './popup'; import React from 'react';
+import PopUp from './popup';
 
 export default class Controls extends PopUp {
   constructor() {
@@ -14,13 +14,15 @@ export default class Controls extends PopUp {
       minHeight: 200
     };
     super(DOMdata, options);
-    this.$ok = $('#controlsButtonOk');
+    //this.$ok = $('#controlsButtonOk');
     this.initCallbacks();
   }
-
+/*
   initCallbacks() {
     this.$ok.click(() => {
       this.hide();
     });
   }
+
+ */
 }

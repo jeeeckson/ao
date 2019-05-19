@@ -2,6 +2,7 @@
  * Created by horacio on 4/8/16.
  */
 import Enums from '../../enums';
+import CharcodeMap from '../../utils/charcodemap';
 
 export default class KeyMouseInput {
   constructor(game, acciones) {

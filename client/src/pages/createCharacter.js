@@ -24,14 +24,6 @@ export default class CreateCharacter extends React.Component {
     };
   }
 
-  setBotonTirarDadosCallback(cb) {
-
-    $('#crearBotonTirarDados').click(() => {
-      cb();
-      this.assetManager.audio.playSound(Enums.SONIDOS.dados);
-    });
-  }
-
   setBotonVolverCallback() {
     this.props.cb();
   }

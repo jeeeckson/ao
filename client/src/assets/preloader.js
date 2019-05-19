@@ -2,8 +2,8 @@
  * Created by horacio on 3/22/16.
  */
 
-import PreloadGraficos from '../../resources/preload_config/preload_graficos.json';
-import PreloadSounds from '../../resources/preload_config/preload_sounds.json';
+import PreloadGraficos from '../resources/preload_config/preload_graficos';
+import PreloadSounds from '../resources/preload_config/preload_sounds';
 //import PIXI from './../lib/pixi';
 import * as PIXI from 'pixi.js';
 
@@ -33,18 +33,12 @@ export default class Preloader {
       this.assetManager.indices = this.loader.resources.indices.data;
       return true;
     }
-    // fonts: // OJO: si se usan web fonts sacar esto y el script del index
-    WebFont.load({
-      custom: {
-        families: ['Myriad Pro:n4,n7,i4,i7']
-      }
-    });
 
     //sounds:
     this._preloadSoundsAsync();
 
     // graficos:
-    this.loader.add('indices', 'indices/graficos.json');
+    this.loader.add('indices', 'indices/graficos.js');
     PreloadGraficos.forEach(grafico => {
       this.loader.add('' + grafico, 'graficos/' + grafico + '.png');
     });

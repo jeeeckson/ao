@@ -1,4 +1,4 @@
-import Howler from './../lib/howler';
+import Howler from 'howler';
 import AudioClima from './audioclima';
 
 export default class Audio {

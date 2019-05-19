@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js';
-import {Stage, Container, Sprite} from 'react-pixi-fiber';
 import React from 'react';
 import Camera from './camera';
 import Consola from './consola';
@@ -39,7 +38,7 @@ export default class Renderer extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    const {assetManager, uiManager, app} = this.props;
+    const {assetManager, uiManager} = this.props;
     this.pixi_cnt = null;
     this.MAPA_WIDTH = 100; // todo: usarlo desde mapa
     this.assetManager = assetManager;

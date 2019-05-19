@@ -4,20 +4,9 @@ import {withStyles} from '@material-ui/core/styles';
 import {Sprite, Stage} from "react-pixi-fiber";
 import * as PIXI from 'pixi.js';
 import Enums from './../enums';
-import style from 'styled-components';
 import Utils from "../utils/util";
 import creation from "../utils/creation";
 
-const Image = style.div`
-  width: 40px;
-  height: 40px;
-  background: Transparent;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: ${props => props.url ? props.url : 'none' };
-  border: none;
-  outline: none;
-`;
 const styles = theme => ({
   root: {
     display: 'flex',

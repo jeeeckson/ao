@@ -2,31 +2,28 @@
  * Created by horacio on 4/19/16.
  */
 
-import DOMdata from '../../../resources/menus/inGameMensaje';
-import PopUp from './popup'; import React from 'react';
+import PopUp from './popup';
+import React from 'react';
 
-export default class InGameMensaje extends PopUp {
-  constructor() {
-    let options = {
-      width: 300,
-      height: 280,
-      minWidth: 200,
-      minHeight: 150
-    };
-    super(DOMdata, options);
-    this.initCallbacks();
+export default class InGameMensaje extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {message: ''};
   }
 
-  show(mensaje) {
-    super.show();
-    $('#inGameMensajeContenido').text(mensaje);
-    $('#inGameMensajeBotonOk').focus();
+  show(message) {
+    this.setState(message)
   }
 
-  initCallbacks() {
-    let self = this;
-    $('#inGameMensajeBotonOk').click(() => {
-      self.hide();
-    });
+
+  render() {
+    return <PopUp
+      size={{
+        width: 300,
+        height: 280,
+        minWidth: 200,
+        minHeight: 150
+      }}
+      title={this.state.message}/>
   }
 }

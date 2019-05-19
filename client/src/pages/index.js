@@ -10,8 +10,6 @@ import './../../css/main.css';
 import AssetManager from '../assets/assetmanager';
 import UIManager from '../ui/uimanager';
 import Settings from '../storage/settings';
-import '../lib/lodash';
-import '../lib/stacktrace';
 import '../utils/log';
 import '../detect';
 

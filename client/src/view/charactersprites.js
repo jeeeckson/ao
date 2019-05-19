@@ -6,6 +6,7 @@ import Enums from '../enums';
 //import PIXI from '../lib/pixi';
 import * as PIXI from 'pixi.js';
 import SpriteGrh from './spritegrh';
+import log from '../utils/log';
 
 export default class CharacterSprites extends PIXI.Container {
   constructor() {

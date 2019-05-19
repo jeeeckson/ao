@@ -2,7 +2,7 @@ import Enums from "../enums";
 
 export default (PacketID, pkg, handler) => {
   let buffer = pkg;
-  debugger
+
   switch (PacketID) {
 
     case 0: {
@@ -1222,7 +1222,7 @@ export default (PacketID, pkg, handler) => {
     }
 
     default: {
-      msg = 'error decoding packet id: ' + PacketID;
+      let msg = 'error decoding packet id: ' + PacketID;
       throw new Error(msg);
     }
   }

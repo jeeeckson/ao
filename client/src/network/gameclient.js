@@ -4,6 +4,7 @@ import Font from './../font';
 import Protocolo from './protocol';
 import Package from './Package';
 import config from '../config.json';
+import log from '../utils/log';
 import serverCallsHandler from './serverCallsHandler';
 
 export default class GameClient {
@@ -470,8 +471,8 @@ export default class GameClient {
   handleGuildLeaderInfo(GuildList, MemberList, GuildNews, JoinRequests) {
     //TODO: usar GuildNews
     this.handleGuildMemberInfo(GuildList, MemberList);
-    log.error(aspirantes);
     let aspirantes = Utils.splitNullArray(JoinRequests);
+    log.error(aspirantes);
     if (aspirantes[0]) {
       this.game.gameUI.clanes.setNombresSolicitantes(aspirantes);
     } else {

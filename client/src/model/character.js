@@ -7,7 +7,6 @@ export default class Character extends Entity {
 
     super(gridX, gridY);
 
-    let self = this;
     if (!Name) // es un bicho o npc
     {
       this.moveSpeed = 200;
