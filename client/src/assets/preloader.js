@@ -27,7 +27,7 @@ export default class Preloader {
   };
 
   preload(progress_callback) {
-
+    console.log('loading')
     if (this.loader.resources.indices) {
       this.loadGraphics();
       this.assetManager.indices = this.loader.resources.indices.data;

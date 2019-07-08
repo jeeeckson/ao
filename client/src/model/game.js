@@ -209,7 +209,7 @@ export default class Game {
   }
 
   agregarCharacter(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name,
-                   NickColor, Privileges) {
+                   NickColor) {
 
     let nombre, clan;
     if (Name.indexOf('<') > 0) {
@@ -219,7 +219,6 @@ export default class Game {
       nombre = Name;
       clan = null;
     }
-
     if (this.world.getCharacter(CharIndex)) {
       if (CharIndex === this.player.id) { //"cambio de mapa", TODO: ver bien esto
         // setear cosas que pueden cambiar al cambiar mapa (color nombre, sacar chat,pos)

@@ -8,8 +8,11 @@ export default class ChatBox extends React.Component {
     this.props = props;
     this.state = {
       textBox: '',
-      show: props.show
-    }
+      show: props.show,
+      game: props.game,
+      talkingToClan: false,
+      commandChat: props.commandChat
+    };
   }
 
   handleChange = name => event => {
@@ -18,15 +21,15 @@ export default class ChatBox extends React.Component {
     });
   };
   submit = () => {
-    const {textBox} = this.state;
-    if (this.game.player) {
-      if (this.talkingToClan) {
-        this.game.client.sendGuildMessage(textBox);
-        this.talkingToClan = false;
+    const {textBox, game, talkingToClan, commandChat} = this.state;
+    if (game.player) {
+      if (talkingToClan) {
+        game.client.sendGuildMessage(textBox);
+        this.setState({talkingToClan: false});
       } else {
-        let res = this.comandosChat.parsearChat(textBox);
+        let res = commandChat.parsearChat(textBox);
         if (res) {
-          this.game.client.sendTalk(res);
+          game.client.sendTalk(res);
         }
       }
     }
@@ -38,10 +41,10 @@ export default class ChatBox extends React.Component {
     this.setState({show: false})
   };
   render = () => {
-    const {textBox} = this.state;
+    const {textBox, game} = this.state;
     return (
       <div id="chatinputContainer" className="inner_border_default" onKeyPress={(ev) => {
-        if (this.game.isPaused || (this.game.gameUI.hayPopUpActivo())) {
+        if (game.isPaused || (game.gameUI && game.gameUI.hayPopUpActivo())) {
           return;
         }
         if (ev.key === 'Enter') {

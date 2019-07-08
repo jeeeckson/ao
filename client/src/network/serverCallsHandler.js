@@ -1,5 +1,24 @@
 import Enums from "../enums";
-
+let serverCalls = {};
+/**
+serverCalls[Enums.serverPacketID.handleLogged] = handleLogged;
+serverCalls[Enums.serverPacketID.handleRemoveDialogs] = handleRemoveDialogs;
+serverCalls[Enums.serverPacketID.handleRemoveCharDialog] = handleRemoveCharDialog;
+serverCalls[Enums.serverPacketID.handleNavigateToggle] = handleNavigateToggle;
+serverCalls[Enums.serverPacketID.handleDisconnect] = handleDisconnect;
+serverCalls[Enums.serverPacketID.handleCommerceEnd] = handleCommerceEnd;
+serverCalls[Enums.serverPacketID.handleBankEnd] = handleBankEnd;
+serverCalls[Enums.serverPacketID.handleCommerceInit] = handleCommerceInit;
+serverCalls[Enums.serverPacketID.ping] = ping;
+serverCalls[Enums.serverPacketID.attackMele] = attackMele;
+serverCalls[Enums.serverPacketID.attackRange] = attackRange;
+serverCalls[Enums.serverPacketID.attackSpell] = attackSpell;
+serverCalls[Enums.serverPacketID.tirarItem] = tirarItem;
+serverCalls[Enums.serverPacketID.agarrarItem] = agarrarItem;
+serverCalls[Enums.serverPacketID.buyItem] = buyItem;
+serverCalls[Enums.serverPacketID.sellItem] = sellItem;
+serverCalls[Enums.serverPacketID.changeSeguro] = changeSeguro;
+ */
 export default (PacketID, pkg, handler) => {
   let buffer = pkg;
 
@@ -51,7 +70,7 @@ export default (PacketID, pkg, handler) => {
     }
 
     case 9: {
-      let DestUserName = buffer.ReadUnicodeString();
+      let DestUserName = buffer.ReadString();
       handler.handleUserCommerceInit(DestUserName);
       break;
     }
@@ -67,7 +86,7 @@ export default (PacketID, pkg, handler) => {
     }
 
     case 12: {
-      let Chat = buffer.ReadUnicodeString();
+      let Chat = buffer.ReadString();
       let FontIndex = buffer.ReadByte();
       handler.handleCommerceChat(Chat, FontIndex);
       break;
@@ -150,7 +169,7 @@ export default (PacketID, pkg, handler) => {
 
     case 23: {
 
-      let Chat = buffer.ReadUnicodeString();
+      let Chat = buffer.ReadString();
       let CharIndex = buffer.ReadInteger();
       let R = buffer.ReadByte();
       let G = buffer.ReadByte();
@@ -163,7 +182,7 @@ export default (PacketID, pkg, handler) => {
 
     case 24: {
 
-      let Chat = buffer.ReadUnicodeString();
+      let Chat = buffer.ReadString();
       let FontIndex = buffer.ReadByte();
 
       handler.handleConsoleMsg(Chat, FontIndex);
@@ -173,7 +192,7 @@ export default (PacketID, pkg, handler) => {
 
     case 25: {
 
-      let Chat = buffer.ReadUnicodeString();
+      let Chat = buffer.ReadString();
 
       handler.handleGuildChat(Chat);
 
@@ -182,7 +201,7 @@ export default (PacketID, pkg, handler) => {
 
     case 26: {
 
-      let Chat = buffer.ReadUnicodeString();
+      let Chat = buffer.ReadString();
 
       handler.handleShowMessageBox(Chat);
 
@@ -208,9 +227,8 @@ export default (PacketID, pkg, handler) => {
     }
 
     case 29: {
-
       let CharIndex = buffer.ReadInteger();
-      let Name = buffer.ReadUnicodeString();
+      let Name = buffer.ReadString();
       let Body = buffer.ReadInteger();
       let Head = buffer.ReadInteger();
       let Heading = buffer.ReadByte();
@@ -223,10 +241,9 @@ export default (PacketID, pkg, handler) => {
       let FXLoops = 1;
       //let FX = buffer.ReadInteger();
       //let FXLoops = buffer.ReadInteger();
-      let NickColor = buffer.ReadByte();
-      let Privileges = buffer.ReadByte();
+      let NickColor = buffer.ReadString();
 
-      handler.handleCharacterCreate(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name, NickColor, Privileges);
+      handler.handleCharacterCreate(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name, NickColor);
 
       break;
     }
@@ -243,7 +260,7 @@ export default (PacketID, pkg, handler) => {
     case 31: {
 
       let CharIndex = buffer.ReadInteger();
-      let NewName = buffer.ReadUnicodeString();
+      let NewName = buffer.ReadString();
 
       handler.handleCharacterChangeNick(CharIndex, NewName);
 
@@ -342,7 +359,7 @@ export default (PacketID, pkg, handler) => {
 
     case 40: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleGuildList(Data);
 
@@ -417,7 +434,7 @@ export default (PacketID, pkg, handler) => {
 
       let Slot = buffer.ReadByte();
       let ObjIndex = buffer.ReadInteger();
-      let ObjName = buffer.ReadUnicodeString();
+      let ObjName = buffer.ReadString();
       let Amount = buffer.ReadInteger();
       let Equiped = buffer.ReadBoolean();
       let GrhIndex = buffer.ReadInteger();
@@ -437,7 +454,7 @@ export default (PacketID, pkg, handler) => {
 
       let Slot = buffer.ReadByte();
       let ObjIndex = buffer.ReadInteger();
-      let ObjName = buffer.ReadUnicodeString();
+      let ObjName = buffer.ReadString();
       let Amount = buffer.ReadInteger();
       let GrhIndex = buffer.ReadInteger();
       let ObjType = buffer.ReadByte();
@@ -456,7 +473,7 @@ export default (PacketID, pkg, handler) => {
 
       let Slot = buffer.ReadByte();
       let SpellID = buffer.ReadInteger();
-      let Name = buffer.ReadUnicodeString();
+      let Name = buffer.ReadString();
 
       handler.handleChangeSpellSlot(Slot, SpellID, Name);
 
@@ -484,7 +501,7 @@ export default (PacketID, pkg, handler) => {
       let i;
       for (i = 0; i < Count; ++i) {
         let e = {
-          Name: buffer.ReadUnicodeString(),
+          Name: buffer.ReadString(),
           GrhIndex: buffer.ReadInteger(),
           LingH: buffer.ReadInteger(),
           LingP: buffer.ReadInteger(),
@@ -508,7 +525,7 @@ export default (PacketID, pkg, handler) => {
       let i;
       for (i = 0; i < Count; ++i) {
         let e = {
-          Name: buffer.ReadUnicodeString(),
+          Name: buffer.ReadString(),
           GrhIndex: buffer.ReadInteger(),
           LingH: buffer.ReadInteger(),
           LingP: buffer.ReadInteger(),
@@ -532,7 +549,7 @@ export default (PacketID, pkg, handler) => {
       let i;
       for (i = 0; i < Count; ++i) {
         let e = {
-          Name: buffer.ReadUnicodeString(),
+          Name: buffer.ReadString(),
           GrhIndex: buffer.ReadInteger(),
           Madera: buffer.ReadInteger(),
           MaderaElfica: buffer.ReadInteger(),
@@ -557,7 +574,7 @@ export default (PacketID, pkg, handler) => {
 
     case 55: {
 
-      let Message = buffer.ReadUnicodeString();
+      let Message = buffer.ReadString();
 
       handler.handleErrorMsg(Message);
 
@@ -582,7 +599,7 @@ export default (PacketID, pkg, handler) => {
 
     case 58: {
 
-      let Texto = buffer.ReadUnicodeString();
+      let Texto = buffer.ReadString();
       let Grh = buffer.ReadInteger();
 
       handler.handleShowSignal(Texto, Grh);
@@ -593,7 +610,7 @@ export default (PacketID, pkg, handler) => {
     case 59: {
 
       let Slot = buffer.ReadByte();
-      let ObjName = buffer.ReadUnicodeString();
+      let ObjName = buffer.ReadString();
       let Amount = buffer.ReadInteger();
       let Price = buffer.ReadSingle();
       let GrhIndex = buffer.ReadInteger();
@@ -662,9 +679,9 @@ export default (PacketID, pkg, handler) => {
     case 64: {
 
       let ForumType = buffer.ReadLong();
-      let Title = buffer.ReadUnicodeString();
-      let Author = buffer.ReadUnicodeString();
-      let Message = buffer.ReadUnicodeString();
+      let Title = buffer.ReadString();
+      let Author = buffer.ReadString();
+      let Message = buffer.ReadString();
 
       handler.handleAddForumMsg(ForumType, Title, Author, Message);
 
@@ -741,7 +758,7 @@ export default (PacketID, pkg, handler) => {
 
     case 72: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleTrainerCreatureList(Data);
 
@@ -750,9 +767,9 @@ export default (PacketID, pkg, handler) => {
 
     case 73: {
 
-      let News = buffer.ReadUnicodeString();
-      let EnemiesList = buffer.ReadUnicodeString();
-      let AlliesList = buffer.ReadUnicodeString();
+      let News = buffer.ReadString();
+      let EnemiesList = buffer.ReadString();
+      let AlliesList = buffer.ReadString();
 
       handler.handleGuildNews(News, EnemiesList, AlliesList);
 
@@ -761,7 +778,7 @@ export default (PacketID, pkg, handler) => {
 
     case 74: {
 
-      let Details = buffer.ReadUnicodeString();
+      let Details = buffer.ReadString();
 
       handler.handleOfferDetails(Details);
 
@@ -770,7 +787,7 @@ export default (PacketID, pkg, handler) => {
 
     case 75: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleAlianceProposalsList(Data);
 
@@ -779,7 +796,7 @@ export default (PacketID, pkg, handler) => {
 
     case 76: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handlePeaceProposalsList(Data);
 
@@ -788,7 +805,7 @@ export default (PacketID, pkg, handler) => {
 
     case 77: {
 
-      let CharName = buffer.ReadUnicodeString();
+      let CharName = buffer.ReadString();
       let Race = buffer.ReadByte();
       let Class = buffer.ReadByte();
       let Gender = buffer.ReadByte();
@@ -796,9 +813,9 @@ export default (PacketID, pkg, handler) => {
       let Gold = buffer.ReadLong();
       let Bank = buffer.ReadLong();
       let Reputation = buffer.ReadLong();
-      let PreviousPetitions = buffer.ReadUnicodeString();
-      let CurrentGuild = buffer.ReadUnicodeString();
-      let PreviousGuilds = buffer.ReadUnicodeString();
+      let PreviousPetitions = buffer.ReadString();
+      let CurrentGuild = buffer.ReadString();
+      let PreviousGuilds = buffer.ReadString();
       let RoyalArmy = buffer.ReadBoolean();
       let ChaosLegion = buffer.ReadBoolean();
       let CiudadanosMatados = buffer.ReadLong();
@@ -811,10 +828,10 @@ export default (PacketID, pkg, handler) => {
 
     case 78: {
 
-      let GuildList = buffer.ReadUnicodeString();
-      let MemberList = buffer.ReadUnicodeString();
-      let GuildNews = buffer.ReadUnicodeString();
-      let JoinRequests = buffer.ReadUnicodeString();
+      let GuildList = buffer.ReadString();
+      let MemberList = buffer.ReadString();
+      let GuildNews = buffer.ReadString();
+      let JoinRequests = buffer.ReadString();
 
       handler.handleGuildLeaderInfo(GuildList, MemberList, GuildNews, JoinRequests);
 
@@ -823,8 +840,8 @@ export default (PacketID, pkg, handler) => {
 
     case 79: {
 
-      let GuildList = buffer.ReadUnicodeString();
-      let MemberList = buffer.ReadUnicodeString();
+      let GuildList = buffer.ReadString();
+      let MemberList = buffer.ReadString();
 
       handler.handleGuildMemberInfo(GuildList, MemberList);
 
@@ -833,19 +850,19 @@ export default (PacketID, pkg, handler) => {
 
     case 80: {
 
-      let GuildName = buffer.ReadUnicodeString();
-      let Founder = buffer.ReadUnicodeString();
-      let FoundationDate = buffer.ReadUnicodeString();
-      let Leader = buffer.ReadUnicodeString();
-      let URL = buffer.ReadUnicodeString();
+      let GuildName = buffer.ReadString();
+      let Founder = buffer.ReadString();
+      let FoundationDate = buffer.ReadString();
+      let Leader = buffer.ReadString();
+      let URL = buffer.ReadString();
       let MemberCount = buffer.ReadInteger();
       let ElectionsOpen = buffer.ReadBoolean();
-      let Aligment = buffer.ReadUnicodeString();
+      let Aligment = buffer.ReadString();
       let EnemiesCount = buffer.ReadInteger();
       let AlliesCount = buffer.ReadInteger();
-      let AntifactionPoints = buffer.ReadUnicodeString();
-      let Codex = buffer.ReadUnicodeString();
-      let GuildDesc = buffer.ReadUnicodeString();
+      let AntifactionPoints = buffer.ReadString();
+      let Codex = buffer.ReadString();
+      let GuildDesc = buffer.ReadString();
 
       handler.handleGuildDetails(GuildName, Founder, FoundationDate, Leader, URL, MemberCount, ElectionsOpen, Aligment, EnemiesCount, AlliesCount, AntifactionPoints, Codex, GuildDesc);
 
@@ -870,7 +887,7 @@ export default (PacketID, pkg, handler) => {
 
     case 83: {
 
-      let Details = buffer.ReadUnicodeString();
+      let Details = buffer.ReadString();
 
       handler.handleShowUserRequest(Details);
 
@@ -905,7 +922,7 @@ export default (PacketID, pkg, handler) => {
       let MaxDef = buffer.ReadInteger();
       let MinDef = buffer.ReadInteger();
       let Price = buffer.ReadLong();
-      let ObjName = buffer.ReadUnicodeString();
+      let ObjName = buffer.ReadString();
 
       handler.handleChangeUserTradeSlot(OfferSlot, ObjIndex, Amount, GrhIndex, ObjType, MaxHit, MinHit, MaxDef, MinDef, Price, ObjName);
 
@@ -933,7 +950,7 @@ export default (PacketID, pkg, handler) => {
 
       let CharIndex = buffer.ReadInteger();
       let NickColor = buffer.ReadByte();
-      let Tag = buffer.ReadUnicodeString();
+      let Tag = buffer.ReadString();
 
       handler.handleUpdateTagAndStatus(CharIndex, NickColor, Tag);
 
@@ -942,7 +959,7 @@ export default (PacketID, pkg, handler) => {
 
     case 90: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleSpawnList(Data);
 
@@ -951,7 +968,7 @@ export default (PacketID, pkg, handler) => {
 
     case 91: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleShowSOSForm(Data);
 
@@ -960,7 +977,7 @@ export default (PacketID, pkg, handler) => {
 
     case 92: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleShowMOTDEditionForm(Data);
 
@@ -977,7 +994,7 @@ export default (PacketID, pkg, handler) => {
 
     case 94: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleUserNameList(Data);
 
@@ -986,7 +1003,7 @@ export default (PacketID, pkg, handler) => {
 
     case 95: {
 
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
 
       handler.handleShowDenounces(Data);
 
@@ -1001,7 +1018,7 @@ export default (PacketID, pkg, handler) => {
       let i;
       for (i = 0; i < Count; ++i) {
         let e = {
-          Usuario: buffer.ReadUnicodeString()
+          Usuario: buffer.ReadString()
 
         };
         Items.push(e);
@@ -1013,12 +1030,12 @@ export default (PacketID, pkg, handler) => {
 
     case 97: {
 
-      let Creador = buffer.ReadUnicodeString();
-      let Motivo = buffer.ReadUnicodeString();
+      let Creador = buffer.ReadString();
+      let Motivo = buffer.ReadString();
       let Online = buffer.ReadBoolean();
-      let IP = buffer.ReadUnicodeString();
-      let OnlineTime = buffer.ReadUnicodeString();
-      let Obs = buffer.ReadUnicodeString();
+      let IP = buffer.ReadString();
+      let OnlineTime = buffer.ReadString();
+      let Obs = buffer.ReadString();
 
       handler.handleRecordDetails(Creador, Motivo, Online, IP, OnlineTime, Obs);
 
@@ -1036,7 +1053,7 @@ export default (PacketID, pkg, handler) => {
     case 99: {
 
       let EsLider = buffer.ReadByte();
-      let Data = buffer.ReadUnicodeString();
+      let Data = buffer.ReadString();
       let Exp = buffer.ReadLong();
 
       handler.handleShowPartyForm(EsLider, Data, Exp);
@@ -1120,7 +1137,7 @@ export default (PacketID, pkg, handler) => {
           break;
 
         case Enums.eMessage.Home:
-          handler.handleHome(buffer.ReadByte(), buffer.ReadInteger(), buffer.ReadUnicodeString());
+          handler.handleHome(buffer.ReadByte(), buffer.ReadInteger(), buffer.ReadString());
           break;
 
         case Enums.eMessage.DontSeeAnything:

@@ -39,6 +39,7 @@ export default class ClimaRenderer {
         anguloBase = -anguloBase;
       }
       for (let i = 0; i < cantidadGotas; ++i) {
+        console.log("clima", this.assetManager.getGrh(23652))
         let gota = new SpriteGrh(this.assetManager.getGrh(23652));
 
         gota.x = Math.random() * this.pixiRenderer.width;

@@ -1,6 +1,6 @@
 let vars = require('./vars');
 let pkg = require('./package');
-import socket from './socket';
+import {send, sendAll} from './socket';
 
 let handleServer = new HandleServer();
 
@@ -9,7 +9,7 @@ function HandleServer() {
     pkg.setPackageID(pkg.clientPacketID.changeHeading);
     pkg.writeDouble(idUser);
     pkg.writeByte(heading);
-    socket.send(client);
+    send(client, 'changeHeading');
   };
 
   this.console = function (msg, color, bold, italica, client) {
@@ -25,7 +25,7 @@ function HandleServer() {
 
     pkg.writeByte(bold);
     pkg.writeByte(italica);
-    socket.send(client);
+    send(client, 'console');
   };
 
   this.consoleToAll = function (msg, color, bold, italica) {
@@ -41,7 +41,7 @@ function HandleServer() {
 
     pkg.writeByte(bold);
     pkg.writeByte(italica);
-    socket.sendAll(pkg.dataSend());
+    sendAll(pkg.dataSend());
   };
 
   this.changeHelmet = function (idUser, idHelmet, idPos, client) {
@@ -49,7 +49,7 @@ function HandleServer() {
     pkg.writeDouble(idUser);
     pkg.writeShort(idHelmet);
     pkg.writeByte(idPos);
-    socket.send(client);
+    send(client);
   };
 
   this.changeRopa = function (idUser, idBody, idPos, client) {
@@ -57,7 +57,7 @@ function HandleServer() {
     pkg.writeDouble(idUser);
     pkg.writeShort(idBody);
     pkg.writeByte(idPos);
-    socket.send(client);
+    send(client);
   };
 
   this.changeWeapon = function (idUser, idWeapon, idPos, client) {
@@ -65,14 +65,14 @@ function HandleServer() {
     pkg.writeDouble(idUser);
     pkg.writeShort(idWeapon);
     pkg.writeByte(idPos);
-    socket.send(client);
+    send(client);
   };
 
   this.changeArrow = function (idUser, idPos, client) {
     pkg.setPackageID(pkg.clientPacketID.changeArrow);
     pkg.writeDouble(idUser);
     pkg.writeByte(idPos);
-    socket.send(client);
+    send(client, 'changeArrow');
   };
 
   this.changeShield = function (idUser, idShield, idPos, client) {
@@ -80,7 +80,7 @@ function HandleServer() {
     pkg.writeDouble(idUser);
     pkg.writeShort(idShield);
     pkg.writeByte(idPos);
-    socket.send(client);
+    send(client, 'changeShield');
   };
 
   this.inmo = function (idUser, inmo, client) {
@@ -90,7 +90,7 @@ function HandleServer() {
     pkg.writeByte(inmo);
     pkg.writeByte(user.pos.x);
     pkg.writeByte(user.pos.y);
-    socket.send(client);
+    send(client, 'inmo');
   };
 
   this.walkServer = function (pos, heading, client) {
@@ -98,7 +98,7 @@ function HandleServer() {
     pkg.writeByte(pos.x);
     pkg.writeByte(pos.y);
     pkg.writeByte(heading);
-    socket.send(client);
+    send(client, 'walk server');
   };
 
   this.walk = function (idUser, pos, client) {
@@ -106,13 +106,13 @@ function HandleServer() {
     pkg.writeDouble(idUser);
     pkg.writeByte(pos.x);
     pkg.writeByte(pos.y);
-    socket.send(client);
+    send(client, 'walk');
   };
 
   this.deleteCharacter = function (idUser, client) {
     pkg.setPackageID(pkg.clientPacketID.deleteCharacter);
     pkg.writeDouble(idUser);
-    socket.send(client);
+    send(client, 'deleteCharacter');
   };
 
   this.talk = function (idUser, msg, name, color, console, client) {
@@ -127,50 +127,50 @@ function HandleServer() {
     }
     pkg.writeString(color);
     pkg.writeByte(console);
-    socket.send(client);
+    send(client, 'talk');
   };
 
   this.pong = function (client) {
     pkg.setPackageID(pkg.clientPacketID.pong);
-    socket.send(client);
+    send(client);
   };
 
   this.animFX = function (idUser, fxGrh, client) {
     pkg.setPackageID(pkg.clientPacketID.animFX);
     pkg.writeDouble(idUser);
     pkg.writeShort(fxGrh);
-    socket.send(client);
+    send(client, 'animFX');
   };
 
   this.updateMana = function (mana, client) {
     pkg.setPackageID(pkg.clientPacketID.updateMana);
     pkg.writeShort(mana);
-    socket.send(client);
+    send(client);
   };
 
   this.updateAgilidad = function (agilidad, client) {
     pkg.setPackageID(pkg.clientPacketID.updateAgilidad);
     pkg.writeByte(agilidad);
-    socket.send(client);
+    send(client);
   };
 
   this.updateFuerza = function (fuerza, client) {
     pkg.setPackageID(pkg.clientPacketID.updateFuerza);
     pkg.writeByte(fuerza);
-    socket.send(client);
+    send(client);
   };
 
   this.updateHP = function (hp, client) {
     pkg.setPackageID(pkg.clientPacketID.updateHP);
     pkg.writeShort(hp);
-    socket.send(client);
+    send(client, 'updateHp');
   };
 
   this.updateMaxHP = function (idUser, hp, maxHP, client) {
     pkg.setPackageID(pkg.clientPacketID.updateMaxHP);
     pkg.writeShort(hp);
     pkg.writeShort(maxHP);
-    socket.send(client);
+    send(client, 'updateMaxHp');
   };
 
   this.telepMe = function (idUser, idMap, pos, client) {
@@ -179,44 +179,36 @@ function HandleServer() {
     pkg.writeShort(idMap);
     pkg.writeByte(pos.x);
     pkg.writeByte(pos.y);
-    socket.send(client);
+    send(client, 'telepMe');
   };
 
   this.writeUserIndexInServer = (idUser) => {
     pkg.setPackageID(pkg.clientPacketID.writeUserIndexInServer);
     pkg.writeInt(idUser);
-    socket.send(client);
+    send(vars.clients[idUser], 'userIndexInServer');
   };
 
   this.writeChangeMap = (idUser, character) => {
     pkg.setPackageID(pkg.clientPacketID.writeChangeMap);
     pkg.writeInt(idUser);
     pkg.writeInt(character.map);
-    socket.send(client);
+    send(vars.clients[idUser], 'changemap');
   };
 
-  this.sendMyCharacter = (character, idUser) => {
+  this.sendMyCharacter = (character, ws) => {
     pkg.setPackageID(pkg.clientPacketID.getMyCharacter);
-    /*pkg.writeShort(vars.versions.config);
-    pkg.writeShort(vars.versions.messages);
-    pkg.writeShort(vars.versions.connection);
-    pkg.writeShort(vars.versions.console);
-    pkg.writeShort(vars.versions.engine);
-    pkg.writeShort(vars.versions.package);
-    */
-    pkg.writeInt(character.id);
+    pkg.writeInt(character.idCharacter);
     pkg.writeString(character.nameCharacter);
     pkg.writeInt(character.idBody);
     pkg.writeInt(character.idHead);
     pkg.writeByte(4);
     //heading
-    pkg.writeByte(character.posX);
-    pkg.writeByte(character.posY);
+    pkg.writeByte(character.pos.x);
+    pkg.writeByte(character.pos.y);
     pkg.writeInt(character.idWeapon);
     pkg.writeInt(character.idShield);
     pkg.writeInt(character.idHelmet);
-    pkg.writeByte(character.color);
-    pkg.writeByte(character.privileges);
+    pkg.writeString(character.color);
 
     /*
     pkg.writeByte(character.idClase);
@@ -271,10 +263,10 @@ function HandleServer() {
       })
     }
     */
-    socket.send(vars.clients[idUser]);
+    send(ws, 'sendMy');
   };
 
-  this.sendNpc = function (npc) {
+  this.sendNpc = function (npc, ws) {
     pkg.setPackageID(pkg.clientPacketID.getNpc);
     pkg.writeDouble(npc.id);
     pkg.writeString(npc.nameCharacter);
@@ -290,9 +282,10 @@ function HandleServer() {
     pkg.writeByte(npc.heading);
     pkg.writeString(npc.color);
     pkg.writeString(npc.clan);
+    send(ws, 'sendNPC');
   };
 
-  this.sendCharacter = function (character) {
+  this.sendCharacter = function (character, ws) {
     pkg.setPackageID(pkg.clientPacketID.getCharacter);
     pkg.writeDouble(character.id);
     pkg.writeString(character.nameCharacter);
@@ -305,10 +298,10 @@ function HandleServer() {
     pkg.writeShort(character.idWeapon);
     pkg.writeShort(character.idShield);
     pkg.writeShort(character.idBody);
-    pkg.writeByte(character.privileges);
     pkg.writeByte(character.heading);
     pkg.writeString(character.color);
     pkg.writeString(character.clan);
+    send(ws, 'sendCharacter');
   };
 
   this.actMyLevel = function (idUser, client) {
@@ -320,32 +313,32 @@ function HandleServer() {
     pkg.writeByte(user.level);
     pkg.writeShort(user.maxHp);
     pkg.writeShort(user.maxMana);
-    socket.send(client);
+    send(client);
   };
 
   this.actExp = function (exp, client) {
     pkg.setPackageID(pkg.clientPacketID.actExp);
     pkg.writeDouble(exp);
-    socket.send(client);
+    send(client);
   };
 
   this.actGold = function (gold, client) {
     pkg.setPackageID(pkg.clientPacketID.actGold);
     pkg.writeInt(gold);
-    socket.send(client);
+    send(client);
   };
 
   this.actOnline = function (usersOnline) {
     pkg.setPackageID(pkg.clientPacketID.actOnline);
     pkg.writeShort(usersOnline);
-    socket.sendAll(pkg.dataSend());
+    sendAll(pkg.dataSend());
   };
 
   this.error = function (msg, client) {
     pkg.setPackageID(pkg.clientPacketID.error);
     pkg.writeString(msg);
-    socket.send(client);
-    socket.close(client);
+    send(client, 'error');
+    close(client);
   };
 
   this.putBodyAndHeadDead = function (idUser, client) {
@@ -359,7 +352,7 @@ function HandleServer() {
     pkg.writeShort(user.idShield);
     pkg.writeShort(user.idBody);
 
-    socket.send(client);
+    send(client, 'putBody and head');
   };
 
   this.revivirUsuario = function (idUser, client) {
@@ -370,7 +363,7 @@ function HandleServer() {
     pkg.writeShort(user.idHead);
     pkg.writeShort(user.idBody);
 
-    socket.send(client);
+    send(client, 'resurrection');
   };
 
   this.quitarUserInvItem = function (idUser, idPos, cant, client) {
@@ -381,17 +374,16 @@ function HandleServer() {
     pkg.writeByte(idPos);
     pkg.writeShort(cant);
 
-    socket.send(client);
+    send(client, 'give up inv item user');
   };
 
   this.renderItem = function (idItem, idMap, pos, client) {
     pkg.setPackageID(pkg.clientPacketID.renderItem);
-    pkg.writeInt(idItem);
-    pkg.writeShort(idMap);
     pkg.writeByte(pos.x);
     pkg.writeByte(pos.y);
+    pkg.writeInt(idItem);
 
-    socket.send(client);
+    send(client, 'renderItem'+idItem);
   };
 
   this.deleteItem = function (idMap, pos, client) {
@@ -400,7 +392,7 @@ function HandleServer() {
     pkg.writeByte(pos.x);
     pkg.writeByte(pos.y);
 
-    socket.send(client);
+    send(client, 'deleteItem');
   };
 
   this.agregarUserInvItem = function (idUser, idPos, client) {
@@ -421,7 +413,7 @@ function HandleServer() {
     pkg.writeByte(itemValidUser(idUser, idItem));
     pkg.writeString(dataObj(idItem));
 
-    socket.send(client);
+    send(client, 'AgregarUserInvItem');
   };
 
   this.blockMap = function (idMap, pos, block, client) {
@@ -432,7 +424,7 @@ function HandleServer() {
     pkg.writeByte(pos.y);
     pkg.writeByte(block);
 
-    socket.send(client);
+    send(client, 'blockMap');
   };
 
   this.openTrade = function (idUser, idNpc, client) {
@@ -472,7 +464,7 @@ function HandleServer() {
       pkg.writeString(dataObj(idItem));
     }
 
-    socket.send(client);
+    send(client, 'openTrade');
   };
 
   this.aprenderSpell = function (idUser, idPosSpell) {
@@ -490,12 +482,12 @@ function HandleServer() {
     pkg.writeString(datSpell.name);
     pkg.writeShort(datSpell.manaRequired);
 
-    socket.send(vars.clients[idUser]);
+    send(vars.clients[idUser], 'aprenderSpell');
   };
 
   this.closeForce = function (idUser) {
     pkg.setPackageID(pkg.clientPacketID.closeForce);
-    socket.send(vars.clients[idUser]);
+    send(vars.clients[idUser], 'closeForce');
   };
 
   this.nameMap = function (idUser) {
@@ -503,7 +495,7 @@ function HandleServer() {
 
     pkg.setPackageID(pkg.clientPacketID.nameMap);
     pkg.writeString(vars.mapData[user.map].name);
-    socket.send(vars.clients[idUser]);
+    send(vars.clients[idUser], 'nameMap');
   };
 
   this.changeBody = function (idUser, client) {
@@ -516,7 +508,7 @@ function HandleServer() {
     pkg.writeShort(user.idHelmet);
     pkg.writeShort(user.idWeapon);
     pkg.writeShort(user.idShield);
-    socket.send(client);
+    send(client, 'changeBody');
   };
 
   this.navegando = function (idUser, client) {
@@ -524,22 +516,18 @@ function HandleServer() {
 
     pkg.setPackageID(pkg.clientPacketID.navegando);
     pkg.writeByte(user.navegando);
-    socket.send(client);
+    send(client, 'navegando');
   };
 
   this.actColorName = function (idUser, color, client) {
     pkg.setPackageID(pkg.clientPacketID.actColorName);
     pkg.writeDouble(idUser);
     pkg.writeString(color);
-    socket.send(client);
+    send(client, 'actColorName');
   };
 
   function isRazaEnana(idRaza) {
-    if (idRaza === vars.razas.gnomo || idRaza === vars.razas.enano) {
-      return true;
-    } else {
-      return false;
-    }
+    return idRaza === vars.razas.gnomo || idRaza === vars.razas.enano;
   }
 
   function itemValidUser(idUser, idItem) {

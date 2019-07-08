@@ -70,6 +70,7 @@ export default class MapaRenderer {
     for (let i = 0; i < this.camera.gridW + this.POSICIONES_EXTRA_TERRENO * 2; i++) {
       this.terreno[i] = [];
       for (let j = 0; j < this.camera.gridH + this.POSICIONES_EXTRA_TERRENO * 2; j++) {
+
         this.terreno[i][j] = new SpriteGrh(this.assetManager.getTerrenoGrh(1)); // grh null
         this.layer1.addChild(this.terreno[i][j]);
       }
@@ -90,6 +91,7 @@ export default class MapaRenderer {
 
         let grh = this.mapa.getGrh1(gridXIni + i, gridYIni + j);
         if (grh) {
+          console.log("maprender", this.assetManager.getTerrenoGrh(grh))
           this.terreno[i][j].cambiarGrh(this.assetManager.getTerrenoGrh(grh));
         }
       }
@@ -110,6 +112,8 @@ export default class MapaRenderer {
 
         let grh = this.mapa.getGrh1(gridXIni + Utils.modulo(i - this._lowestColTerreno, cols), gridYIni - 1);
         if (grh) {
+          console.log("maprender2", this.assetManager.getTerrenoGrh(grh))
+
           this.terreno[i][j].cambiarGrh(this.assetManager.getTerrenoGrh(grh));
         }
       }
@@ -124,6 +128,8 @@ export default class MapaRenderer {
 
         let grh = this.mapa.getGrh1(gridXIni - 1, gridYIni + Utils.modulo(j - this._lowestRowTerreno, rows));
         if (grh) {
+          console.log("maprender3", this.assetManager.getTerrenoGrh(grh))
+
           this.terreno[i][j].cambiarGrh(this.assetManager.getTerrenoGrh(grh));
         }
       }
@@ -137,6 +143,8 @@ export default class MapaRenderer {
 
         let grh = this.mapa.getGrh1(gridXIni + Utils.modulo(i - this._lowestColTerreno, cols), gridYIni + rows);
         if (grh) {
+          console.log("maprender4", this.assetManager.getTerrenoGrh(grh))
+
           this.terreno[i][j].cambiarGrh(this.assetManager.getTerrenoGrh(grh));
         }
 
@@ -151,6 +159,8 @@ export default class MapaRenderer {
 
         let grh = this.mapa.getGrh1(gridXIni + cols, gridYIni + Utils.modulo(j - this._lowestRowTerreno, rows));
         if (grh) {
+          console.log("maprender5", this.assetManager.getTerrenoGrh(grh))
+
           this.terreno[i][j].cambiarGrh(this.assetManager.getTerrenoGrh(grh));
         }
 
@@ -254,6 +264,7 @@ export default class MapaRenderer {
   }
 
   _crearSprite(parentLayer, grh, x, y) {
+    console.log("_crearSprite", this.assetManager.getGrh(grh))
     let nuevoSprite = new SpriteGrh(this.assetManager.getGrh(grh));
     parentLayer.addChild(nuevoSprite); // ojo tiene que estar en este orden sino no anda el z-index(TODO)
     nuevoSprite.setPosition(x, y);

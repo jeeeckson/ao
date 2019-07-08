@@ -1,6 +1,11 @@
 export default {
   /* valor default primer elemento enums en VB: 0 */
-
+  serverPacketID: {
+    handleLogged: 1,
+    handleRemoveDialogs: 2,
+    handleRemoveCharDialog: 3,
+    handleNavigateToggle: 4,
+  },
   Heading: {
     norte: 1,
     este: 2,

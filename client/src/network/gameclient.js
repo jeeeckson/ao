@@ -6,6 +6,7 @@ import Package from './Package';
 import config from '../config.json';
 import log from '../utils/log';
 import serverCallsHandler from './serverCallsHandler';
+import io from 'socket.io-client';
 
 export default class GameClient {
   constructor(game, uiManager, gameUI) {
@@ -17,52 +18,24 @@ export default class GameClient {
 
     this.uiManager = uiManager;
     this.gameUI = gameUI;
-    this.conectado = false;
-
-    this.ws = new WebSocket('ws://' + config.ip + ':' + config.port);
-    this.ws.binaryType = 'arraybuffer';
+    this.ws = io('http://localhost:4000');
     this.pkg = new Package(this.ws);
     this.protocolo = new Protocolo(this.pkg);
     this.onDisconnect = null;
   }
 
   _connect(conectarse_callback) {
-    this.ws.onopen = () => {
-      this.conectado = true;
-      conectarse_callback();
-    };
-    this.ws.onclose = () => {
-      this.conectado = false;
-      //this.disconnect_callback(!this.onDisconnect);
-      if (this.onDisconnect) {
-        this.onDisconnect();
-        this.onDisconnect = null;
-      }
-    };
-
-    this.ws.onerror = (error) => {
-      this.conectado = false;
-      console.log("Error to connect" + error.message)
-    };
-
+    conectarse_callback();
     //to receive the message from server
-    this.ws.onmessage = (e) => {
-      if (!e) {
-        alert(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack); // TODO: DESCOMENTAR
-        console.log(' Reporte de error - ' + e.name + ': ' + e.message + ' - ' + e.stack);
-      }
-      if (this.ws.readyState !== this.ws.OPEN) {
-        return;
-      }
-      this.pkg.setData(e.data);
+    console.log("connect");
+    this.ws.on('message', (e) => {
+      this.pkg.setData(e);
       let packageID = this.pkg.getPackageID();
+      console.log("receives a package: ", packageID);
       while (this.pkg) {
         serverCallsHandler(packageID, this.pkg, this);
       }
-
-    };
-
-
+    });
   }
 
   _desconectar() {
@@ -70,27 +43,18 @@ export default class GameClient {
   }
 
   intentarLogear(nombre, pw) {
-    if (!this.conectado) {
-      this._connect(() => {
-        this.sendLoginExistingChar(nombre, pw);
-      });
-    }
-    else {
+    this._connect(() => {
       this.sendLoginExistingChar(nombre, pw);
-    }
+    });
   }
 
   intentarCrearPersonaje(callback) {
-    if (!this.conectado) {
-      this._connect(() => {
-        callback();
-        //this.sendThrowDices();
-      });
-    }
-    else {
+    console.log("crear")
+    this._connect(() => {
       callback();
       //this.sendThrowDices();
-    }
+    });
+
   }
 
   setDisconnectCallback(disconnect_callback) {
@@ -224,9 +188,8 @@ export default class GameClient {
     this.game.changePlayerIndex(CharIndex);
   }
 
-  handleCharacterCreate(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name, NickColor, Privileges) {
-    debugger;
-    this.game.agregarCharacter(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name, NickColor, Privileges);
+  handleCharacterCreate(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name, NickColor) {
+    this.game.agregarCharacter(CharIndex, Body, Head, Heading, X, Y, Weapon, Shield, Helmet, FX, FXLoops, Name, NickColor);
   }
 
   handleCharacterRemove(CharIndex) {
@@ -534,8 +497,7 @@ export default class GameClient {
     if (Tag.indexOf('<') > 0) {
       nombre = Tag.slice(Tag, Tag.indexOf('<') - 1);
       clan = Tag.slice(Tag.indexOf('<'), Tag.length);
-    }
-    else {
+    } else {
       nombre = Tag;
       clan = null;
     }
@@ -760,7 +722,6 @@ export default class GameClient {
   }
 
   sendLoginExistingChar(UserName, Password) {
-    debugger;
     let p = this.protocolo.BuildLoginExistingChar(UserName, Password);
     p.serialize(this.pkg);
   }

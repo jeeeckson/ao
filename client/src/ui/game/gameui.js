@@ -46,6 +46,9 @@ export default class GameUI {
     this.comerciar.show();
   }
 
+  hayPopUpActivo() {
+    return false;
+  }
   hideComerciar(incomingFromServer) {
     this.comerciar.hide(incomingFromServer);
   }

@@ -16,11 +16,16 @@ class Database {
 
   query(sql, args) {
     return new Promise((resolve, reject) => {
-      this.connection.query(sql, args, (err, rows) => {
-        if (err)
-          return reject(err);
-        resolve(rows);
-      });
+      try {
+        this.connection.query(sql, args, (err, rows) => {
+          if (err)
+            return reject(err);
+          resolve(rows);
+        });
+      } catch (e) {
+        console.error(e.message);
+        reject(e);
+      }
     });
   }
 

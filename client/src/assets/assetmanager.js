@@ -73,7 +73,7 @@ export default class AssetManager {
   }
 
   loadGrh = (grh) => {
-    if (!this.indices[grh] || this.grhs[grh]) {
+    if (!this.indices || !this.indices[grh] || !this.grhs || !this.grhs[grh]) {
       return;
     }
     if (this.indices[grh].frames) {// animacion
@@ -86,8 +86,7 @@ export default class AssetManager {
         vecgrhs.push(this.grhs[frameNumbers[j]]);
       }
       this.grhs[grh] = {frames: vecgrhs, velocidad: this.indices[grh].velocidad};
-    }
-    else { // no animacion
+    } else { // no animacion
       this._loadGrhGrafico(grh);
     }
   }

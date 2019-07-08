@@ -1,4 +1,4 @@
-import socket from './socket';
+import {close, saveItemsUser, createCharacter, send} from './socket';
 let fs = require('fs');
 let funct = require('./functions');
 let vars = require('./vars');
@@ -555,17 +555,17 @@ function Game() {
             return true;
           } else {
             console.log('ID desconectada: ' + ws.id);
-            socket.close(ws);
+            close(ws);
             return false;
           }
         } else {
           console.log('WS desconectado');
-          socket.close(ws);
+          close(ws);
           return false;
         }
       } else {
         console.log('WS desconectado por diferente state');
-        socket.close(ws);
+        close(ws);
         return false;
       }
     } catch (err) {
@@ -599,11 +599,11 @@ function Game() {
           }
         }
 
-        query += ', updated_at=NOW() WHERE idCharacter="' + user.idCharacter + '"';
+        query += " updated_at=NOW() WHERE idCharacter='" + user.idCharacter + "'";
 
         database.query(query);
 
-        socket.saveItemsUser(i);
+        saveItemsUser(i);
       }
 
       callback(true);
@@ -691,7 +691,7 @@ function Game() {
     try {
       let user = vars.personajes[ws.id];
 
-      handleProtocol.nameMap(ws.id);
+      //handleProtocol.nameMap(ws.id);
 
       let posXStart = user.pos.x - 10;
       let posYStart = user.pos.y - 10;
@@ -712,10 +712,10 @@ function Game() {
 
                 if (mapData.id !== ws.id) {
                   handleProtocol.sendCharacter(user);
-                  socket.send(vars.clients[mapData.id]);
+                  send(vars.clients[mapData.id], 'character9');
 
                   handleProtocol.sendCharacter(target);
-                  socket.send(ws);
+                  send(ws, 'character10');
                 }
               } else {
                 if (target.movement === 3 && !user.dead) {
@@ -725,7 +725,6 @@ function Game() {
                 }
 
                 handleProtocol.sendNpc(target);
-                socket.send(ws);
               }
             }
 
@@ -748,6 +747,7 @@ function Game() {
                 }
               }
 
+              console.log("setnewareas")
               handleProtocol.renderItem(item.objIndex, user.map, pos, ws);
             }
           }
@@ -961,7 +961,7 @@ function Game() {
    */
   this.createCharacter = (UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland, ws) => {
     try {
-      return socket.createCharacter(UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland, ws);
+      return createCharacter(UserAccount, UserName, Password, Race, Gender, Class, Head, Mail, Homeland, ws);
     } catch (err) {
       funct.dumpError(err);
     }
@@ -2197,6 +2197,7 @@ function Game() {
       vars.mapa[idMap][pos.y][pos.x].objInfo.objIndex = objIndex;
 
       game.loopAreaPos(idMap, pos, (target) => {
+        console.log("changeobjindex")
         handleProtocol.renderItem(objIndex, idMap, pos, vars.clients[target.id]);
       });
     } catch (err) {
@@ -2477,7 +2478,7 @@ function Game() {
     try {
       handleProtocol.closeForce(idUser);
 
-      socket.close(vars.clients[idUser]);
+      close(vars.clients[idUser]);
     } catch (err) {
       funct.dumpError(err);
     }

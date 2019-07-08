@@ -5,13 +5,14 @@
   "main": "server.js",
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
-    "bytebuffer": "^4.0.0",
-    "forever": "^0.15.1",
+    "bytebuffer": "^5.0.1",
+    "express": "^4.17.1",
+    "forever": "^1.0.0",
     "mysql": "^2.9.0",
-    "node-serialize": "0.0.4",
+    "path": "^0.12.7",
     "pathfinding": "^0.4.17",
-    "utf8": "^3.0.0",
-    "ws": "^0.8.0"
+    "socket.io": "^2.2.0",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -19,7 +20,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
     "eslint": "^4.13.1",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.19.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

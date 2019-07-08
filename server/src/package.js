@@ -52,12 +52,13 @@ function Package() {
   };
 
   this.serverPacketID = {
+    connectCharacter: 0,
     changeHeading: 1,
     click: 2,
     useItem: 3,
     equiparItem: 4,
     createCharacter: 5,
-    connectCharacter: 6,
+    walk: 6,
     talk: 7,
     ping: 8,
     attackMele: 9,

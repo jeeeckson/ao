@@ -199,6 +199,7 @@ export default class EntityRenderer {
   }
 
   _crearSprite(parentLayer, grh, x, y, zIndex) {
+    console.log("_crearSprite2", this.assetManager.getGrh(grh))
     let nuevoSprite = new SpriteGrh(this.assetManager.getGrh(grh));
     nuevoSprite.zOffset = zIndex || 0;
     parentLayer.addChild(nuevoSprite); // ojo tiene que estar en este orden sino no anda el z-index(TODO)
@@ -209,7 +210,7 @@ export default class EntityRenderer {
 
   _crearCharacterSprites(parentLayer, x, y, zIndex) {
     let sprite = new CharacterSprites();
-    sprite.setSombraSprite(this.assetManager.getGrh(23651));
+    //sprite.setSombraSprite(this.assetManager.getGrh(23651));
     parentLayer.addChild(sprite);
     sprite.setPosition(x, y);
     this._setSpriteClipping(sprite);
@@ -282,6 +283,8 @@ export default class EntityRenderer {
 
   setCharacterFX(char, FX, FXLoops) {
     let grh = this.assetManager.getGrh(this.fxs[FX].animacion);
+
+    //TODO:WARN
     char.sprite.setFX(grh, this.fxs[FX].offX, this.fxs[FX].offY, FXLoops);
   }
 

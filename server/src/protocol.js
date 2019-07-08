@@ -14,11 +14,11 @@ let protocol = new Protocol();
 
 let dictionaryServer = {};
 
+dictionaryServer[pkg.serverPacketID.connectCharacter] = connectCharacter;
 dictionaryServer[pkg.serverPacketID.changeHeading] = changeHeading;
 dictionaryServer[pkg.serverPacketID.click] = eventClick;
 dictionaryServer[pkg.serverPacketID.useItem] = useItem;
 dictionaryServer[pkg.serverPacketID.equiparItem] = equiparItem;
-dictionaryServer[pkg.serverPacketID.connectCharacter] = connectCharacter;
 dictionaryServer[pkg.serverPacketID.createCharacter] = createCharacter;
 dictionaryServer[pkg.serverPacketID.position] = position;
 dictionaryServer[pkg.serverPacketID.talk] = talk;
@@ -35,6 +35,7 @@ dictionaryServer[pkg.serverPacketID.changeSeguro] = changeSeguro;
 function Protocol() {
   try {
     this.handleData = (ws, packageID) => {
+      console.log("packageID received: ", packageID)
       dictionaryServer[packageID](ws);
     };
   } catch (err) {
@@ -143,9 +144,9 @@ function eventClick(ws) {
 
       handleProtocol.console(obj.name + ' - ' + objMap.amount, 'white', 1, 0, ws);
     } else if (game.hayObj(user.map, {
-        x: pos.x + 1,
-        y: pos.y
-      })) {
+      x: pos.x + 1,
+      y: pos.y
+    })) {
 
       objMap = game.objMap(user.map, {
         x: pos.x + 1,
@@ -163,9 +164,9 @@ function eventClick(ws) {
 
       handleProtocol.console(obj.name + ' - ' + objMap.amount, 'white', 1, 0, ws);
     } else if (game.hayObj(user.map, {
-        x: pos.x + 1,
-        y: pos.y + 1
-      })) {
+      x: pos.x + 1,
+      y: pos.y + 1
+    })) {
 
       objMap = game.objMap(user.map, {
         x: pos.x + 1,
@@ -182,9 +183,9 @@ function eventClick(ws) {
 
       handleProtocol.console(obj.name + ' - ' + objMap.amount, 'white', 1, 0, ws);
     } else if (game.hayObj(user.map, {
-        x: pos.x,
-        y: pos.y + 1
-      })) {
+      x: pos.x,
+      y: pos.y + 1
+    })) {
 
       objMap = game.objMap(user.map, {
         x: pos.x,
@@ -480,11 +481,10 @@ function equiparItem(ws) {
 
 function connectCharacter(ws) {
   try {
-    let nameAccount = pkg.getString().trim();
-    let password = pkg.getString().trim();
     let nameCharacter = pkg.getString().trim();
+    let password = pkg.getString().trim();
 
-    login.connect(ws, nameAccount, password, nameCharacter);
+    login.connect(ws, 'sebas', password, nameCharacter);
   } catch (err) {
     funct.dumpError(err);
   }
@@ -622,22 +622,19 @@ function position(ws) {
                 }
               }
 
-              handleProtocol.sendNpc(target);
-              socket.send(ws);
+              handleProtocol.sendNpc(target, ws);
             } else {
-              handleProtocol.sendCharacter(target);
-              socket.send(ws);
+              handleProtocol.sendCharacter(target, ws);
             }
 
             if (vars.personajes[newUserID]) {
-              handleProtocol.sendCharacter(user);
-              socket.send(vars.clients[newUserID]);
+              handleProtocol.sendCharacter(user, vars.clients[newUserID]);
             }
           }
 
           let pos = {
             x: positionStartX,
-            y: y
+            y
           };
 
           if (game.hayObj(user.map, pos)) {
@@ -664,7 +661,7 @@ function position(ws) {
 
 
       //Acá guarda y actualiza las posiciones del usuario y los usuarios del nuevo tile
-      for (y = positionStartY; y < positionStartY + 21; y++) {
+      for (let y = positionStartY; y < positionStartY + 21; y++) {
         if (positionStartX >= 1 && y >= 1 && positionStartX <= 100 && y <= 100) {
           let mapData = vars.mapData[user.map][y][positionStartX];
 
@@ -686,7 +683,7 @@ function position(ws) {
 
           let pos = {
             x: positionStartX,
-            y: y
+            y
           };
 
           if (game.hayObj(user.map, pos)) {
@@ -717,16 +714,13 @@ function position(ws) {
                 }
               }
 
-              handleProtocol.sendNpc(target);
-              socket.send(ws);
+              handleProtocol.sendNpc(target, ws);
             } else {
-              handleProtocol.sendCharacter(target);
-              socket.send(ws);
+              handleProtocol.sendCharacter(target, ws);
             }
 
             if (vars.personajes[newUserID]) {
-              handleProtocol.sendCharacter(user);
-              socket.send(vars.clients[newUserID]);
+              handleProtocol.sendCharacter(user, vars.clients[newUserID]);
             }
           }
 
@@ -811,16 +805,13 @@ function position(ws) {
                 }
               }
 
-              handleProtocol.sendNpc(target);
-              socket.send(ws);
+              handleProtocol.sendNpc(target, ws);
             } else {
-              handleProtocol.sendCharacter(target);
-              socket.send(ws);
+              handleProtocol.sendCharacter(target, ws);
             }
 
             if (vars.personajes[newUserID]) {
-              handleProtocol.sendCharacter(user);
-              socket.send(vars.clients[newUserID]);
+              handleProtocol.sendCharacter(user, vars.clients[newUserID]);
             }
           }
 
@@ -905,16 +896,13 @@ function position(ws) {
                 }
               }
 
-              handleProtocol.sendNpc(target);
-              socket.send(ws);
+              handleProtocol.sendNpc(target, ws);
             } else {
-              handleProtocol.sendCharacter(target);
-              socket.send(ws);
+              handleProtocol.sendCharacter(target, ws);
             }
 
             if (vars.personajes[newUserID]) {
-              handleProtocol.sendCharacter(user);
-              socket.send(vars.clients[newUserID]);
+              handleProtocol.sendCharacter(user, vars.clients[newUserID]);
             }
           }
 
@@ -947,7 +935,7 @@ function position(ws) {
 
 
       //Acá guarda y actualiza las posiciones del usuario y los usuarios del nuevo tile
-      for (x = positionStartX; x < positionStartX + 21; x++) {
+      for (let x = positionStartX; x < positionStartX + 21; x++) {
         if (x >= 1 && positionStartY >= 1 && x <= 100 && positionStartY <= 100) {
           let mapData = vars.mapData[user.map][positionStartY][x];
 

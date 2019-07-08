@@ -155,7 +155,6 @@ function createMap(mapNumber) {
             }
           }
 
-          //console.log(JSON.stringify(MapData));
         }
       }).on('end', () => {
         fs.writeFile('mapas/mapa_' + mapNumber + '.map', JSON.stringify(MapData), (err) => {
@@ -169,8 +168,6 @@ function createMap(mapNumber) {
         }
         //process.exit(1);
       });
-
-      //console.log(JSON.stringify(MapData));
     }
   }).on('end', () => {
     //process.exit(1);

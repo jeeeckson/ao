@@ -14,6 +14,7 @@ import GameManager from "../model/gamemanager";
 import GameClient from "../network/gameclient";
 import GameUI from "../ui/game/gameui";
 import ChatBox from "../components/ChatBox";
+import objLogin from "../objLogin";
 
 const MenuGame = style.div`
  
@@ -55,6 +56,7 @@ export default class Renderer extends React.Component {
     });
     this.client = new GameClient(this.gameManager.game, uiManager, this.gameUI);
     this._initClientCallbacks(this.client);
+    this.canvasRef = React.createRef();
     this.state = {
       gameCanvas: null
     }
@@ -92,11 +94,13 @@ export default class Renderer extends React.Component {
   };
 
   initiateAfterLogin = () => {
-    const {escala, objLogin} = this.props;
+    //const {escala, objLogin} = this.props;
+    const {escala} = this.props;
     this.gameManager.setup(this.client, this.gameUI);
     this.ready = true;
     const {username, password, race, gender, classP, head, email, city} = objLogin;
     this.gameManager.game.inicializar(username);
+    console.log(gender, race,classP)
     if (gender && race && classP) {
       this.client.sendLoginNewChar(username, password, race, gender, classP, head, email, city);
     } else {
@@ -109,10 +113,8 @@ export default class Renderer extends React.Component {
     this.entityRenderer = null;
     this.mapaRenderer = null;
     this.climaRenderer = null;
+    this.canvasRef = this._inicializarPixi();
 
-    this.setState({
-      gameCanvas: this._inicializarPixi()
-    });
     this.rescale(escala);
   };
 
@@ -331,15 +333,30 @@ export default class Renderer extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const canvas = this.canvasRef;
+    this.setState({canvas});
+
+  }
+
+  setTextInputRef = async (element) => {
+ /*   this.gameRoot = element;
+    await this.gameManager.createGame(this.gameRoot && this.gameRoot.context);
+    this.gameManager.startScene();*/
+  };
+
   render = () => {
     return (
       <div id="juego" style={{position: 'relative'}} className="exterior_border_default background_default">
 
-        <div id="gamecanvas" onClick={(event) => {
-          event.stopPropagation();
-        }}/>
-        prueba
-        <ChatBox id="chatbox" className="exterior_border_default background_default"/>
+        {/*<div ref={this.setTextInputRef}/>*/}
+        <canvas ref={this.canvasRef} width={640} height={425}/>
+        <ChatBox
+          id="chatbox"
+          game={this.gameManager.game}
+          commandChat={this.gameManager.comandosChat}
+          className="exterior_border_default background_default"
+        />
 
         <MenuGame id="menuJuego" url="url('../imagenes/menuJuego_background.png');">
           <ItemGrid id="itemsGrid" className="itemgrid"/>

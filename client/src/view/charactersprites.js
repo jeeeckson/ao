@@ -36,6 +36,7 @@ export default class CharacterSprites extends PIXI.Container {
   }
 
   setFX(grh, offX, offY, loops) {
+    console.log("setfx", grh, loops)
     let nuevoSprite = new SpriteGrh(grh, loops);
     this.addChild(nuevoSprite);
     nuevoSprite.setPosition(offX, offY);
@@ -57,6 +58,7 @@ export default class CharacterSprites extends PIXI.Container {
     if (this._sombraSprite) {
       return;
     }
+    console.log("setsombra", grh)
     this._sombraSprite = new SpriteGrh(grh);
     this.addChild(this._sombraSprite);
     this._sombraSprite.zIndex = -1;
@@ -252,9 +254,11 @@ export default class CharacterSprites extends PIXI.Container {
       return null;
     }
     if (varSprite) {
+      console.log("varSprite:", varSprite, grhs[this.heading])
       varSprite.cambiarGrh(grhs[this.heading]);
       return varSprite;
     }
+    console.log("heading", grhs[this.heading])
     let nuevoSprite = new SpriteGrh(grhs[this.heading], 1);
     this.addChild(nuevoSprite);
     if (this._velocidad) {

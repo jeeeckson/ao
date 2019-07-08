@@ -201,6 +201,7 @@ export default class UIManager extends React.Component {
   render = () => {
     const {load, assetManager, app} = this.props;
     const {widthContainer, heightContainer, showLogin, showCreate, showPlay, openMessage, objLogin, scala} = this.state;
+
     return (<div>
       {load < 99 && <LinearProgress
         value={load}
@@ -218,7 +219,7 @@ export default class UIManager extends React.Component {
         {load > 99 && showCreate && <CreateCharacter throwDice={() => {
           //this.client.sendThrowDices();
         }} cb={this.submit} assetManager={assetManager}/>}
-        {load > 99 && showPlay &&
+        {load >= 99  &&
         <Renderer app={app} objLogin={objLogin} uiManager={this} assetManager={assetManager} escala={scala}/>}
       </Container>}
     </div>);

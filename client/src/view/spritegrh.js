@@ -36,10 +36,11 @@ export default class SpriteGrh extends PIXI.extras.AnimatedSprite {
       }
     };
 
-    this._posicionarGrafico();
+    //this._posicionarGrafico();
   }
 
   setSize(w, h) {
+    console.log("setSize")
     this.width = w;
     this.height = h;
     this._posicionarGrafico();

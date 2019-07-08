@@ -32,7 +32,7 @@ let ClientPacketID = {
   LeftClick: 26,
   DoubleClick: 27,
   Work: 28,
-  UseSpellMacro: 29,
+  getMyCharacter: 29,
   UseItem: 30,
   CraftBlacksmith: 31,
   CraftCarpenter: 32,
@@ -148,33 +148,14 @@ function LoginExistingChar(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.LoginExistingChar);
     /* PacketID: 0 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Password);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Password);
 
     buffer.flush();
   };
 
   this.dispatch = function (d) {
     d.handleLoginExistingChar(this);
-  };
-}
-
-function ThrowDices(buffer) {
-  debugger;
-  this.id = ClientPacketID.ThrowDices /* 1 */;
-  if (buffer) {
-    buffer.ReadByte();
-    /* PacketID */
-  }
-  this.serialize = function (buffer) {
-    buffer.WriteByte(ClientPacketID.ThrowDices);
-    /* PacketID: 1 */
-
-    buffer.flush();
-  };
-
-  this.dispatch = function (d) {
-    d.handleThrowDices(this);
   };
 }
 
@@ -194,18 +175,19 @@ function LoginNewChar(buffer) {
     this.Homeland = buffer.ReadByte();
 
   }
+  console.log("login new protocol")
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.LoginNewChar);
     /* PacketID: 2 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Password);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Password);
     buffer.WriteByte(Number(this.Race));
     buffer.WriteByte(Number(this.Gender));
     buffer.WriteByte(Number(this.Class));
     buffer.WriteInteger(Number(this.Head));
-    buffer.WriteUnicodeString(this.Mail);
+    buffer.WriteString(this.Mail);
     buffer.WriteByte(Number(this.Homeland));
-
+    console.log("login new protocol")
     buffer.flush();
   };
 
@@ -228,7 +210,7 @@ function Talk(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.Talk);
     /* PacketID: 3 */
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -252,7 +234,7 @@ function Yell(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.Yell);
     /* PacketID: 4 */
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -275,8 +257,8 @@ function Whisper(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.Whisper);
     /* PacketID: 5 */
-    buffer.WriteUnicodeString(this.TargetName);
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.TargetName);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -610,7 +592,7 @@ function CommerceChat(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.CommerceChat);
     /* PacketID: 20 */
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -814,23 +796,23 @@ function Work(buffer) {
 
 }
 
-function UseSpellMacro(buffer) {
+function getMyCharacter(buffer) {
 
-  this.id = ClientPacketID.UseSpellMacro /* 29 */;
+  this.id = ClientPacketID.getMyCharacter /* 29 */;
   if (buffer) {
     buffer.ReadByte();
     /* PacketID */
 
   }
   this.serialize = function (buffer) {
-    buffer.WriteByte(ClientPacketID.UseSpellMacro);
+    buffer.WriteByte(ClientPacketID.getMyCharacter);
     /* PacketID: 29 */
 
     buffer.flush();
   };
 
   this.dispatch = function (d) {
-    d.handleUseSpellMacro(this);
+    d.handlegetMyCharacter(this);
 
   };
 
@@ -951,10 +933,10 @@ function CreateNewGuild(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.CreateNewGuild);
     /* PacketID: 34 */
-    buffer.WriteUnicodeString(this.Desc);
-    buffer.WriteUnicodeString(this.GuildName);
-    buffer.WriteUnicodeString(this.Site);
-    buffer.WriteUnicodeString(this.Codex);
+    buffer.WriteString(this.Desc);
+    buffer.WriteString(this.GuildName);
+    buffer.WriteString(this.Site);
+    buffer.WriteString(this.Codex);
 
     buffer.flush();
   };
@@ -1208,8 +1190,8 @@ function ForumPost(buffer) {
     buffer.WriteByte(ClientPacketID.ForumPost);
     /* PacketID: 44 */
     buffer.WriteByte(this.MsgType);
-    buffer.WriteUnicodeString(this.Title);
-    buffer.WriteUnicodeString(this.Post);
+    buffer.WriteString(this.Title);
+    buffer.WriteString(this.Post);
 
     buffer.flush();
   };
@@ -1286,8 +1268,8 @@ function ClanCodexUpdate(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.ClanCodexUpdate);
     /* PacketID: 47 */
-    buffer.WriteUnicodeString(this.Desc);
-    buffer.WriteUnicodeString(this.Codex);
+    buffer.WriteString(this.Desc);
+    buffer.WriteString(this.Codex);
 
     buffer.flush();
   };
@@ -1339,7 +1321,7 @@ function GuildAcceptPeace(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildAcceptPeace);
     /* PacketID: 49 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -1363,7 +1345,7 @@ function GuildRejectAlliance(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildRejectAlliance);
     /* PacketID: 50 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -1387,7 +1369,7 @@ function GuildRejectPeace(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildRejectPeace);
     /* PacketID: 51 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -1411,7 +1393,7 @@ function GuildAcceptAlliance(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildAcceptAlliance);
     /* PacketID: 52 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -1436,8 +1418,8 @@ function GuildOfferPeace(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildOfferPeace);
     /* PacketID: 53 */
-    buffer.WriteUnicodeString(this.Guild);
-    buffer.WriteUnicodeString(this.Proposal);
+    buffer.WriteString(this.Guild);
+    buffer.WriteString(this.Proposal);
 
     buffer.flush();
   };
@@ -1462,8 +1444,8 @@ function GuildOfferAlliance(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildOfferAlliance);
     /* PacketID: 54 */
-    buffer.WriteUnicodeString(this.Guild);
-    buffer.WriteUnicodeString(this.Proposal);
+    buffer.WriteString(this.Guild);
+    buffer.WriteString(this.Proposal);
 
     buffer.flush();
   };
@@ -1487,7 +1469,7 @@ function GuildAllianceDetails(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildAllianceDetails);
     /* PacketID: 55 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -1511,7 +1493,7 @@ function GuildPeaceDetails(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildPeaceDetails);
     /* PacketID: 56 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -1535,7 +1517,7 @@ function GuildRequestJoinerInfo(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildRequestJoinerInfo);
     /* PacketID: 57 */
-    buffer.WriteUnicodeString(this.User);
+    buffer.WriteString(this.User);
 
     buffer.flush();
   };
@@ -1603,7 +1585,7 @@ function GuildDeclareWar(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildDeclareWar);
     /* PacketID: 60 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -1627,7 +1609,7 @@ function GuildNewWebsite(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildNewWebsite);
     /* PacketID: 61 */
-    buffer.WriteUnicodeString(this.Website);
+    buffer.WriteString(this.Website);
 
     buffer.flush();
   };
@@ -1651,7 +1633,7 @@ function GuildAcceptNewMember(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildAcceptNewMember);
     /* PacketID: 62 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -1676,8 +1658,8 @@ function GuildRejectNewMember(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildRejectNewMember);
     /* PacketID: 63 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Reason);
 
     buffer.flush();
   };
@@ -1701,7 +1683,7 @@ function GuildKickMember(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildKickMember);
     /* PacketID: 64 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -1725,7 +1707,7 @@ function GuildUpdateNews(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildUpdateNews);
     /* PacketID: 65 */
-    buffer.WriteUnicodeString(this.News);
+    buffer.WriteString(this.News);
 
     buffer.flush();
   };
@@ -1749,7 +1731,7 @@ function GuildMemberInfo(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildMemberInfo);
     /* PacketID: 66 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -1796,8 +1778,8 @@ function GuildRequestMembership(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildRequestMembership);
     /* PacketID: 68 */
-    buffer.WriteUnicodeString(this.Guild);
-    buffer.WriteUnicodeString(this.Application);
+    buffer.WriteString(this.Guild);
+    buffer.WriteString(this.Application);
 
     buffer.flush();
   };
@@ -1821,7 +1803,7 @@ function GuildRequestDetails(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildRequestDetails);
     /* PacketID: 69 */
-    buffer.WriteUnicodeString(this.Guild);
+    buffer.WriteString(this.Guild);
 
     buffer.flush();
   };
@@ -2395,7 +2377,7 @@ function GuildMessage(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildMessage);
     /* PacketID: 95 */
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -2419,7 +2401,7 @@ function PartyMessage(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.PartyMessage);
     /* PacketID: 96 */
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -2511,7 +2493,7 @@ function CouncilMessage(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.CouncilMessage);
     /* PacketID: 100 */
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -2535,7 +2517,7 @@ function RoleMasterRequest(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.RoleMasterRequest);
     /* PacketID: 101 */
-    buffer.WriteUnicodeString(this.Request);
+    buffer.WriteString(this.Request);
 
     buffer.flush();
   };
@@ -2581,7 +2563,7 @@ function BugReport(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.BugReport);
     /* PacketID: 103 */
-    buffer.WriteUnicodeString(this.Report);
+    buffer.WriteString(this.Report);
 
     buffer.flush();
   };
@@ -2605,7 +2587,7 @@ function ChangeDescription(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.ChangeDescription);
     /* PacketID: 104 */
-    buffer.WriteUnicodeString(this.Description);
+    buffer.WriteString(this.Description);
 
     buffer.flush();
   };
@@ -2629,7 +2611,7 @@ function GuildVote(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.GuildVote);
     /* PacketID: 105 */
-    buffer.WriteUnicodeString(this.Vote);
+    buffer.WriteString(this.Vote);
 
     buffer.flush();
   };
@@ -2653,7 +2635,7 @@ function Punishments(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.Punishments);
     /* PacketID: 106 */
-    buffer.WriteUnicodeString(this.Name);
+    buffer.WriteString(this.Name);
 
     buffer.flush();
   };
@@ -2678,8 +2660,8 @@ function ChangePassword(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.ChangePassword);
     /* PacketID: 107 */
-    buffer.WriteUnicodeString(this.OldPass);
-    buffer.WriteUnicodeString(this.NewPass);
+    buffer.WriteString(this.OldPass);
+    buffer.WriteString(this.NewPass);
 
     buffer.flush();
   };
@@ -2821,7 +2803,7 @@ function Denounce(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.Denounce);
     /* PacketID: 113 */
-    buffer.WriteUnicodeString(this.Text);
+    buffer.WriteString(this.Text);
 
     buffer.flush();
   };
@@ -2891,7 +2873,7 @@ function PartyKick(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.PartyKick);
     /* PacketID: 116 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -2915,7 +2897,7 @@ function PartySetLeader(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.PartySetLeader);
     /* PacketID: 117 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -2939,7 +2921,7 @@ function PartyAcceptMember(buffer) {
   this.serialize = function (buffer) {
     buffer.WriteByte(ClientPacketID.PartyAcceptMember);
     /* PacketID: 118 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -3364,7 +3346,7 @@ function GMMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.GMMessage);
     /* PacketID: 1 */
-    buffer.WriteUnicodeString(this.Chat);
+    buffer.WriteString(this.Chat);
 
     buffer.flush();
   };
@@ -3454,7 +3436,7 @@ function GoNearby(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.GoNearby);
     /* PacketID: 5 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -3478,7 +3460,7 @@ function Comment(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.Comment);
     /* PacketID: 6 */
-    buffer.WriteUnicodeString(this.Data);
+    buffer.WriteString(this.Data);
 
     buffer.flush();
   };
@@ -3524,7 +3506,7 @@ function Where(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.Where);
     /* PacketID: 8 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -3597,7 +3579,7 @@ function WarpChar(buffer) {
     buffer.WriteByte(122);
     buffer.WriteByte(ClientGMPacketID.WarpChar);
     /* PacketID: 11 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
     buffer.WriteInteger(this.Map);
     buffer.WriteByte(this.X);
     buffer.WriteByte(this.Y);
@@ -3624,7 +3606,7 @@ function Silence(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.Silence);
     /* PacketID: 12 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -3670,7 +3652,7 @@ function SOSRemove(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.SOSRemove);
     /* PacketID: 14 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -3694,7 +3676,7 @@ function GoToChar(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.GoToChar);
     /* PacketID: 15 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -3830,8 +3812,8 @@ function Jail(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.Jail);
     /* PacketID: 21 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Reason);
     buffer.WriteByte(this.JailTime);
 
     buffer.flush();
@@ -3879,8 +3861,8 @@ function WarnUser(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.WarnUser);
     /* PacketID: 23 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Reason);
 
     buffer.flush();
   };
@@ -3907,10 +3889,10 @@ function EditChar(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.EditChar);
     /* PacketID: 24 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
     buffer.WriteByte(this.Opcion);
-    buffer.WriteUnicodeString(this.Arg1);
-    buffer.WriteUnicodeString(this.Arg2);
+    buffer.WriteString(this.Arg1);
+    buffer.WriteString(this.Arg2);
 
     buffer.flush();
   };
@@ -3934,7 +3916,7 @@ function RequestCharInfo(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RequestCharInfo);
     /* PacketID: 25 */
-    buffer.WriteUnicodeString(this.TargetName);
+    buffer.WriteString(this.TargetName);
 
     buffer.flush();
   };
@@ -3958,7 +3940,7 @@ function RequestCharStats(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RequestCharStats);
     /* PacketID: 26 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -3982,7 +3964,7 @@ function RequestCharGold(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RequestCharGold);
     /* PacketID: 27 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4006,7 +3988,7 @@ function RequestCharInventory(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RequestCharInventory);
     /* PacketID: 28 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4030,7 +4012,7 @@ function RequestCharBank(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RequestCharBank);
     /* PacketID: 29 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4054,7 +4036,7 @@ function RequestCharSkills(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RequestCharSkills);
     /* PacketID: 30 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4078,7 +4060,7 @@ function ReviveChar(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ReviveChar);
     /* PacketID: 31 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4148,7 +4130,7 @@ function Forgive(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.Forgive);
     /* PacketID: 34 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4172,7 +4154,7 @@ function Kick(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.Kick);
     /* PacketID: 35 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4196,7 +4178,7 @@ function Execute(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.Execute);
     /* PacketID: 36 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4221,8 +4203,8 @@ function BanChar(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.BanChar);
     /* PacketID: 37 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Reason);
 
     buffer.flush();
   };
@@ -4246,7 +4228,7 @@ function UnbanChar(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.UnbanChar);
     /* PacketID: 38 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4292,7 +4274,7 @@ function SummonChar(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.SummonChar);
     /* PacketID: 40 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4406,7 +4388,7 @@ function ServerMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ServerMessage);
     /* PacketID: 45 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -4430,7 +4412,7 @@ function NickToIP(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.NickToIP);
     /* PacketID: 46 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4484,7 +4466,7 @@ function GuildOnlineMembers(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.GuildOnlineMembers);
     /* PacketID: 48 */
-    buffer.WriteUnicodeString(this.GuildName);
+    buffer.WriteString(this.GuildName);
 
     buffer.flush();
   };
@@ -4582,7 +4564,7 @@ function SetCharDescription(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.SetCharDescription);
     /* PacketID: 52 */
-    buffer.WriteUnicodeString(this.Description);
+    buffer.WriteString(this.Description);
 
     buffer.flush();
   };
@@ -4662,7 +4644,7 @@ function RoyalArmyMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RoyalArmyMessage);
     /* PacketID: 55 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -4686,7 +4668,7 @@ function ChaosLegionMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ChaosLegionMessage);
     /* PacketID: 56 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -4710,7 +4692,7 @@ function CitizenMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.CitizenMessage);
     /* PacketID: 57 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -4734,7 +4716,7 @@ function CriminalMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.CriminalMessage);
     /* PacketID: 58 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -4758,7 +4740,7 @@ function TalkAsNPC(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.TalkAsNPC);
     /* PacketID: 59 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -4804,7 +4786,7 @@ function AcceptRoyalCouncilMember(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.AcceptRoyalCouncilMember);
     /* PacketID: 61 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4828,7 +4810,7 @@ function AcceptChaosCouncilMember(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.AcceptChaosCouncilMember);
     /* PacketID: 62 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4874,7 +4856,7 @@ function MakeDumb(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.MakeDumb);
     /* PacketID: 64 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4898,7 +4880,7 @@ function MakeDumbNoMore(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.MakeDumbNoMore);
     /* PacketID: 65 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -4944,7 +4926,7 @@ function CouncilKick(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.CouncilKick);
     /* PacketID: 67 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -5058,7 +5040,7 @@ function GuildMemberList(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.GuildMemberList);
     /* PacketID: 72 */
-    buffer.WriteUnicodeString(this.GuildName);
+    buffer.WriteString(this.GuildName);
 
     buffer.flush();
   };
@@ -5082,7 +5064,7 @@ function GuildBan(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.GuildBan);
     /* PacketID: 73 */
-    buffer.WriteUnicodeString(this.GuildName);
+    buffer.WriteString(this.GuildName);
 
     buffer.flush();
   };
@@ -5107,8 +5089,8 @@ function BanIP(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.BanIP);
     /* PacketID: 74 */
-    buffer.WriteUnicodeString(this.IP);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.IP);
+    buffer.WriteString(this.Reason);
 
     buffer.flush();
   };
@@ -5132,7 +5114,7 @@ function UnbanIP(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.UnbanIP);
     /* PacketID: 75 */
-    buffer.WriteUnicodeString(this.IP);
+    buffer.WriteString(this.IP);
 
     buffer.flush();
   };
@@ -5203,8 +5185,8 @@ function ChaosLegionKick(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ChaosLegionKick);
     /* PacketID: 78 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Reason);
 
     buffer.flush();
   };
@@ -5229,8 +5211,8 @@ function RoyalArmyKick(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RoyalArmyKick);
     /* PacketID: 79 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Reason);
 
     buffer.flush();
   };
@@ -5304,9 +5286,9 @@ function RemovePunishment(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RemovePunishment);
     /* PacketID: 82 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
     buffer.WriteByte(this.Punishment);
-    buffer.WriteUnicodeString(this.NewText);
+    buffer.WriteString(this.NewText);
 
     buffer.flush();
   };
@@ -5396,7 +5378,7 @@ function LastIP(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.LastIP);
     /* PacketID: 86 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -5442,7 +5424,7 @@ function SetMOTD(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.SetMOTD);
     /* PacketID: 88 */
-    buffer.WriteUnicodeString(this.Motd);
+    buffer.WriteString(this.Motd);
 
     buffer.flush();
   };
@@ -5466,7 +5448,7 @@ function SystemMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.SystemMessage);
     /* PacketID: 89 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -5656,7 +5638,7 @@ function TurnCriminal(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.TurnCriminal);
     /* PacketID: 97 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -5680,7 +5662,7 @@ function ResetFactions(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ResetFactions);
     /* PacketID: 98 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -5704,7 +5686,7 @@ function RemoveCharFromGuild(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RemoveCharFromGuild);
     /* PacketID: 99 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -5728,7 +5710,7 @@ function RequestCharMail(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RequestCharMail);
     /* PacketID: 100 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
 
     buffer.flush();
   };
@@ -5753,8 +5735,8 @@ function AlterPassword(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.AlterPassword);
     /* PacketID: 101 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.CopyFrom);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.CopyFrom);
 
     buffer.flush();
   };
@@ -5779,8 +5761,8 @@ function AlterMail(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.AlterMail);
     /* PacketID: 102 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.NewMail);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.NewMail);
 
     buffer.flush();
   };
@@ -5805,8 +5787,8 @@ function AlterName(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.AlterName);
     /* PacketID: 103 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.NewName);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.NewName);
 
     buffer.flush();
   };
@@ -5874,7 +5856,7 @@ function ShowGuildMessages(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ShowGuildMessages);
     /* PacketID: 106 */
-    buffer.WriteUnicodeString(this.GuildName);
+    buffer.WriteString(this.GuildName);
 
     buffer.flush();
   };
@@ -5968,7 +5950,7 @@ function ChangeMapInfoRestricted(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ChangeMapInfoRestricted);
     /* PacketID: 110 */
-    buffer.WriteUnicodeString(this.RestrictedTo);
+    buffer.WriteString(this.RestrictedTo);
 
     buffer.flush();
   };
@@ -6064,7 +6046,7 @@ function ChangeMapInfoLand(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ChangeMapInfoLand);
     /* PacketID: 114 */
-    buffer.WriteUnicodeString(this.Data);
+    buffer.WriteString(this.Data);
 
     buffer.flush();
   };
@@ -6088,7 +6070,7 @@ function ChangeMapInfoZone(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.ChangeMapInfoZone);
     /* PacketID: 115 */
-    buffer.WriteUnicodeString(this.Data);
+    buffer.WriteString(this.Data);
 
     buffer.flush();
   };
@@ -6477,7 +6459,7 @@ function CheckSlot(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.CheckSlot);
     /* PacketID: 132 */
-    buffer.WriteUnicodeString(this.UserName);
+    buffer.WriteString(this.UserName);
     buffer.WriteByte(this.Slot);
 
     buffer.flush();
@@ -6504,9 +6486,9 @@ function SetIniVar(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.SetIniVar);
     /* PacketID: 133 */
-    buffer.WriteUnicodeString(this.Seccion);
-    buffer.WriteUnicodeString(this.Clave);
-    buffer.WriteUnicodeString(this.Valor);
+    buffer.WriteString(this.Seccion);
+    buffer.WriteString(this.Clave);
+    buffer.WriteString(this.Valor);
 
     buffer.flush();
   };
@@ -6626,7 +6608,7 @@ function MapMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.MapMessage);
     /* PacketID: 138 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -6650,7 +6632,7 @@ function SetDialog(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.SetDialog);
     /* PacketID: 139 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -6719,8 +6701,8 @@ function RecordAdd(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.RecordAdd);
     /* PacketID: 142 */
-    buffer.WriteUnicodeString(this.UserName);
-    buffer.WriteUnicodeString(this.Reason);
+    buffer.WriteString(this.UserName);
+    buffer.WriteString(this.Reason);
 
     buffer.flush();
   };
@@ -6770,7 +6752,7 @@ function RecordAddObs(buffer) {
     buffer.WriteByte(ClientGMPacketID.RecordAddObs);
     /* PacketID: 144 */
     buffer.WriteByte(this.Index);
-    buffer.WriteUnicodeString(this.Obs);
+    buffer.WriteString(this.Obs);
 
     buffer.flush();
   };
@@ -6841,8 +6823,8 @@ function AlterGuildName(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.AlterGuildName);
     /* PacketID: 147 */
-    buffer.WriteUnicodeString(this.OldGuildName);
-    buffer.WriteUnicodeString(this.NewGuildName);
+    buffer.WriteString(this.OldGuildName);
+    buffer.WriteString(this.NewGuildName);
 
     buffer.flush();
   };
@@ -6866,7 +6848,7 @@ function HigherAdminsMessage(buffer) {
     buffer.WriteByte(ClientPacketID_GMCommands);
     buffer.WriteByte(ClientGMPacketID.HigherAdminsMessage);
     /* PacketID: 148 */
-    buffer.WriteUnicodeString(this.Message);
+    buffer.WriteString(this.Message);
 
     buffer.flush();
   };
@@ -6888,11 +6870,6 @@ export default class Protocolo {
     e.UserName = UserName;
     e.Password = Password;
     return e;
-  }
-
-
-  BuildThrowDices() {
-    return new ThrowDices();
   }
 
 
@@ -7096,8 +7073,8 @@ export default class Protocolo {
   }
 
 
-  BuildUseSpellMacro() {
-    let e = new UseSpellMacro();
+  getMyCharacter() {
+    let e = new getMyCharacter();
 
     return e;
   }

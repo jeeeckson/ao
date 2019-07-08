@@ -1,0 +1,1 @@
+export handleLogged from './handleLogged';

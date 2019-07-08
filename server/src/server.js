@@ -1,13 +1,16 @@
 let fs = require('fs');
 
-let WebSocketServer = require('ws').Server,
-  ws = new WebSocketServer({
-    port: 7666,
-    binaryType: 'arrayBuffer'
-  }),
-  util = require('util');
-import socket from './socket';
-let ByteQueue = require('./bytequeue');
+import express from 'express';
+import path from 'path';
+import http from 'http';
+import socketio from 'socket.io';
+
+const app = express();
+const server = http.Server(app);
+const io = socketio(server);
+const port = process.env.PORT || 4000;
+import {closePj} from './socket';
+
 let funct = require('./functions');
 let protocol = require('./protocol');
 let game = require('./game');
@@ -19,15 +22,17 @@ let loadMaps = require('./loadMaps');
 let loadObjs = require('./loadObjs');
 let loadSpells = require('./loadSpells');
 let handleProtocol = require('./handleProtocol');
-let serialize = require('node-serialize');
-let byte = new ByteQueue(ws);
 let pkg = require('./package');
 
 console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] Iniciando servidor.');
 console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] Cargando hechizos.');
 console.log('[INFO | ' + funct.dateFormat(new Date(), '%d-%m-%Y %H:%M:%S') + '] Iniciando WebSockets.');
 
-ws.on('connection', (ws) => {
+server.listen(port, '0.0.0.0', () => {
+  console.log(`App now listening on port ${port}`);
+});
+
+io.on('connection', (ws) => {
   ws.on('message', (res) => {
     try {
       if (ws.readyState !== ws.OPEN) {
@@ -44,9 +49,9 @@ ws.on('connection', (ws) => {
     }
   });
 
-  ws.on('close', (message) => {
+  ws.on('disconnect', (message) => {
     try {
-      socket.closePj(ws);
+      closePj(ws);
     } catch (err) {
       funct.dumpError(err);
     }
